@@ -1,0 +1,11 @@
+
+- always use the conda env named mesa 
+- always write mesa code of version 3.x and higher
+- you are generally required to follow the requirements.md file 
+- but not strictly on the design strucure, 
+- on design you should follow Mesa best practices and their documentaion 
+   provided in mesa-readthedocs-io-en-latest.txt
+- and not strictly  when there is a better way or if the requirements.md 
+   is not correct or contradict it self, 
+- and if anything not clear you should ask for clarification and sugguset things 
+- 

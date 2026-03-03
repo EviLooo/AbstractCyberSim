@@ -1,0 +1,34 @@
+site_name: AbstractCyberSim Documentation
+site_description: Interactive documentation for the AbstractCyberSim Agent-Based Simulation.
+site_author: Developer
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Home: index.md
+  - Architecture: architecture.md
+  - Component Breakdown: components.md
+  - Data Flow: data_flow.md
+  - Execution Flow: lifecycle.md
+  - Key Classes: classes.md
+  - Developer Guide: developer_guide.md
+  - Glossary: glossary.md

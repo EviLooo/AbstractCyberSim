@@ -1,0 +1,683 @@
+
+
+---
+
+# 📄 PROJECT SPECIFICATION
+
+## Project Name
+
+**ABMS-LLM Cyber Organizational Simulation (V0.1 – Rule-Based Core)**
+
+---
+
+# 1️⃣ Project Objective
+
+Build a modular Agent-Based Modeling and Simulation (ABMS) system using **Mesa** to evaluate how different organizational structures affect performance in a multi-stage cyber operation.
+
+This is Version 0.1:
+
+* No LLM integration yet
+* Rule-based cognition only
+* Fully modular
+* Designed for future LLM plug-in replacement
+
+---
+
+# 2️⃣ Core Experimental Configuration (LOCKED)
+
+* Number of agents: **5**
+* Observability: **Full network visibility**
+* Action outcomes: **Probabilistic**
+* Detection mechanism: **Enabled**
+* Agent memory: **Local memory only**
+* Organizational structures:
+
+  * Centralized Hierarchy
+  * Decentralized Swarm
+
+---
+
+# 3️⃣ High-Level Architecture
+
+The system must be modular and layered.
+
+```
+abms_cyber/
+│
+├── run.py
+├── config/
+│   └── default_config.py
+│
+├── model/
+│   ├── cyber_model.py
+│   ├── scheduler.py
+│
+├── environment/
+│   ├── network_graph.py
+│   ├── node.py
+│   ├── action_resolver.py
+│   └── detection.py
+│
+├── agents/
+│   ├── cyber_agent.py
+│   ├── memory.py
+│   └── cognition/
+│       ├── base_cognition.py
+│       └── rule_based.py
+│
+├── organization/
+│   ├── base_org.py
+│   ├── centralized.py
+│   └── swarm.py
+│
+├── metrics/
+│   ├── data_collector.py
+│   └── performance.py
+│
+└── experiments/
+    └── experiment_runner.py
+```
+
+Each module must be replaceable without rewriting others.
+
+---
+
+# 4️⃣ Environment Design
+
+## 4.1 Network Structure
+
+Environment is a graph (not spatial grid).
+
+Nodes must include:
+
+```
+id: str
+vulnerability_level: float (0–1)
+privilege_required: int (0=user, 1=admin)
+compromised: bool
+neighbors: list[node_id]
+```
+
+One node is flagged:
+
+```
+is_target: True
+```
+
+---
+
+## 4.2 Global State
+
+Environment must track:
+
+```
+detection_level: float
+max_detection: float
+time_step: int
+max_steps: int
+```
+
+Simulation ends when:
+
+* Target node compromised with required privilege
+* detection_level >= max_detection
+* time_step >= max_steps
+
+---
+
+# 5️⃣ Action Space
+
+Define enum-like structure:
+
+```
+SCAN(node_id)
+EXPLOIT(node_id)
+ESCALATE(node_id)
+MOVE(node_id)
+```
+
+---
+
+## 5.1 Action Probabilities
+
+Implement probabilistic outcomes:
+
+* SCAN: always success
+* EXPLOIT: success probability = node.vulnerability_level
+* ESCALATE: success probability = 0.5
+* MOVE: success if neighbor & compromised
+
+Failure increases detection_level.
+
+Success may also slightly increase detection_level.
+
+---
+
+# 6️⃣ Agent Design
+
+## 6.1 Base Agent Class
+
+Inherit from Mesa Agent.
+
+Each agent must have:
+
+```
+unique_id
+model
+current_node
+privilege_level
+local_memory
+cognition_module
+organization_reference
+```
+
+---
+
+## 6.2 Memory (Local Only)
+
+Memory stores:
+
+```
+known_nodes
+known_vulnerabilities
+past_actions
+success_history
+```
+
+No shared memory in swarm.
+
+---
+
+# 7️⃣ Cognition Layer (Modular)
+
+Create interface:
+
+```python
+class BaseCognition:
+    def decide(self, observation) -> Action
+```
+
+Implement:
+
+### RuleBasedCognition
+
+Behavior:
+
+1. If target reachable and exploitable → attempt exploit
+2. If current node not scanned → SCAN
+3. If exploitable → EXPLOIT
+4. If privilege low → ESCALATE
+5. Else MOVE randomly
+
+Must be deterministic given same state.
+
+---
+
+# 8️⃣ Organization Layer
+
+## 8.1 BaseOrganization Interface
+
+```python
+class BaseOrganization:
+    def step(self):
+        pass
+```
+
+---
+
+## 8.2 Centralized Organization
+
+Structure:
+
+* One agent designated as leader
+* Leader decides task allocation
+* Sub-agents execute assigned tasks
+
+Implementation:
+
+* Leader collects full state
+* Leader assigns actions to each agent
+* Sub-agents do not decide independently
+
+---
+
+## 8.3 Swarm Organization
+
+Structure:
+
+* No leader
+* Each agent independently calls cognition.decide()
+* No communication
+* No shared memory
+
+---
+
+# 9️⃣ Mesa Model
+
+Create CyberModel inheriting from Mesa Model.
+
+Responsibilities:
+
+* Initialize network graph
+* Create 5 agents
+* Assign organization strategy
+* Maintain scheduler
+* Track metrics
+* Execute step()
+
+Use RandomActivation scheduler.
+
+---
+
+# 🔟 Metrics Collection
+
+Track per episode:
+
+* time_to_completion
+* total_steps
+* success (bool)
+* final_detection_level
+* total_actions_taken
+* duplicate_actions_count
+* efficiency_score = target_reached / total_steps
+
+Use Mesa DataCollector.
+
+---
+
+# 11️⃣ Experiment Runner
+
+Must allow:
+
+```
+run_experiment(
+    organization_type,
+    num_trials,
+    config
+)
+```
+
+For each trial:
+
+* Reset model
+* Run until termination
+* Store metrics
+
+Output:
+
+* Mean time to completion
+* Success rate
+* Mean detection level
+* Variance in performance
+
+---
+
+# 12️⃣ Scalability Requirements
+
+System must allow future:
+
+* Replace RuleBasedCognition with LLMCognition
+* Add new actions without changing agent base class
+* Add partial observability
+* Add shared memory module
+* Add hybrid organization
+* Adjust number of agents via config
+* Swap scheduler if needed
+
+All parameters must live in:
+
+```
+config/default_config.py
+```
+
+---
+
+# 13️⃣ Coding Best Practices
+
+* No logic in run.py
+* No monolithic files
+* Strict separation of environment / cognition / organization
+* Type hints required
+* Clear docstrings for each class
+* Avoid circular imports
+* Use dataclasses where appropriate
+* Keep environment deterministic under fixed random seed
+
+---
+
+# 14️⃣ Termination Conditions
+
+Simulation ends if:
+
+```
+if target.compromised and agent.privilege_level == required
+OR detection_level >= max_detection
+OR step_count >= max_steps
+```
+
+---
+
+# 15️⃣ Deliverables Required From IDE
+
+1. Fully implemented project structure
+2. Clean imports and working execution
+3. Example experiment comparing:
+
+   * Centralized vs Swarm
+4. Console output summary
+5. No GUI required
+6. Ready for future LLM integration
+
+---
+
+# 16️⃣ Future Extension Hook (IMPORTANT)
+
+Reserve file:
+
+```
+agents/cognition/llm_cognition.py
+```
+
+Must follow BaseCognition interface.
+
+Environment must not need modification when swapping cognition modules.
+
+---
+
+# 17️⃣ Example Execution Flow
+
+```
+python run.py --org centralized --trials 50
+python run.py --org swarm --trials 50
+```
+
+Output:
+
+```
+Centralized:
+Mean Time: 42
+Success Rate: 0.78
+Variance: 5.1
+
+Swarm:
+Mean Time: 55
+Success Rate: 0.63
+Variance: 9.4
+```
+
+---
+
+
+
+
+---
+
+# 🔷 Visualization Layer — Modular Mesa Integration
+
+## 1️⃣ Design Principle
+
+Visualization must:
+
+* Be completely separate from core logic
+* Never contain simulation logic
+* Only read model state
+* Be swappable or removable
+* Not break headless experiment runs
+
+We support two modes:
+
+* Headless mode → experiments only
+* Interactive mode → Mesa web visualization
+
+---
+
+# 🔷 Folder Structure Addition
+
+Extend your structure:
+
+```
+project/
+│
+├── visualization/
+│   ├── portrayal.py
+│   ├── network_view.py
+│   ├── charts.py
+│   └── app.py
+│
+├── experiments/
+│   └── runner.py
+│
+├── main.py
+```
+
+Visualization must NEVER be inside model or agent files.
+
+---
+
+# 🔷 What We Visualize
+
+In V0.1, we visualize:
+
+1. Network state
+2. Node compromise status
+3. Agent positions
+4. Detection level
+5. Compromise progress over time
+
+---
+
+# 🔷 1️⃣ Network Visualization
+
+We use Mesa’s NetworkGrid + Solara UI.
+
+The cyber environment is represented as a graph:
+
+* Nodes = systems
+* Edges = connectivity
+* Node color = state
+
+Node color mapping:
+
+* Green → secure
+* Yellow → scanned
+* Red → compromised
+* Purple → high-value target
+
+---
+
+### portrayal.py
+
+This file defines how nodes look.
+
+Example design specification:
+
+Node portrayal dictionary must include:
+
+* color
+* size
+* label (optional)
+* shape
+
+It must read only:
+
+```
+node.compromised
+node.scanned
+node.is_high_value
+```
+
+It must NOT modify state.
+
+---
+
+# 🔷 2️⃣ Agent Visualization
+
+Agents should appear on nodes.
+
+Agent color by organization type:
+
+* Swarm → Blue
+* Hierarchical leader → Black
+* Hierarchical worker → Cyan
+
+Agents must be layered above nodes.
+
+---
+
+# 🔷 3️⃣ Charts (Time-Series Monitoring)
+
+Use Mesa’s ChartModule equivalent in Solara.
+
+Add charts for:
+
+* Detection level over time
+* % nodes compromised
+* Steps elapsed
+* Agent coordination efficiency (optional metric)
+
+Each chart must read from model DataCollector.
+
+---
+
+# 🔷 4️⃣ Data Collection (Required for Visualization)
+
+Inside your model:
+
+You MUST use Mesa’s DataCollector.
+
+Collect:
+
+```
+model_reporters = {
+    "Detection_Level": lambda m: m.detection_level,
+    "Compromised_Nodes": lambda m: m.count_compromised(),
+}
+
+agent_reporters = {
+    "Action": "last_action",
+}
+```
+
+Visualization reads from this — not from internal variables directly.
+
+---
+
+# 🔷 5️⃣ app.py (Visualization Entry Point)
+
+This file should:
+
+1. Import model
+2. Import portrayal
+3. Create NetworkGrid
+4. Add Chart modules
+5. Create Mesa app
+
+Structure:
+
+```
+def launch_visualization(config):
+    model = CyberModel(config)
+    page = SolaraVisualization(model, components=[...])
+    return page
+```
+
+This ensures:
+
+* Visualization can be launched independently
+* Experiments can run without UI
+
+---
+
+# 🔷 6️⃣ main.py Behavior
+
+main.py must support two modes:
+
+```
+--mode experiment
+--mode visualize
+```
+
+Example behavior:
+
+If experiment:
+run_experiment()
+
+If visualize:
+launch_visualization()
+
+This keeps system modular.
+
+---
+
+# 🔷 7️⃣ Scalability Design Rule
+
+When you add:
+
+* LLM agents
+* More complex networks
+* Defense agents
+* Multi-layer attack graphs
+
+Visualization layer should require minimal changes.
+
+Only portrayal mapping expands.
+
+Core simulation logic remains untouched.
+
+---
+
+# 🔷 8️⃣ What We Do NOT Visualize in V0.1
+
+To keep it scalable and clean:
+
+* No packet-level simulation
+* No UI-based control panel yet
+* No real-time editing of topology
+* No animation-heavy hacks
+
+Keep it clean and research-grade.
+
+---
+
+# 🔷 9️⃣ Why This Is Important
+
+Visualization is not cosmetic.
+
+It allows you to:
+
+* Validate multi-stage behavior
+* Observe coordination differences
+* Detect pathological agent behavior
+* Demonstrate uncertainty impact
+* Present research clearly
+
+And most importantly:
+
+It helps you debug early before scaling.
+
+---
+
+# 🔷 Final Architecture Summary
+
+Your system now has 4 clean layers:
+
+1. Environment Layer → network + state
+2. Agent Layer → decision logic
+3. Model Layer → scheduling + state updates
+4. Visualization Layer → read-only UI
+
+Fully modular.
+Fully replaceable.
+LLM-ready.
+Experiment-ready.
+
+---
+
+# 🎯 Final Design Principles
+
+* Structural clarity > realism
+* Modularity > quick hacks
+* Replaceable cognition
+* Replaceable organization
+* Environment independent of intelligence layer
+* Clean experiment reproducibility
