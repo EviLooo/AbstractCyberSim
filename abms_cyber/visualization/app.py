@@ -5,6 +5,24 @@ from abms_cyber.model.cyber_model import CyberModel
 from abms_cyber.visualization.network_view import NetworkView
 from abms_cyber.visualization.charts import MetricsChart
 
+@solara.component
+def AgentMemoryLog(model, current_step):
+    with solara.Card("Agent Memory Logs", margin=0):
+        if not model.agents:
+            solara.Markdown("No agents found.")
+            return
+            
+        for agent in model.agents:
+            with solara.Details(summary=f"Agent {agent.unique_id} (Privilege: {agent.privilege_level})"):
+                solara.Markdown(f"**Current Node:** {agent.current_node.id if agent.current_node else 'None'}")
+                solara.Markdown(f"**Known Nodes:** {', '.join(agent.memory.known_nodes) if agent.memory.known_nodes else 'None'}")
+                solara.Markdown(f"**Compromised Nodes:** {', '.join(agent.memory.compromised_nodes) if agent.memory.compromised_nodes else 'None'}")
+                
+                # Show last 5 actions
+                actions = agent.memory.action_history[-5:] if agent.memory.action_history else ["None"]
+                solara.Markdown(f"**Recent Actions:** {', '.join(actions)}")
+
+
 # Global state for Solara Reactive UI
 config = CyberConfig(num_agents=5)
 # You can tweak config here if needed for visualization
@@ -43,11 +61,11 @@ def Page():
         
         # --- Visualization Views ---
         with solara.Row():
-             with solara.Column(style={"flex": "1", "min-width": "600px"}):
+             with solara.Column(style={"flex": "1.5"}):
                   solara.Markdown("### Network Topology")
-                  NetworkView(wrapper.model)
+                  NetworkView(wrapper.model, current_step)
                   
-             with solara.Column(style={"flex": "1", "min-width": "400px"}):
+             with solara.Column(style={"flex": "1"}):
                   solara.Markdown("### Live Metrics")
                   # We get the dataframe from Mesa's datacollector
                   if wrapper.model.steps > 0:
@@ -57,6 +75,9 @@ def Page():
                       MetricsChart(df)
                   else:
                       solara.Markdown("Awaiting first step data...")
+                  
+                  solara.HTML(tag="br")
+                  AgentMemoryLog(wrapper.model, current_step)
 
 def step_model():
     if wrapper.model.running:

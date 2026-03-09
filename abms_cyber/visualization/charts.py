@@ -15,4 +15,10 @@ def MetricsChart(df: pd.DataFrame):
         title="Simulation Metrics Over Time"
     )
     
-    return solara.FigurePlotly(fig)
+    fig.update_layout(
+        autosize=True,
+        margin=dict(l=20, r=20, t=40, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
+    
+    return solara.FigurePlotly(fig, dependencies=[df])
