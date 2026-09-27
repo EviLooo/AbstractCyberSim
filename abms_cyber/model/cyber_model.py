@@ -11,6 +11,7 @@ from abms_cyber.metrics.data_collector import get_data_collector
 from abms_cyber.organization.centralized import CentralizedOrganization
 from abms_cyber.organization.swarm import SwarmOrganization
 from abms_cyber.agents.cognition.rule_based import RuleBasedCognition
+from abms_cyber.environment.action_resolver import ActionResolver
 
 class CyberModel(Model):
     def __init__(self, config: CyberConfig = CyberConfig(), org_type: str = "swarm"):
@@ -18,8 +19,9 @@ class CyberModel(Model):
         self.config = config
         self.random.seed(config.random_seed)
         
-        self.network = NetworkEnvironment(config)
+        self.network = NetworkEnvironment(config, rng=self.random)
         self.detection_level = 0.0
+        self.action_resolver = ActionResolver(self)
         
         # Organization
         self.org_type = org_type

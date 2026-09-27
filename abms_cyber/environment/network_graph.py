@@ -5,25 +5,41 @@ Network Graph management.
 
 import networkx as nx
 import random
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 from abms_cyber.environment.node import CyberNode
 from abms_cyber.config.default_config import CyberConfig
 
+
 class NetworkEnvironment:
-    def __init__(self, config: CyberConfig):
+    def __init__(
+        self,
+        config: CyberConfig,
+        rng: Optional[random.Random] = None,
+    ) -> None:
         self.config = config
-        self.graph = nx.gnm_random_graph(config.num_nodes, config.num_nodes * config.avg_degree)
+        self.random = rng or random.Random(config.random_seed)
+        edge_count = round(config.num_nodes * config.avg_degree / 2)
+        self.graph = nx.gnm_random_graph(
+            config.num_nodes,
+            edge_count,
+            seed=self.random,
+        )
         self.nodes: Dict[str, CyberNode] = {}
         self._initialize_nodes()
         
-    def _initialize_nodes(self):
+    def _initialize_nodes(self) -> None:
         # Convert nx nodes to CyberNodes
         for i in self.graph.nodes():
             node_id = str(i)
-            # Vulnerability: random float between 0.1 and 0.9
-            vuln = random.uniform(0.1, 0.9)
-            # Privilege: 20% chance of needing Admin
-            priv = 1 if random.random() < 0.2 else 0
+            vuln = self.random.uniform(
+                self.config.vulnerability_min,
+                self.config.vulnerability_max,
+            )
+            priv = (
+                1
+                if self.random.random() < self.config.admin_node_probability
+                else 0
+            )
             
             self.nodes[node_id] = CyberNode(
                 id=node_id,
@@ -44,7 +60,7 @@ class NetworkEnvironment:
         if not potential_targets:
             potential_targets = list(self.nodes.values())
         
-        target = random.choice(potential_targets)
+        target = self.random.choice(potential_targets)
         target.is_target = True
         
     def get_node(self, node_id: str) -> Optional[CyberNode]:
@@ -54,5 +70,5 @@ class NetworkEnvironment:
         # Start at a non-target, low privilege node
         candidates = [n for n in self.nodes.values() if not n.is_target and n.privilege_required == 0]
         if not candidates:
-            return random.choice(list(self.nodes.values()))
-        return random.choice(candidates)
+            return self.random.choice(list(self.nodes.values()))
+        return self.random.choice(candidates)
