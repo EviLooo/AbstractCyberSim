@@ -1,0 +1,14 @@
+import type { EpisodeConfig as ConfigContract } from './generated/EpisodeConfig';
+import type { ExperimentSpec as ExperimentContract } from './generated/ExperimentSpec';
+type DeepRequired<T> = T extends Array<infer U> ? Array<DeepRequired<U>> : T extends object ? { [P in keyof T]-?: DeepRequired<T[P]> } : T;
+export type EpisodeConfig = DeepRequired<ConfigContract>;
+export type ExperimentSpec = DeepRequired<ExperimentContract>;
+export type Proposal = { action: string; session?: number; target?: string | null; rationale?: string };
+export type Session = { id: number; agent: string; username: string; privileged: boolean; session_type?: string };
+export type Host = { id: string; subnet: string; router: boolean; target: boolean; interfaces: Record<string, unknown>[]; system: Record<string, unknown>; services: Record<string, unknown>; sessions: Session[] };
+export type Message = { id: string; sender: string; recipient: string; kind: string; status: string; created_tick: number; due_tick: number; resolved_tick?: number; bytes: number; evidence_ids: string[]; payload: Record<string, unknown> };
+export type ActorView = { actor: string; native: { known: { ip_address: string[]; subnet: string[]; hostname: string[] }; sessions: Record<string, unknown>[]; scan_cache: Record<string, Record<string, number[]>> }; hosts: Record<string, { fields: Record<string, unknown>; evidence_ids: string[]; source: string }>; inbox: Message[]; history: Action[] };
+export type Action = { actor: string; proposal: Proposal; native_action: string; concrete_action?: string | null; valid: boolean; rejection: string | null; outcome: string };
+export type Metrics = { success: boolean; success_tick?: number; charged_tokens: number; attempted_actions: number; invalid_actions: number; duplicate_actions: number; message_delivered: number; message_dropped: number; calls: number; is_llm: boolean };
+export type Run = { id: string; name: string; architecture: string; workers: number; reasoners: number; status: string; tick: number; purpose: string; manual_intervention: boolean; world_id: string; metrics?: Metrics; termination_reason?: string; error?: string; created_at: string };
+export type Frame = { tick: number; status: string; truth: { hosts: Host[]; edges: { id: string; source: string; target: string }[]; subnets: { id: string; cidr: string }[] }; private_views: Record<string, ActorView>; messages: Message[]; actions: Action[]; score: { controlled_hosts: string[]; privileged_hosts: string[]; target_count: number; targets_reached: number; mission_success: boolean }; coordinator?: { delivered_reports: Record<string, Message>; assignments: Record<string, Proposal> } | null; cognition: { is_llm: boolean; calls: number; charged_tokens: number; provider: string }; execution_order?: string[]; observations: Record<string, { evidence_id: string; data: Record<string, unknown> }> };

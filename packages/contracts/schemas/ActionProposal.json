@@ -1,0 +1,46 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "action": {
+      "enum": [
+        "Sleep",
+        "DiscoverRemoteSystems",
+        "DiscoverNetworkServices",
+        "ExploitRemoteService",
+        "PrivilegeEscalate"
+      ],
+      "title": "Action",
+      "type": "string"
+    },
+    "session": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Session",
+      "type": "integer"
+    },
+    "target": {
+      "anyOf": [
+        {
+          "maxLength": 100,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Target"
+    },
+    "rationale": {
+      "default": "",
+      "maxLength": 1000,
+      "title": "Rationale",
+      "type": "string"
+    }
+  },
+  "required": [
+    "action"
+  ],
+  "title": "ActionProposal",
+  "type": "object"
+}

@@ -1,0 +1,334 @@
+{
+  "$defs": {
+    "CognitionConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "provider": {
+          "default": "scripted",
+          "enum": [
+            "scripted",
+            "ollama"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "model": {
+          "default": "",
+          "maxLength": 120,
+          "title": "Model",
+          "type": "string"
+        },
+        "temperature": {
+          "default": 0,
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Temperature",
+          "type": "number"
+        },
+        "max_output_tokens": {
+          "default": 512,
+          "maximum": 4096,
+          "minimum": 64,
+          "title": "Max Output Tokens",
+          "type": "integer"
+        },
+        "max_context_bytes": {
+          "default": 24000,
+          "maximum": 128000,
+          "minimum": 4000,
+          "title": "Max Context Bytes",
+          "type": "integer"
+        },
+        "max_team_tokens": {
+          "default": 40000,
+          "maximum": 10000000,
+          "minimum": 1000,
+          "title": "Max Team Tokens",
+          "type": "integer"
+        },
+        "timeout_seconds": {
+          "default": 60,
+          "maximum": 300,
+          "minimum": 1,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        }
+      },
+      "title": "CognitionConfig",
+      "type": "object"
+    },
+    "CommunicationConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "extra_delay": {
+          "default": 0,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Extra Delay",
+          "type": "integer"
+        },
+        "loss_probability": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Loss Probability",
+          "type": "number"
+        },
+        "bytes_per_tick": {
+          "default": 65536,
+          "maximum": 10000000,
+          "minimum": 256,
+          "title": "Bytes Per Tick",
+          "type": "integer"
+        },
+        "envelopes_per_tick": {
+          "default": 64,
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Envelopes Per Tick",
+          "type": "integer"
+        },
+        "ttl": {
+          "default": 10,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Ttl",
+          "type": "integer"
+        },
+        "seed": {
+          "default": 17,
+          "maximum": 4294967295,
+          "minimum": 0,
+          "title": "Seed",
+          "type": "integer"
+        },
+        "verified_intel": {
+          "default": true,
+          "title": "Verified Intel",
+          "type": "boolean"
+        }
+      },
+      "title": "CommunicationConfig",
+      "type": "object"
+    },
+    "EpisodeConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "name": {
+          "default": "Enterprise exploration",
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "purpose": {
+          "default": "exploration",
+          "enum": [
+            "exploration",
+            "evaluation"
+          ],
+          "title": "Purpose",
+          "type": "string"
+        },
+        "scenario": {
+          "$ref": "#/$defs/ScenarioConfig"
+        },
+        "team": {
+          "$ref": "#/$defs/TeamConfig"
+        },
+        "communication": {
+          "$ref": "#/$defs/CommunicationConfig"
+        },
+        "cognition": {
+          "$ref": "#/$defs/CognitionConfig"
+        },
+        "schedule": {
+          "$ref": "#/$defs/ScheduleConfig"
+        }
+      },
+      "title": "EpisodeConfig",
+      "type": "object"
+    },
+    "ScenarioConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "const": "enterprise_legacy",
+          "default": "enterprise_legacy",
+          "title": "Profile",
+          "type": "string"
+        },
+        "world_seed": {
+          "default": 7,
+          "maximum": 4294967295,
+          "minimum": 0,
+          "title": "World Seed",
+          "type": "integer"
+        },
+        "targets": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Targets",
+          "type": "array"
+        },
+        "defender": {
+          "default": "passive",
+          "enum": [
+            "passive",
+            "monitor"
+          ],
+          "title": "Defender",
+          "type": "string"
+        }
+      },
+      "title": "ScenarioConfig",
+      "type": "object"
+    },
+    "ScheduleConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "default": "per_worker",
+          "enum": [
+            "per_worker",
+            "team_cap_one"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "seed": {
+          "default": 27,
+          "maximum": 4294967295,
+          "minimum": 0,
+          "title": "Seed",
+          "type": "integer"
+        },
+        "max_ticks": {
+          "default": 100,
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Max Ticks",
+          "type": "integer"
+        }
+      },
+      "title": "ScheduleConfig",
+      "type": "object"
+    },
+    "TeamConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "architecture": {
+          "default": "hierarchy",
+          "enum": [
+            "hierarchy",
+            "swarm",
+            "independent"
+          ],
+          "title": "Architecture",
+          "type": "string"
+        },
+        "workers": {
+          "default": 4,
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Workers",
+          "type": "integer"
+        },
+        "claim_ttl": {
+          "default": 5,
+          "maximum": 50,
+          "minimum": 1,
+          "title": "Claim Ttl",
+          "type": "integer"
+        }
+      },
+      "title": "TeamConfig",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "name": {
+      "default": "Organization comparison",
+      "maxLength": 100,
+      "title": "Name",
+      "type": "string"
+    },
+    "base": {
+      "$ref": "#/$defs/EpisodeConfig"
+    },
+    "architectures": {
+      "items": {
+        "enum": [
+          "hierarchy",
+          "swarm",
+          "independent"
+        ],
+        "type": "string"
+      },
+      "maxItems": 3,
+      "minItems": 1,
+      "title": "Architectures",
+      "type": "array"
+    },
+    "worker_counts": {
+      "items": {
+        "type": "integer"
+      },
+      "maxItems": 8,
+      "minItems": 1,
+      "title": "Worker Counts",
+      "type": "array"
+    },
+    "world_seeds": {
+      "items": {
+        "type": "integer"
+      },
+      "maxItems": 1000,
+      "minItems": 1,
+      "title": "World Seeds",
+      "type": "array"
+    },
+    "delays": {
+      "items": {
+        "type": "integer"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Delays",
+      "type": "array"
+    },
+    "losses": {
+      "items": {
+        "type": "number"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Losses",
+      "type": "array"
+    },
+    "replicates": {
+      "default": 1,
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Replicates",
+      "type": "integer"
+    }
+  },
+  "title": "ExperimentSpec",
+  "type": "object"
+}

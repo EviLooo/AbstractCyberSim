@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "name": "Enterprise exploration",
+  "purpose": "exploration",
+  "scenario": {
+    "profile": "enterprise_legacy",
+    "world_seed": 7,
+    "targets": [
+      "Op_Server0"
+    ],
+    "defender": "passive"
+  },
+  "team": {
+    "architecture": "swarm",
+    "workers": 4,
+    "claim_ttl": 5
+  },
+  "communication": {
+    "extra_delay": 0,
+    "loss_probability": 0.0,
+    "bytes_per_tick": 65536,
+    "envelopes_per_tick": 64,
+    "ttl": 10,
+    "seed": 17,
+    "verified_intel": true
+  },
+  "cognition": {
+    "provider": "scripted",
+    "model": "",
+    "temperature": 0.0,
+    "max_output_tokens": 512,
+    "max_context_bytes": 24000,
+    "max_team_tokens": 40000,
+    "timeout_seconds": 60
+  },
+  "schedule": {
+    "mode": "per_worker",
+    "seed": 27,
+    "max_ticks": 100
+  }
+}

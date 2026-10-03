@@ -1,0 +1,10 @@
+{
+  "upstream_url": "https://github.com/cage-challenge/CybORG.git",
+  "commit": "2742b5e0ce4330c9b14006b38acd3b5ebe00d6fd",
+  "python": "3.8",
+  "gym": "0.23.1",
+  "numpy": "1.21.6",
+  "patches": ["multi-actor-portscan"],
+  "profile": "enterprise_legacy",
+  "qualification": "Software integration only; research calibration pending"
+}
