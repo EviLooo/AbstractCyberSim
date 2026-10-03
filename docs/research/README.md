@@ -12,6 +12,7 @@ The intended product is a local research workbench: configure LLM cyber teams, i
 4. [Configuration examples](examples/README.md): a hierarchy episode, a swarm episode, and an experiment sweep. They are design examples, not executable configurations for an existing runner.
 5. [Contract definitions](CONTRACTS.md): implementation fields, invariants, and error categories for the process/API boundaries.
 6. [Runtime audit](repo-audit.json) and [audit script](../../tools/audit_cyborg.py): evidence for the narrow multi-attacker compatibility fix and verified-address delivery bridge.
+7. [Software validation plan](VALIDATION_PLAN.md): executable mission/organization acceptance fixtures, observed fixes, coverage and remaining limits.
 
 ## Main decisions
 

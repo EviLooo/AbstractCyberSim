@@ -176,8 +176,8 @@ class EngineRuntime:
                 raise ValueError("Subnet has not been observed")
             kwargs["subnet"] = IPv4Network(target)
         elif action == "PrivilegeEscalate":
-            if target not in view["known"]["hostname"] or not any(s["hostname"] == target for s in view["sessions"]):
-                raise ValueError("Escalation requires a known host with an owned session")
+            if target not in view["known"]["hostname"] or not any(s["hostname"] == target and s["active"] for s in view["sessions"]):
+                raise ValueError("Escalation requires a known host with an active owned session")
             kwargs["hostname"] = target
         else:
             if target not in view["known"]["ip_address"]:
@@ -221,4 +221,4 @@ class EngineRuntime:
                 records[actor]["native_action"] = str(native)
                 concrete = getattr(native, "sub_action", None)
                 records[actor]["concrete_action"] = str(concrete) if concrete else None
-        return {"tick": self.tick, "observations": normalized_obs, "views": self.views(), "truth": self.snapshot(), "score": self.score(), "actions": list(records.values()), "submission_order": order, "execution_order": execution, "execution_trace": trace, "native_done": any(dones.get(a, False) for a in self.actors)}
+        return {"tick": self.tick, "native_step_count": self.env.environment_controller.step_count, "observations": normalized_obs, "views": self.views(), "truth": self.snapshot(), "score": self.score(), "actions": list(records.values()), "submission_order": order, "execution_order": execution, "execution_trace": trace, "native_done": any(dones.get(a, False) for a in self.actors)}

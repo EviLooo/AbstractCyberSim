@@ -100,7 +100,7 @@ Comparison excludes manual, unfinished, non-evaluation, and unknown-usage runs. 
 npm run build --prefix frontend
 ```
 
-Engine checks take bounded fixture steps in temporary test storage; these are software checks, not research experiments or LLM studies. They verify 1/2/4/8 actor discovery, scans, exploit/session ownership, action rejection, verified-address sharing, hierarchy delivery semantics, saved replay, and matched world identities.
+Engine checks take bounded fixture steps in temporary test storage; these are software checks, not research experiments or LLM studies. The 38 passing tests include complete native missions with hierarchy/swarm/independent teams of 1/2/8 workers, 1/2/4/8 actor discovery/scan/exploit checks, blocked-route and session-ownership boundaries, delivered-only coordination, and pause/continue determinism. See the exact fixtures and limits in the [validation plan](docs/research/VALIDATION_PLAN.md), and the [native action explanation](docs/NATIVE_ACTION_LOGIC.md).
 
 ## Research status
 

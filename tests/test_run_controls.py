@@ -8,6 +8,67 @@ from packages.contracts.models import EpisodeConfig
 
 
 @pytest.mark.engine
+@pytest.mark.parametrize("architecture", ["hierarchy", "swarm"])
+def test_background_pause_continue_matches_single_steps(tmp_path, architecture):
+    async def check():
+        manager = RunManager(Store(tmp_path))
+        config = EpisodeConfig()
+        config.team.architecture = architecture
+        config.team.workers = 2
+        try:
+            direct_meta = await manager.create(config)
+            direct = manager.get(direct_meta["id"])
+            for _ in range(5):
+                await direct.advance()
+            background_meta = await manager.create(config)
+            background = manager.get(background_meta["id"])
+            assert background.meta["world_id"] == direct.meta["world_id"]
+            original_call = background.engine.call
+
+            async def boundary_call(method, **params):
+                result = await original_call(method, **params)
+                if method == "step" and result["tick"] == 4:
+                    background.pause_requested = True
+                return result
+
+            background.engine.call = boundary_call
+            background.start()
+            await asyncio.wait_for(background.task, timeout=15)
+            await background.pause()
+            assert background.meta["status"] == "paused" and background.meta["tick"] == 4
+            await background.advance()
+            fields = ["tick", "native_step_count", "score", "truth", "observations", "views", "actions", "submission_order", "execution_trace", "messages", "coordinator"]
+            for a, b in zip(direct.frames[1:], background.frames[1:]):
+                assert {k: a[k] for k in fields} == {k: b[k] for k in fields}
+        finally:
+            await manager.close()
+    asyncio.run(check())
+
+
+@pytest.mark.engine
+def test_tick_limit_is_censored_and_closes_native_process(tmp_path):
+    async def check():
+        manager = RunManager(Store(tmp_path))
+        config = EpisodeConfig()
+        config.schedule.max_ticks = 2
+        try:
+            meta = await manager.create(config)
+            run = manager.get(meta["id"])
+            await run.advance()
+            await run.advance()
+            assert run.meta["status"] == "completed"
+            assert run.meta["termination_reason"] == "tick_limit"
+            assert run.meta["metrics"]["time_to_success_censored"]
+            assert run.meta["metrics"]["success_tick"] is None
+            assert run.engine.process is None
+            with pytest.raises(ValueError, match="closed"):
+                await run.advance()
+        finally:
+            await manager.close()
+    asyncio.run(check())
+
+
+@pytest.mark.engine
 def test_hierarchy_waits_for_delivery_pause_replay_and_world_pairing(tmp_path):
     async def check():
         store = Store(tmp_path)

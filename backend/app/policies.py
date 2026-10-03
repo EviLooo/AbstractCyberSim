@@ -37,12 +37,14 @@ def candidates(memory):
     def add(action, target, reason):
         p = ActionProposal(action=action, session=controller, target=target, rationale=reason).model_dump()
         k = key(p)
-        if k not in successes and attempts.get(k, 0) < 2:
+        if k not in successes and attempts.get(k, 0) < 2 and not any(key(existing) == k for existing in proposed):
             proposed.append(p)
 
     for s in view["sessions"]:
-        if s["active"] and not s["privileged"] and s["hostname"] in view["known"]["hostname"]:
-            add("PrivilegeEscalate", s["hostname"], "Escalate an actor-owned foothold and inspect its locally accessible information")
+        if s["active"] and (not s["privileged"] or not s["controller"]) and s["hostname"] in view["known"]["hostname"]:
+            # Native PrivilegeEscalate also runs ExploreHost. A remote exploit
+            # can already grant SYSTEM/root without revealing the host's intel.
+            add("PrivilegeEscalate", s["hostname"], "Escalate or inspect an actor-owned foothold, including information on an already privileged host")
     for ip, ports in sorted(cache.items()):
         if ports and ip not in own_addresses:
             add("ExploitRemoteService", ip, "Use this actor's own observed service scan; CybORG selects the concrete exploit")
@@ -70,7 +72,10 @@ class Organization:
                 self.reports[m["sender"]] = m
                 for h in m["payload"].get("recent_actions", []):
                     if h.get("outcome") == "TRUE" and h.get("valid"):
-                        self.finished.add(key(h["proposal"]))
+                        # A successful scan/exploit belongs to its reporting
+                        # actor. It cannot complete another actor's scan cache
+                        # or session prerequisites for the same target.
+                        self.finished.add(f"{m['sender']}:{key(h['proposal'])}")
         return {"role": "coordinator", "tick": tick, "workers": self.actors, "delivered_reports": list(self.reports.values()), "completed_action_keys": sorted(self.finished)}
 
     def scripted_assignments(self):
@@ -79,11 +84,15 @@ class Organization:
         pool = []
         for report in self.reports.values():
             for p in report["payload"].get("candidates", []):
-                if key(p) not in self.finished:
+                if f"{report['sender']}:{key(p)}" not in self.finished:
                     pool.append((p, report))
         priority = {"PrivilegeEscalate": 0, "ExploitRemoteService": 1, "DiscoverNetworkServices": 2, "DiscoverRemoteSystems": 3}
         pool.sort(key=lambda pair: (priority.get(pair[0]["action"], 9), key(pair[0])))
         for actor in self.actors:
+            recipient_report = self.reports.get(actor)
+            controllers = [s for s in recipient_report["payload"].get("sessions", []) if s["active"] and s["controller"]] if recipient_report else []
+            if not controllers:
+                continue
             for p, report in pool:
                 k = key(p)
                 if k in chosen:
@@ -92,8 +101,10 @@ class Organization:
                 # and rescanning a delivered address can move between workers.
                 if p["action"] in ["PrivilegeEscalate", "ExploitRemoteService"] and report["sender"] != actor:
                     continue
+                if f"{actor}:{k}" in self.finished:
+                    continue
                 chosen.add(k)
-                result[actor] = {"proposal": dict(p, session=0), "evidence_ids": report["evidence_ids"], "origin": report["sender"]}
+                result[actor] = {"proposal": dict(p, session=controllers[0]["id"]), "evidence_ids": report["evidence_ids"], "origin": report["sender"]}
                 break
         return result
 

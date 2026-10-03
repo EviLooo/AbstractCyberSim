@@ -1,6 +1,6 @@
 # Workbench implementation status
 
-3 October 2026 — first runnable system, local branch `research-workbench`.
+4 October 2026 — first runnable system plus fixed-mission/organization qualification, local branch `research-workbench`.
 
 ## Implemented
 
@@ -19,17 +19,22 @@
 
 ## Checked
 
-`pytest -q`: 18 passed. Checks execute bounded technical fixtures in pytest temporary directories and never call a live model. They are not hypothesis experiments. Native discover/scan/exploit paths are checked for 1, 2, 4, and 8 workers. Shared evidence is rejected for a forged sender; accepted evidence creates address knowledge but neither scan caches nor sessions. Mocked provider checks verify charged format repairs, admission without an over-budget call, and conservative accounting for unknown usage after a transport failure.
+`pytest -q`: **38 passed**. Checks execute bounded technical fixtures in pytest temporary directories and never call a live model. They are not hypothesis experiments. Complete native missions reach both Enterprise2 and Op_Server0 with hierarchy/swarm/independent teams of 1, 2 and 8 workers, requiring active privileged target access. Native discover/scan/exploit paths also cover 4 workers. Blocked routes, actor ownership, inactive sessions, verified intel, delivered-only task/claim behavior, total message loss, the joint native schedule and pause/continue determinism are checked. Existing mocked-provider checks cover charged repairs and unknown usage. Exact settings, assertions and limits are in [the validation plan](research/VALIDATION_PLAN.md).
 
-`npm run build --prefix frontend`: generated contracts type-check and the production application builds. In-app browser verification covers idle startup, configuration controls, matrix preview, planner navigation, and visualization/replay of archived software-test fixtures served from their temporary directory. User data store starts empty.
+The qualification fixes privileged-host inspection (needed even when an exploit grants root/SYSTEM), actor-scoped coordinator completion, recipient controller binding and inactive-foothold escalation. Saved frames expose the native step counter without fabricating execution of filtered Sleep actions.
 
-The upstream CybORG acceptance API module also passes: 7 passed, 1 skipped. It covers the original single-Red scenario interfaces. Its existing Python/Gym deprecation warnings remain.
+`npm run build --prefix frontend` previously passed: generated contracts type-check and the production application builds. The frontend source is unchanged in this milestone. In-app browser verification covers idle startup, configuration controls, matrix preview, planner navigation, and visualization/replay of archived software-test fixtures served from their temporary directory. Fresh installations start with an empty data store.
+
+Complete-mission replay is also visually checked: 0/2 targets at initialization, 2/2 at completion, native exploit outcome, privileged target nodes and hierarchy topology. [Screenshot](screenshots/complete-mission-software-fixture.png) records the archived pytest fixture. Existing researcher sessions were preserved; these checks use a separate temporary replay service.
+
+The upstream CybORG acceptance API module previously passed: 7 passed, 1 skipped. Targeted native discovery/scan/escalation success and host-count checks now pass: **55 passed, 24 skipped, 526 deselected**. Exploit success/host-count cases in this selection are skipped upstream; they are not claimed verified by that command. Workbench exploit and mission fixtures supply the checked exploit coverage. Existing Python/Gym deprecation warnings remain.
 
 ## Pending from the full research design
 
 - Generic four-zone generator, network variation beyond the inherited scenario, qualified linear/branching/recovery families, and explicit generic zone-access policy.
 - Qualified active defender and service-disruption mission. Monitor observes; it does not remediate.
-- The full upstream regression suite beyond the checked API module, every exploit/escalation precondition, full unreachable/blocked-route qualification, and calibration of scenario solvability and difficulty.
+- The full upstream regression suite and every exploit/escalation precondition, generic NACL/block/bandwidth semantics, inactive-session behavior in the inherited operational gate, and broad seed solvability/difficulty calibration. Fixed legacy scan/exploit disconnection and actor-local operational-gate boundaries are checked.
+- Scheduled communication-link interruption and additional UI/adversarial knowledge qualification from Phase 2. The new tests do not declare every acceptance criterion of T07–T10 complete.
 - Live Ollama/model verification, hosted providers, coordinator schema repair, evidence-preserving context summarization, pinned model digests, and provider seed/generalization studies.
 - Batch job execution/resumption/retry manager and experiment-launch controls. The planner exports jobs only. No research experiments are run or scheduled.
 - Final pairing by explicit replicate IDs, prespecified treatment interactions, missing/refused/technical-error outcome handling for final analysis, budget frontiers, and publication-quality plots.
