@@ -2,6 +2,12 @@
 
 This is a programmer handoff. Tickets specify deliverables and acceptance criteria; they are not claims of completed features. Dependencies are intentional: build visible, verifiable simulator behavior before paying for large LLM experiments.
 
+Implementation checkpoint, 4 October 2026: **Phase 1 and Phase 2 (T04–T10)
+are accepted for the enabled legacy enterprise profile with scripted/mock
+cognition and passive/monitor defense**. See [the per-ticket acceptance evidence](PHASE_1_2_ACCEPTANCE.md).
+Phase 3 and the scientific evaluation phases remain pending; acceptance does
+not imply every upstream action or scenario is qualified.
+
 ## Phase 0: Foundation and qualification
 
 ### T01 Pin the engine and preserve current work

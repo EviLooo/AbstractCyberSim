@@ -13,14 +13,41 @@ class StrictModel(BaseModel):
 class ScenarioConfig(StrictModel):
     profile: Literal["enterprise_legacy"] = "enterprise_legacy"
     world_seed: int = Field(default=7, ge=0, le=2**32 - 1)
-    targets: list[str] = Field(default_factory=lambda: ["Op_Server0"], min_length=1)
+    targets: list[Literal["User1", "User2", "User3", "User4", "Enterprise0", "Enterprise1", "Enterprise2", "Defender", "Op_Host0", "Op_Host1", "Op_Host2", "Op_Server0"]] = Field(default_factory=lambda: ["Op_Server0"], min_length=1)
     defender: Literal["passive", "monitor"] = "passive"
+
+    @model_validator(mode="after")
+    def unique_targets(self):
+        if len(set(self.targets)) != len(self.targets):
+            raise ValueError("Mission target names must be unique")
+        return self
 
 
 class TeamConfig(StrictModel):
     architecture: Literal["hierarchy", "swarm", "independent"] = "hierarchy"
     workers: int = Field(default=4, ge=1, le=8)
     claim_ttl: int = Field(default=5, ge=1, le=50)
+
+
+class CommunicationLink(StrictModel):
+    sender: str = Field(pattern=r"^(Red_[0-7]|Coordinator)$")
+    recipient: str = Field(pattern=r"^(Red_[0-7]|Coordinator)$")
+
+
+class LinkInterruption(StrictModel):
+    start_tick: int = Field(ge=1, le=10000)
+    end_tick: int = Field(ge=1, le=10000)
+    sender: str | None = Field(default=None, pattern=r"^(Red_[0-7]|Coordinator)$")
+    recipient: str | None = Field(default=None, pattern=r"^(Red_[0-7]|Coordinator)$")
+    bidirectional: bool = True
+
+    @model_validator(mode="after")
+    def ordered_window(self):
+        if self.end_tick < self.start_tick:
+            raise ValueError("Interruption end must be at or after its start")
+        if self.sender is not None and self.sender == self.recipient:
+            raise ValueError("A communication link cannot connect an actor to itself")
+        return self
 
 
 class CommunicationConfig(StrictModel):
@@ -31,6 +58,8 @@ class CommunicationConfig(StrictModel):
     ttl: int = Field(default=10, ge=1, le=1000)
     seed: int = Field(default=17, ge=0, le=2**32 - 1)
     verified_intel: bool = True
+    links: list[CommunicationLink] | None = Field(default=None, max_length=64)
+    interruptions: list[LinkInterruption] = Field(default_factory=list, max_length=100)
 
 
 class CognitionConfig(StrictModel):
@@ -65,6 +94,25 @@ class EpisodeConfig(StrictModel):
     communication: CommunicationConfig = Field(default_factory=CommunicationConfig)
     cognition: CognitionConfig = Field(default_factory=CognitionConfig)
     schedule: ScheduleConfig = Field(default_factory=ScheduleConfig)
+
+    @model_validator(mode="after")
+    def validate_topology(self):
+        actors = {f"Red_{i}" for i in range(self.team.workers)}
+        reasoners = actors | ({"Coordinator"} if self.team.architecture == "hierarchy" else set())
+        def possible(sender, recipient):
+            return sender != recipient and self.team.architecture != "independent" and (self.team.architecture != "hierarchy" or ((sender == "Coordinator") != (recipient == "Coordinator")))
+        seen = set()
+        for link in self.communication.links or []:
+            pair = (link.sender, link.recipient)
+            if not set(pair) <= reasoners or not possible(*pair) or pair in seen:
+                raise ValueError("Links must be unique directed edges within the configured organization")
+            seen.add(pair)
+        for interruption in self.communication.interruptions:
+            if any(a is not None and a not in reasoners for a in [interruption.sender, interruption.recipient]):
+                raise ValueError("Interruption names an unavailable reasoner")
+            if interruption.sender and interruption.recipient and not possible(interruption.sender, interruption.recipient):
+                raise ValueError("Interruption must name a possible organization link")
+        return self
 
 
 class ActionProposal(StrictModel):

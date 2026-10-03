@@ -106,9 +106,54 @@
           "default": true,
           "title": "Verified Intel",
           "type": "boolean"
+        },
+        "links": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/CommunicationLink"
+              },
+              "maxItems": 64,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Links"
+        },
+        "interruptions": {
+          "items": {
+            "$ref": "#/$defs/LinkInterruption"
+          },
+          "maxItems": 100,
+          "title": "Interruptions",
+          "type": "array"
         }
       },
       "title": "CommunicationConfig",
+      "type": "object"
+    },
+    "CommunicationLink": {
+      "additionalProperties": false,
+      "properties": {
+        "sender": {
+          "pattern": "^(Red_[0-7]|Coordinator)$",
+          "title": "Sender",
+          "type": "string"
+        },
+        "recipient": {
+          "pattern": "^(Red_[0-7]|Coordinator)$",
+          "title": "Recipient",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sender",
+        "recipient"
+      ],
+      "title": "CommunicationLink",
       "type": "object"
     },
     "EpisodeConfig": {
@@ -155,6 +200,60 @@
       "title": "EpisodeConfig",
       "type": "object"
     },
+    "LinkInterruption": {
+      "additionalProperties": false,
+      "properties": {
+        "start_tick": {
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Start Tick",
+          "type": "integer"
+        },
+        "end_tick": {
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "End Tick",
+          "type": "integer"
+        },
+        "sender": {
+          "anyOf": [
+            {
+              "pattern": "^(Red_[0-7]|Coordinator)$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sender"
+        },
+        "recipient": {
+          "anyOf": [
+            {
+              "pattern": "^(Red_[0-7]|Coordinator)$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recipient"
+        },
+        "bidirectional": {
+          "default": true,
+          "title": "Bidirectional",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "start_tick",
+        "end_tick"
+      ],
+      "title": "LinkInterruption",
+      "type": "object"
+    },
     "ScenarioConfig": {
       "additionalProperties": false,
       "properties": {
@@ -173,6 +272,20 @@
         },
         "targets": {
           "items": {
+            "enum": [
+              "User1",
+              "User2",
+              "User3",
+              "User4",
+              "Enterprise0",
+              "Enterprise1",
+              "Enterprise2",
+              "Defender",
+              "Op_Host0",
+              "Op_Host1",
+              "Op_Host2",
+              "Op_Server0"
+            ],
             "type": "string"
           },
           "minItems": 1,

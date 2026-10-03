@@ -25,7 +25,9 @@
       "envelopes_per_tick": 64,
       "ttl": 10,
       "seed": 17,
-      "verified_intel": true
+      "verified_intel": true,
+      "links": null,
+      "interruptions": []
     },
     "cognition": {
       "provider": "scripted",

@@ -13,6 +13,7 @@ The intended product is a local research workbench: configure LLM cyber teams, i
 5. [Contract definitions](CONTRACTS.md): implementation fields, invariants, and error categories for the process/API boundaries.
 6. [Runtime audit](repo-audit.json) and [audit script](../../tools/audit_cyborg.py): evidence for the narrow multi-attacker compatibility fix and verified-address delivery bridge.
 7. [Software validation plan](VALIDATION_PLAN.md): executable mission/organization acceptance fixtures, observed fixes, coverage and remaining limits.
+8. [Phase 1–2 acceptance](PHASE_1_2_ACCEPTANCE.md): per-ticket closure, current test results, UI evidence and the Phase 3 boundary.
 
 ## Main decisions
 

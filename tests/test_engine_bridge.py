@@ -19,6 +19,8 @@ def test_real_engine_discovery_scan_exploit_and_ownership(tmp_path, count):
             initial = await bridge.call("create", config=config.model_dump())
             actors = initial["actors"]
             assert len(actors) == count
+            assert len(initial["truth"]["hosts"]) == 16
+            assert sum(host["router"] for host in initial["truth"]["hosts"]) == 3
             # Unknown addresses exist in native truth but never in a view.
             view = initial["views"][actors[0]]
             hidden = next(str(i["IP Address"]) for host in initial["truth"]["hosts"] for i in host["interfaces"] if "IP Address" in i and str(i["IP Address"]) not in view["known"]["ip_address"])
@@ -61,6 +63,11 @@ def test_verified_intel_cannot_grant_scan_cache_or_sessions(tmp_path):
             assert target in delivered["view"]["known"]["ip_address"]
             assert not delivered["view"]["scan_cache"]["0"]
             assert len(delivered["view"]["sessions"]) == 1
+            scanned = await bridge.call("step", proposals={"Red_0": {"action": "DiscoverNetworkServices", "target": target}})
+            assert scanned["views"]["Red_0"]["scan_cache"]["0"][target]
+            shared_scan = await bridge.call("ingest_intel", sender="Red_0", recipient="Red_1", evidence_ids=[scanned["observations"]["Red_0"]["evidence_id"]])
+            assert not shared_scan["view"]["scan_cache"]["0"]
+            assert all("Processes" not in fields and "Sessions" not in fields for fields in shared_scan["address_fragment"].values())
             rejected = await bridge.call("step", proposals={"Red_1": {"action": "ExploitRemoteService", "session": 0, "target": target}})
             assert not next(a for a in rejected["actions"] if a["actor"] == "Red_1")["valid"]
         finally:

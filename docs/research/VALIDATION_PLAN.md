@@ -1,8 +1,10 @@
 # Mission and organization software qualification
 
-4 October 2026. Acceptance gate for the legacy workbench before custom research
-scenarios and live LLM qualification. This implements the immediate milestone
-in T01/T03 and T07–T10; it does not finish every ticket in Phase 2.
+4 October 2026. Acceptance gates for the legacy workbench before custom
+research scenarios and live LLM qualification. The initial mission milestone
+covered T01/T03 and portions of T07–T10. The subsequent
+[Phase 1–2 gate](PHASE_1_2_ACCEPTANCE.md) closes T04–T10 within the enabled
+legacy/scripted scope; broader engine and scientific qualification remain pending.
 
 ## Execution boundary
 
@@ -92,7 +94,10 @@ From the project root:
 ./.venv/Scripts/python.exe -m pytest -q
 ```
 
-Result on 4 October: **38 passed**. Saved fixture configs, worlds, frames,
+Result at the initial mission gate on 4 October: **38 passed**. The subsequent
+Phase 1–2 acceptance gate has **49 passed**, plus **4 frontend logic tests**
+and a successful production build; see [the acceptance checklist](PHASE_1_2_ACCEPTANCE.md).
+Saved fixture configs, worlds, frames,
 messages, metrics and engine logs live under the pytest temporary root. The
 ordinary replay interface can display those same frames without running an
 agent. Do not copy them into the evaluation dataset or label them paper results.
@@ -133,9 +138,11 @@ Existing deprecation warnings remain in the pinned engine.
 
 ## Remaining qualification and next milestone
 
-This gate covers the fixed legacy mission and the listed boundaries. Phase 2
-still has acceptance extensions such as scheduled communication-link
-interruption and further UI/knowledge adversarial cases. Full native exploit
+This gate covers the fixed legacy mission and the listed boundaries. The
+subsequent Phase 1–2 gate adds scheduled communication-link interruption,
+sparse directed topology, knowledge provenance/relay attacks, observed action
+changes, CLI parity, and UI refresh/reconnect qualification. T04–T10 are accepted
+within that enabled legacy/scripted scope. Full native exploit
 coverage, broad seed solvability, generic NACL/block/bandwidth semantics,
 inactive Enterprise sessions in the inherited operational gate, active defense
 and recovery are not established here. Native operational permission checks

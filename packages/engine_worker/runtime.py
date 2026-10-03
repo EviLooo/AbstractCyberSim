@@ -191,15 +191,36 @@ class EngineRuntime:
             raise ValueError("Native action-space validation rejected the action")
         return native
 
+    def preconditions(self, view, proposal):
+        action = proposal.get("action", "Sleep")
+        if action == "Sleep":
+            return {}
+        session = proposal.get("session", 0)
+        controller = next((s for s in view["sessions"] if s["id"] == session), None)
+        target = proposal.get("target")
+        field = "subnet" if action == "DiscoverRemoteSystems" else "hostname" if action == "PrivilegeEscalate" else "ip_address"
+        result = {"active_owned_controller": bool(controller and controller["active"] and controller["controller"]), "observed_target": target in view["known"][field]}
+        if action == "ExploitRemoteService":
+            result["own_service_scan"] = target in view["scan_cache"].get(str(session), {})
+        if action == "PrivilegeEscalate":
+            result["active_owned_target_session"] = any(s["hostname"] == target and s["active"] for s in view["sessions"])
+        return result
+
+    def state_delta(self, before, after):
+        previous = {s["id"]: s for s in before["sessions"]}
+        current = {s["id"]: s for s in after["sessions"]}
+        return {"sessions_added": [s for sid, s in current.items() if sid not in previous], "sessions_lost": [s for sid, s in previous.items() if s["active"] and (sid not in current or not current[sid]["active"])], "privilege_changes": [{"session_id": sid, "hostname": s["hostname"], "before": previous[sid]["username"], "after": s["username"]} for sid, s in current.items() if sid in previous and s["username"] != previous[sid]["username"]], "knowledge_added": {field: sorted(set(after["known"][field]) - set(before["known"][field])) for field in before["known"]}, "scan_cache_updates": {sid: {ip: ports for ip, ports in cache.items() if before["scan_cache"].get(sid, {}).get(ip) != ports} for sid, cache in after["scan_cache"].items() if cache != before["scan_cache"].get(sid, {})}}
+
     def step(self, proposals):
         if set(proposals) - set(self.actors):
             raise ValueError("Unknown actor binding")
         actions, records = {}, {}
+        before = self.views()
         order = self.actors[:]
         self.scheduler.shuffle(order)
         for actor in order:
             proposal = proposals.get(actor, {"action": "Sleep"})
-            record = {"actor": actor, "proposal": proposal, "valid": True, "rejection": None}
+            record = {"actor": actor, "proposal": proposal, "valid": True, "rejection": None, "preconditions": self.preconditions(before[actor], proposal)}
             try:
                 actions[actor] = self.construct(actor, proposal)
             except (ValueError, TypeError, KeyError) as exc:
@@ -209,10 +230,12 @@ class EngineRuntime:
             records[actor] = record
         observations, _, dones, _ = self.env.parallel_step(actions=dict(actions))
         self.tick += 1
+        after = self.views()
         normalized_obs = {}
         for actor in self.actors:
             normalized_obs[actor] = self.record(actor, observations.get(actor, {}))
             records[actor]["outcome"] = normalized_obs[actor]["data"].get("success", "UNKNOWN")
+            records[actor]["state_delta"] = self.state_delta(before[actor], after[actor])
         trace = self.env.environment_controller.execution_trace
         execution = [item["actor"] for item in trace if item["phase"] == "joint"]
         for actor in self.actors:
@@ -221,4 +244,4 @@ class EngineRuntime:
                 records[actor]["native_action"] = str(native)
                 concrete = getattr(native, "sub_action", None)
                 records[actor]["concrete_action"] = str(concrete) if concrete else None
-        return {"tick": self.tick, "native_step_count": self.env.environment_controller.step_count, "observations": normalized_obs, "views": self.views(), "truth": self.snapshot(), "score": self.score(), "actions": list(records.values()), "submission_order": order, "execution_order": execution, "execution_trace": trace, "native_done": any(dones.get(a, False) for a in self.actors)}
+        return {"tick": self.tick, "native_step_count": self.env.environment_controller.step_count, "observations": normalized_obs, "views": after, "truth": self.snapshot(), "score": self.score(), "actions": list(records.values()), "submission_order": order, "execution_order": execution, "execution_trace": trace, "native_done": any(dones.get(a, False) for a in self.actors)}

@@ -49,7 +49,7 @@ $env:CYBORG_PYTHON = 'C:/path/to/python38/python.exe'
 - **Independent** disables team messages and uses each worker's local knowledge.
 - **Ollama** is an implemented optional local provider adapter. Start Ollama and install a model yourself, then select its exact model tag. The adapter uses structured JSON, per-call timeouts, transcript logs, conservative budget reservations, actual reported usage, and one bounded worker format repair. Live model calls were not made or validated during this implementation. Hosted provider adapters are future work.
 
-Communication is a separately modeled research overlay with delay, loss, TTL, and per-tick capacity. It is not native cyber-network congestion. Delivered engine-verified address/hostname evidence can make a recipient's scan eligible; it never grants another actor's ports cache, privileges, or sessions.
+Communication is a separately modeled research overlay with delay, loss, TTL, per-tick capacity, selected directed links and scheduled link interruptions. It is not native cyber-network congestion. Delivered engine-verified address/hostname evidence can make a recipient's scan eligible; it never grants another actor's ports cache, privileges, or sessions. Worker inspectors distinguish self-observed facts from verified peer reports.
 
 ## Repository layers
 
@@ -81,7 +81,7 @@ The schema script also refreshes default files in `configs/`; keep custom config
 
 ## Configuration, planning, and exports
 
-The UI edits common settings and provides a JSON editor for all settings. Import/export uses the same `EpisodeConfig` consumed by the CLI. The experiment planner expands organization × workers × world seeds × transport × replicates, validates each job, and exports a resolved matrix. It **does not execute batches** in this release.
+The UI edits common settings and provides a JSON editor for all settings. Resolved, validated settings appear before initialization. Import/export uses the same `EpisodeConfig` consumed by the CLI. The experiment planner expands organization × workers × world seeds × transport × replicates, validates each job, and exports a resolved matrix. It **does not execute batches** in this release.
 
 ```powershell
 ./.venv/Scripts/python.exe -m backend.app.cli validate configs/hierarchy.json
@@ -91,16 +91,48 @@ The UI edits common settings and provides a JSON editor for all settings. Import
 
 Each saved run contains immutable config, materialized initial world, engine/source/prompt fingerprints, JSON state frames, append-only events, native stderr, metrics, and provider transcripts when used. The UI exports a ZIP evidence bundle and metrics CSV. Replay reads frames and does not call the engine or cognition provider.
 
+With the local service running, the CLI can use that same live environment:
+
+```powershell
+./.venv/Scripts/python.exe -m backend.app.cli initialize configs/hierarchy.json
+# Substitute the returned run ID below. Step/start execute agent actions.
+./.venv/Scripts/python.exe -m backend.app.cli step RUN_ID
+./.venv/Scripts/python.exe -m backend.app.cli control RUN_ID start
+./.venv/Scripts/python.exe -m backend.app.cli control RUN_ID pause
+./.venv/Scripts/python.exe -m backend.app.cli control RUN_ID continue
+./.venv/Scripts/python.exe -m backend.app.cli control RUN_ID stop
+./.venv/Scripts/python.exe -m backend.app.cli frame RUN_ID --tick 0
+./.venv/Scripts/python.exe -m backend.app.cli events RUN_ID --after 0
+```
+
+These commands accept `--port` (default 8787). `initialize` requires the running
+service and creates a paused world; it no longer creates and immediately closes
+an offline native process. `frame` and `events` read evidence without actions.
+
+In **Links, interruptions & capacity**, `links: null` keeps the declared star or
+mesh; a directed list selects its subset, and `[]` disables every link.
+Interruption `start_tick`/`end_tick` are inclusive; nullable sender/recipient
+match any endpoint, and `bidirectional` also matches the reverse direction.
+Messages due during an interruption are permanently `dropped_link`; they are
+not retried. TTL expiry takes precedence. Later messages can arrive after
+recovery. Configuration changes always apply to a new environment.
+
+The page URL preserves the selected run, replay tick, graph mode, private view
+and inspector selection. Refresh or service reconnection restores that context.
+Action details show actor-local gateway checks and observed changes over the
+joint tick, including end-turn effects.
+
 Comparison excludes manual, unfinished, non-evaluation, and unknown-usage runs. It matches actual world and numerical conditions, keeps failures/censoring, and provides a descriptive paired success estimate with world-cluster bootstrap intervals when at least two paired worlds exist. See [implementation status](docs/IMPLEMENTATION_STATUS.md) for limitations before interpreting this as final paper analysis.
 
 ## Software verification
 
 ```powershell
 ./.venv/Scripts/python.exe -m pytest -q
+node --experimental-strip-types --test frontend/tests/research-ui.test.mjs
 npm run build --prefix frontend
 ```
 
-Engine checks take bounded fixture steps in temporary test storage; these are software checks, not research experiments or LLM studies. The 38 passing tests include complete native missions with hierarchy/swarm/independent teams of 1/2/8 workers, 1/2/4/8 actor discovery/scan/exploit checks, blocked-route and session-ownership boundaries, delivered-only coordination, and pause/continue determinism. See the exact fixtures and limits in the [validation plan](docs/research/VALIDATION_PLAN.md), and the [native action explanation](docs/NATIVE_ACTION_LOGIC.md).
+Engine checks take bounded fixture steps in temporary test storage; these are software checks, not research experiments or LLM studies. The 49 passing Python tests include complete native missions with hierarchy/swarm/independent teams of 1/2/8 workers, 1/2/4/8 actor discovery/scan/exploit checks, blocked-route and session-ownership boundaries, delivered-only coordination, scheduled outages, CLI/API parity and pause/continue determinism. Four frontend logic tests check replay context, private projection and actual topology; the command above was verified on Node 24.14.0 with TypeScript stripping. See the [Phase 1–2 acceptance checklist](docs/research/PHASE_1_2_ACCEPTANCE.md), exact fixtures and limits in the [validation plan](docs/research/VALIDATION_PLAN.md), and the [native action explanation](docs/NATIVE_ACTION_LOGIC.md).
 
 ## Research status
 

@@ -1,30 +1,41 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Activity, ArrowDownToLine, ArrowRight, Braces, Check, ChevronRight, CircleHelp, FlaskConical, FolderOpen, GitBranch, Layers3, Network as NetworkIcon, Pause, Play, Plus, Radio, Settings2, Shield, SkipForward, Square, Upload, Users, X } from 'lucide-react';
 import Network from './Network';
+import CommunicationEditor from './CommunicationEditor';
+import ActionEvidence from './ActionEvidence';
+import KnowledgeInspector from './KnowledgeInspector';
+import { readLocation, writeLocation } from './location';
+import { projectNetwork } from './projection';
 import { api, downloadJson } from './api';
 import type { EpisodeConfig, ExperimentSpec, Frame, Proposal, Run } from './types';
 
 type Page = 'laboratory' | 'experiments' | 'runs' | 'results';
-type Capabilities = { default_config: EpisodeConfig; engine_interpreter_available: boolean; setup_error?: string; profiles: { id: string; name: string; qualification: string }[] };
+type NumericBounds = {minimum?:number;maximum?:number};
+type Capabilities = { episode_schema?: {$defs?:Record<string,{properties?:Record<string,NumericBounds>}>}; default_config: EpisodeConfig; engine_interpreter_available: boolean; setup_error?: string; profiles: { id: string; name: string; qualification: string }[] };
 const terminal = ['completed', 'stopped', 'errored', 'interrupted'];
 const actions = ['Sleep', 'DiscoverRemoteSystems', 'DiscoverNetworkServices', 'ExploitRemoteService', 'PrivilegeEscalate'];
 
 function Status({ value }: { value: string }) { return <span className={'status ' + value}><i/>{value}</span>; }
-function NumberField({ label, value, min = 0, max = 10000, step = 1, onChange }: { label: string; value: number; min?: number; max?: number; step?: number; onChange: (n: number) => void }) {
-  return <label className="field">{label}<input type="number" value={value} min={min} max={max} step={step} onChange={e => onChange(Number(e.target.value))}/></label>;
+function NumberField({ label, value, min = 0, max = 10000, step = 1, bounds, onChange }: { bounds?:NumericBounds; label: string; value: number; min?: number; max?: number; step?: number; onChange: (n: number) => void }) {
+  return <label className="field">{label}<input type="number" value={value} min={bounds?.minimum ?? min} max={bounds?.maximum ?? max} step={step} onChange={e => onChange(Number(e.target.value))}/></label>;
 }
 
 export default function App() {
-  const [page, setPage] = useState<Page>('laboratory');
+  const restored = useRef(readLocation(window.location.search)).current;
+  const [page, setPage] = useState<Page>(restored.page);
+  const [connected, setConnected] = useState(false);
+  const [connectionError, setConnectionError] = useState('');
   const [capabilities, setCapabilities] = useState<Capabilities | null>(null);
   const [config, setConfig] = useState<EpisodeConfig | null>(null);
+  const [resolvedConfig, setResolvedConfig] = useState<EpisodeConfig | null>(null);
+  const [configError, setConfigError] = useState('');
   const [runs, setRuns] = useState<Run[]>([]);
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(restored.run);
   const [frame, setFrame] = useState<Frame | null>(null);
-  const [replayTick, setReplayTick] = useState<number | null>(null);
-  const [graphMode, setGraphMode] = useState<'network' | 'team'>('network');
-  const [view, setView] = useState('truth');
-  const [selected, setSelected] = useState<string | null>(null);
+  const [replayTick, setReplayTick] = useState<number | null>(restored.tick);
+  const [graphMode, setGraphMode] = useState<'network' | 'team'>(restored.mode);
+  const [view, setView] = useState(restored.view);
+  const [selected, setSelected] = useState<string | null>(restored.selection);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
@@ -44,21 +55,25 @@ export default function App() {
   const active = runs.find(r => r.id === activeId) || null;
   const select = useCallback((id: string) => setSelected(id), []);
 
-  useEffect(() => {
-    api<Capabilities>('/capabilities').then(data => {
-      setCapabilities(data); setConfig(data.default_config);
-      const experiment: ExperimentSpec = { schema_version: '1.0', name: 'Organization comparison', base: data.default_config, architectures: ['hierarchy', 'swarm'], worker_counts: [2, 4], world_seeds: [101, 102], delays: [0], losses: [0], replicates: 1 };
-      setExperimentText(JSON.stringify(experiment, null, 2));
-    }).catch(e => setError(e.message));
-    api<Run[]>('/runs').then(setRuns).catch(e => setError(e.message));
-  }, []);
+  const applyCapabilities = useCallback((data:Capabilities) => {
+    setCapabilities(data); setConfig(c => c || data.default_config);
+    const experiment:ExperimentSpec = {schema_version:'1.0',name:'Organization comparison',base:data.default_config,architectures:['hierarchy','swarm'],worker_counts:[2,4],world_seeds:[101,102],delays:[0],losses:[0],replicates:1};
+    setExperimentText(text => text || JSON.stringify(experiment,null,2));
+  },[]);
 
   useEffect(() => {
     let alive = true;
-    const refresh = () => api<Run[]>('/runs').then(data => { if (alive) setRuns(data); }).catch(e => { if (alive) setError(e.message); });
-    const timer = window.setInterval(refresh, 1000);
+    const refresh = async () => {
+      try {
+        const data = await api<Run[]>('/runs');
+        if (alive) { setRuns(data); setConnected(true); setConnectionError(''); }
+        if (!capabilities) { const info = await api<Capabilities>('/capabilities'); if (alive) applyCapabilities(info); }
+      } catch(e) { if (alive) { setConnected(false); setConnectionError(e instanceof Error ? e.message : String(e)); } }
+    };
+    refresh();
+    const timer = window.setInterval(refresh,1000);
     return () => { alive = false; clearInterval(timer); };
-  }, []);
+  }, [capabilities,applyCapabilities]);
 
   useEffect(() => {
     if (!activeId) return;
@@ -73,11 +88,29 @@ export default function App() {
     return () => clearInterval(timer);
   }, [replayPlaying, active?.tick]);
 
+  useEffect(() => {
+    const query = writeLocation({page,run:activeId,tick:replayTick,mode:graphMode,view,selection:selected});
+    window.history.replaceState(null,'',window.location.pathname + query);
+  }, [page,activeId,replayTick,graphMode,view,selected]);
+
+  useEffect(() => {
+    if (frame && view !== 'truth' && !frame.private_views[view]) { setView(Object.keys(frame.private_views)[0] || 'unavailable'); setSelected(null); }
+  }, [frame,view]);
+
+  useEffect(() => {
+    setResolvedConfig(null); setConfigError('');
+    if (!config) return;
+    let alive = true;
+    const timer = window.setTimeout(() => api<EpisodeConfig>('/configs/validate','POST',config).then(value => { if (alive) setResolvedConfig(value); }).catch(e => { if (alive) setConfigError(e.message); }),200);
+    return () => { alive = false; clearTimeout(timer); };
+  }, [config]);
+
   async function perform(task: () => Promise<unknown>) { setBusy(true); setError(''); try { await task(); } catch (e) { setError(e instanceof Error ? e.message : String(e)); } finally { setBusy(false); } }
   const update = (section: 'scenario' | 'team' | 'communication' | 'cognition' | 'schedule', field: string, value: unknown) => setConfig(c => c ? { ...c, [section]: { ...c[section], [field]: value } } : c);
+  const configurationReady = !!resolvedConfig && JSON.stringify(config) === JSON.stringify(resolvedConfig);
   async function createRun() {
-    if (!config) return;
-    await perform(async () => { const created = await api<Run>('/runs', 'POST', config); setRuns(r => [created, ...r]); setActiveId(created.id); setReplayTick(null); setSelected(null); setView('truth'); setShowConfig(false); });
+    if (!resolvedConfig || !configurationReady) return;
+    await perform(async () => { const created = await api<Run>('/runs', 'POST', resolvedConfig); setRuns(r => [created, ...r.filter(run => run.id !== created.id)]); setActiveId(created.id); setFrame(null); setReplayTick(null); setSelected(null); setView('truth'); setShowConfig(false); });
   }
   async function control(command: string, body?: unknown) {
     if (!active) return;
@@ -86,33 +119,38 @@ export default function App() {
   function openRun(run: Run) { setActiveId(run.id); setReplayTick(null); setSelected(null); setFrame(null); setView('truth'); setReplayPlaying(false); setPage('laboratory'); }
   function showConfigJson() { setJsonText(JSON.stringify(config, null, 2)); setShowJson(true); }
   const workerIds = frame ? Object.keys(frame.private_views) : [];
-  const selectedHost = frame?.truth.hosts.find(h => h.id === selected);
-  const selectedAgent = selected && frame?.private_views[selected];
+  const visibleIds = frame ? new Set(projectNetwork(frame,view).hosts.map(h => h.id)) : new Set<string>();
+  const selectedHost = frame?.truth.hosts.find(h => h.id === selected && visibleIds.has(h.id));
+  const selectedAgent = selected && (view === 'truth' || view === selected) && frame?.private_views[selected];
   const actorView = frame?.private_views[view];
   const manualView = frame?.private_views[manualActor];
   const possibleTargets = manualAction === 'DiscoverRemoteSystems' ? manualView?.native.known.subnet : manualAction === 'PrivilegeEscalate' ? manualView?.native.known.hostname : manualView?.native.known.ip_address;
   const live = active && !terminal.includes(active.status);
 
+  const numericBounds = (model:string,field:string) => capabilities?.episode_schema?.$defs?.[model]?.properties?.[field];
   const configEditor = config && <>
     <div className="section-label">ENVIRONMENT</div>
     <label className="field">Scenario<select value={config.scenario.profile} onChange={e => update('scenario', 'profile', e.target.value)}><option value="enterprise_legacy">Enterprise · Scenario2</option></select></label>
-    <div className="field-pair"><NumberField label="World seed" value={config.scenario.world_seed} max={4294967295} onChange={n => update('scenario', 'world_seed', n)}/><NumberField label="Tick limit" value={config.schedule.max_ticks} min={1} onChange={n => update('schedule', 'max_ticks', n)}/></div>
+    <div className="field-pair"><NumberField bounds={numericBounds('ScenarioConfig','world_seed')} label="World seed" value={config.scenario.world_seed} max={4294967295} onChange={n => update('scenario', 'world_seed', n)}/><NumberField bounds={numericBounds('ScheduleConfig','max_ticks')} label="Tick limit" value={config.schedule.max_ticks} min={1} onChange={n => update('schedule', 'max_ticks', n)}/></div>
     <label className="field">Target hosts<input value={config.scenario.targets.join(', ')} onChange={e => update('scenario', 'targets', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}/></label>
     <label className="field">Defender<select value={config.scenario.defender} onChange={e => update('scenario', 'defender', e.target.value)}><option value="passive">Passive</option><option value="monitor">Monitor only</option></select></label>
     <div className="section-label">ORGANIZATION</div>
     <label className="field">Architecture<select value={config.team.architecture} onChange={e => update('team', 'architecture', e.target.value)}><option value="hierarchy">Hierarchy · coordinator + workers</option><option value="swarm">Swarm · peer claims</option><option value="independent">Independent · no messages</option></select></label>
-    <NumberField label="Cyber workers" value={config.team.workers} min={1} max={8} onChange={n => update('team', 'workers', n)}/>
+    <NumberField bounds={numericBounds('TeamConfig','workers')} label="Cyber workers" value={config.team.workers} min={1} max={8} onChange={n => update('team', 'workers', n)}/>
     <p className="field-hint">{config.team.workers} native actors · {config.team.workers + (config.team.architecture === 'hierarchy' ? 1 : 0)} reasoners</p>
     <label className="field">Tool capacity<select value={config.schedule.mode} onChange={e => update('schedule', 'mode', e.target.value)}><option value="per_worker">One action per worker / tick</option><option value="team_cap_one">One action for the team / tick</option></select></label>
     <div className="section-label">COGNITION</div>
     <label className="field">Provider<select value={config.cognition.provider} onChange={e => update('cognition', 'provider', e.target.value)}><option value="scripted">Scripted · no LLM or API cost</option><option value="ollama">Ollama · local language model</option></select></label>
-    {config.cognition.provider === 'ollama' && <><label className="field">Installed model name<input value={config.cognition.model} placeholder="e.g. your installed model tag" onChange={e => update('cognition', 'model', e.target.value)}/></label><NumberField label="Team token budget" value={config.cognition.max_team_tokens} min={1000} max={10000000} onChange={n => update('cognition', 'max_team_tokens', n)}/></>}
+    {config.cognition.provider === 'ollama' && <><label className="field">Installed model name<input value={config.cognition.model} placeholder="e.g. your installed model tag" onChange={e => update('cognition', 'model', e.target.value)}/></label><NumberField bounds={numericBounds('CognitionConfig','max_team_tokens')} label="Team token budget" value={config.cognition.max_team_tokens} min={1000} max={10000000} onChange={n => update('cognition', 'max_team_tokens', n)}/></>}
     <div className="section-label">COMMUNICATION OVERLAY</div>
-    <div className="field-pair"><NumberField label="Extra delay (ticks)" value={config.communication.extra_delay} max={100} onChange={n => update('communication', 'extra_delay', n)}/><NumberField label="Loss probability" value={config.communication.loss_probability} max={1} step={0.05} onChange={n => update('communication', 'loss_probability', n)}/></div>
+    <div className="field-pair"><NumberField bounds={numericBounds('CommunicationConfig','extra_delay')} label="Extra delay (ticks)" value={config.communication.extra_delay} max={100} onChange={n => update('communication', 'extra_delay', n)}/><NumberField bounds={numericBounds('CommunicationConfig','loss_probability')} label="Loss probability" value={config.communication.loss_probability} max={1} step={0.05} onChange={n => update('communication', 'loss_probability', n)}/></div>
+    <CommunicationEditor value={{...config.communication,links:config.communication.links ?? null,interruptions:config.communication.interruptions ?? []}} actors={Array.from({length:config.team.workers},(_,i) => 'Red_' + i)} architecture={config.team.architecture} onChange={communication => setConfig(c => c ? {...c,communication} : c)}/>
     <label className="checkbox"><input type="checkbox" checked={config.communication.verified_intel} onChange={e => update('communication', 'verified_intel', e.target.checked)}/>Share verified addresses on delivery</label>
     <label className="field">Run purpose<select value={config.purpose} onChange={e => setConfig(c => c ? { ...c, purpose: e.target.value as EpisodeConfig['purpose'] } : c)}><option value="exploration">Exploration · manual actions enabled</option><option value="evaluation">Evaluation · fixed configuration</option></select></label>
-    <div className="config-actions"><button className="text-button" onClick={showConfigJson}><Braces size={14}/> All settings / JSON</button><button className="text-button" onClick={() => config && downloadJson(config, 'episode-config.json')}><ArrowDownToLine size={14}/> Export</button><button className="text-button" onClick={() => importInput.current?.click()}><Upload size={14}/> Import</button></div>
-    <button className="primary full" onClick={createRun} disabled={busy || !capabilities?.engine_interpreter_available}><Plus size={16}/> Initialize environment</button>
+    <div className="config-actions"><button className="text-button" onClick={showConfigJson}><Braces size={14}/> All settings / JSON</button><button className="text-button" disabled={!configurationReady} onClick={() => resolvedConfig && downloadJson(resolvedConfig, 'episode-config.json')}><ArrowDownToLine size={14}/> Export</button><button className="text-button" onClick={() => importInput.current?.click()}><Upload size={14}/> Import</button></div>
+    {configError && <p role="alert" className="error-text">{configError}</p>}
+    <details className="resolved-settings"><summary>Resolved settings before initialization</summary><pre>{configurationReady ? JSON.stringify(resolvedConfig,null,2) : 'Waiting for a valid configuration…'}</pre></details>
+    <button className="primary full" onClick={createRun} disabled={busy || !configurationReady || !capabilities?.engine_interpreter_available}><Plus size={16}/> Initialize environment</button>
     <p className="field-hint">Creates a paused world. Actions begin only when you press Step or Run.</p>
   </>;
 
@@ -123,20 +161,21 @@ export default function App() {
       <nav>{([{ id: 'laboratory', label: 'Laboratory', icon: NetworkIcon }, { id: 'experiments', label: 'Experiment planner', icon: FlaskConical }, { id: 'runs', label: 'Saved runs', icon: FolderOpen }, { id: 'results', label: 'Compare & export', icon: Activity }] as const).map(item => <button key={item.id} className={page === item.id ? 'nav-item active' : 'nav-item'} onClick={() => setPage(item.id)}><item.icon size={17}/>{item.label}{page === item.id && <ChevronRight size={14}/>}</button>)}</nav>
       <div className="sidebar-divider"/><div className="nav-label">RECENT ENVIRONMENTS <span>{runs.length}</span></div>
       <div className="recent-list">{runs.slice(0, 6).map(r => <button key={r.id} className={'recent-run ' + (activeId === r.id ? 'selected' : '')} onClick={() => openRun(r)}><span className="recent-title">{r.name}</span><small>{r.architecture} · {r.workers} workers · t{r.tick}</small><Status value={r.status}/></button>)}{!runs.length && <p className="sidebar-note">Your initialized environments will appear here.</p>}</div>
-      <div className="sidebar-bottom"><span className="connection-dot"/>{capabilities ? 'Local service connected' : 'Connecting to local service'}<small>v0.1 · CybORG enterprise adapter</small><button className="text-button" onClick={() => setShowHelp(true)}><CircleHelp size={15}/> How the workbench works</button></div>
+      <div className="sidebar-bottom"><span className="connection-dot" style={{background:connected ? '#a6be8b' : '#d5a076'}}/>{connected ? 'Local service connected' : 'Reconnecting to local service'}<small>v0.1 · CybORG enterprise adapter</small><button className="text-button" onClick={() => setShowHelp(true)}><CircleHelp size={15}/> How the workbench works</button></div>
     </aside>
     <main className="workspace">
       <header className="topbar"><div className="breadcrumbs">Workspace <ChevronRight size={13}/><strong>{page === 'laboratory' ? 'Laboratory' : page === 'experiments' ? 'Experiment planner' : page === 'runs' ? 'Saved runs' : 'Compare & export'}</strong></div><div className="topbar-right"><span className="local-badge">LOCAL</span><button className="icon-button" aria-label="Help" onClick={() => setShowHelp(true)}><CircleHelp size={18}/></button></div></header>
+      {connectionError && <div className="error-banner" role="status">Service connection lost. This page will reconnect; the selected saved frame stays in the URL.</div>}
       {error && <div className="error-banner" role="alert">{error}<button onClick={() => setError('')} aria-label="Dismiss error"><X size={16}/></button></div>}
       {page === 'laboratory' && <>
         <div className="page-heading"><div className="eyebrow">CYBER AGENT LABORATORY</div><div className="heading-row"><div><h1>{active ? active.name : 'A clearer view of your agents.'}</h1><p>{active ? 'Inspect the network, individual knowledge, and the messages that coordinate the team.' : 'Configure a team. Initialize a world. Follow every action through the simulation.'}</p></div><button className="secondary" onClick={() => setShowConfig(true)}><Settings2 size={16}/>{active ? 'New environment' : 'Configuration'}</button></div></div>
         {!active && <div className="onboarding-layout"><section className="setup-panel"><div className="panel-heading"><Settings2 size={16}/><h2>Environment setup</h2><span>01</span></div><div className="setup-body">{configEditor}</div></section><section className="welcome-panel"><div className="welcome-top"><span className="overline">OBSERVE THE SYSTEM, STEP BY STEP</span><span className="chip">No experiments running</span></div><div className="welcome-illustration"><div className="illustration-line"/><div className="illustration-network"><Shield size={35}/><span>CYBORG<br/>ENTERPRISE WORLD</span></div><div className="illustration-agent"><Users size={29}/><span>YOUR AGENT<br/>ORGANIZATION</span></div><div className="illustration-screen"><Activity size={31}/><span>OBSERVATIONS<br/>& EVIDENCE</span></div></div><h2>Your research, with a visible control surface.</h2><p>The network comes from CybORG. The organization layer controls how workers coordinate. The workbench lets you inspect both.</p><div className="feature-rows"><div><span className="feature-number">01</span><div><h3>Choose your organization</h3><p>A coordinator directs a hierarchy; swarm workers exchange local claims.</p></div></div><div><span className="feature-number">02</span><div><h3>See what each worker knows</h3><p>Switch between researcher truth and private agent knowledge.</p></div></div><div><span className="feature-number">03</span><div><h3>Keep the evidence</h3><p>Saved actions, outcomes, messages, and frames support replay and export.</p></div></div></div><div className="qualification"><Layers3 size={17}/><span>First enabled profile: CybORG Scenario2 enterprise.<br/>Custom research scenarios and calibration are still pending.</span></div></section></div>}
         {active && <>
-          <div className="run-toolbar"><div className="run-tags"><Status value={active.status}/><span>{active.architecture.toUpperCase()}</span><span><Users size={14}/>{active.workers} workers / {active.reasoners} reasoners</span><span className="chip">{frame?.cognition.is_llm ? 'LLM' : 'SCRIPTED · NO LLM'}</span>{active.manual_intervention && <span className="manual-chip">MANUALLY INTERVENED</span>}</div><div className="run-buttons"><button className="secondary" disabled={busy || !live || active.status === 'running'} onClick={() => control('step')}><SkipForward size={15}/> Step</button><button className="primary" disabled={busy || !live} onClick={() => control(active.status === 'running' ? 'pause' : 'start')}>{active.status === 'running' ? <Pause size={15}/> : <Play size={15}/>} {active.status === 'running' ? 'Pause' : 'Run'}</button><button className="icon-button" disabled={busy || !live} aria-label="Stop run" title="Stop and close the native engine" onClick={() => control('stop')}><Square size={16}/></button></div></div>
+          <div className="run-toolbar"><div className="run-tags"><Status value={active.status}/><span>{active.architecture.toUpperCase()}</span><span><Users size={14}/>{active.workers} workers / {active.reasoners} reasoners</span><span className="chip">{frame?.cognition.is_llm ? 'LLM' : 'SCRIPTED · NO LLM'}</span>{replayTick !== null && <span className="chip">REPLAY · t{frame?.tick ?? replayTick} · {frame?.status || 'loading'}</span>}{active.manual_intervention && <span className="manual-chip">MANUALLY INTERVENED</span>}</div><div className="run-buttons"><button className="secondary" disabled={busy || !live || active.status === 'running'} onClick={() => control('step')}><SkipForward size={15}/> Step</button><button className="primary" disabled={busy || !live} onClick={() => control(active.status === 'running' ? 'pause' : 'start')}>{active.status === 'running' ? <Pause size={15}/> : <Play size={15}/>} {active.status === 'running' ? 'Pause' : 'Run'}</button><button className="icon-button" disabled={busy || !live} aria-label="Stop run" title="Stop and close the native engine" onClick={() => control('stop')}><Square size={16}/></button></div></div>
           <div className="metric-strip"><div><span>TICK</span><strong>{frame?.tick ?? '—'}<small> / {active.tick}</small></strong></div><div><span>PRIVILEGED TARGETS</span><strong>{frame?.score.targets_reached ?? 0}<small> / {frame?.score.target_count ?? 0}</small></strong></div><div><span>CONTROLLED HOSTS</span><strong>{frame?.score.controlled_hosts.length ?? 0}</strong></div><div><span>MODEL TOKENS</span><strong>{frame?.cognition.charged_tokens.toLocaleString() ?? 0}</strong></div><div><span>DELIVERED MESSAGES</span><strong>{frame?.messages.filter(m => m.status === 'delivered').length ?? 0}</strong></div><div><span>WORLD FINGERPRINT</span><strong className="mono small">{active.world_id?.slice(0, 12) || '—'}</strong></div></div>
-          <div className="lab-layout"><section className="network-panel"><div className="network-header"><div className="segmented"><button className={graphMode === 'network' ? 'active' : ''} onClick={() => setGraphMode('network')}><NetworkIcon size={15}/> Network</button><button className={graphMode === 'team' ? 'active' : ''} onClick={() => setGraphMode('team')}><Users size={15}/> Organization</button></div><label className="view-picker"><Radio size={13}/><select value={view} onChange={e => { setView(e.target.value); setSelected(null); }}><option value="truth">Researcher truth</option>{workerIds.map(a => <option key={a} value={a}>{a.replace('Red_', 'Worker ')} · private knowledge</option>)}</select></label></div><div className="graph-context"><span>{view === 'truth' ? 'PRIVILEGED RESEARCHER VIEW' : 'ONLY THIS WORKER’S KNOWN HOSTS · NO INFERRED LINKS'}</span><span>{graphMode === 'network' ? 'Physical connectivity ≠ unrestricted access' : 'Numbers show delivered message copies'}</span></div>{frame ? <Network frame={frame} run={active} view={view} mode={graphMode} onSelect={select}/> : <div className="graph loading">Loading saved state…</div>}<div className="graph-legend"><span><i className="legend-dot muted"/>Uncontrolled</span><span><i className="legend-dot access"/>User access</span><span><i className="legend-dot privileged"/>Privileged access</span><span>◇ Router</span><span className="graph-tip">Click a node to inspect · scroll to zoom</span></div><div className="replay-controls"><button className="icon-button" aria-label="Play saved replay" onClick={() => { if (!replayPlaying) setReplayTick(0); setReplayPlaying(v => !v); }}>{replayPlaying ? <Pause size={15}/> : <Play size={15}/>}</button><span>REPLAY</span><input type="range" aria-label="Replay tick" min={0} max={active.tick} value={replayTick ?? active.tick} onChange={e => { setReplayPlaying(false); setReplayTick(Number(e.target.value)); }}/><span className="mono">{replayTick ?? active.tick}</span><button className={'text-button ' + (replayTick === null ? 'teal' : '')} onClick={() => { setReplayTick(null); setReplayPlaying(false); }}>Latest</button></div></section>
-          <aside className="inspector"><div className="panel-heading"><Layers3 size={16}/><h2>Inspector</h2></div><div className="inspector-body">{!selected && <div className="inspector-empty"><NetworkIcon size={29}/><h3>Follow the evidence.</h3><p>Select a host or an agent to inspect its state at tick {frame?.tick ?? 0}.</p></div>}{selectedHost && <><div className="eyebrow">{view === 'truth' ? selectedHost.subnet : 'OBSERVED HOST'}</div><h2>{view === 'truth' || actorView?.native.known.hostname.includes(selectedHost.id) ? selectedHost.id : 'Known address'}</h2>{view === 'truth' ? <><dl><dt>Role</dt><dd>{selectedHost.router ? 'Router' : selectedHost.target ? 'Mission target' : 'Network host'}</dd><dt>Red sessions</dt><dd>{selectedHost.sessions.filter(s => s.agent.startsWith('Red_')).length}</dd></dl><h3>Native services</h3><pre>{JSON.stringify(selectedHost.services, null, 2)}</pre><h3>Owned sessions</h3>{selectedHost.sessions.filter(s => s.agent.startsWith('Red_')).map(s => <div key={s.agent + s.id} className="session-row"><span>{s.agent}</span><strong>{s.username}</strong>{s.privileged && <Check size={13}/>}</div>)}<details><summary>Full observed system / interfaces</summary><pre>{JSON.stringify({ system: selectedHost.system, interfaces: selectedHost.interfaces }, null, 2)}</pre></details></> : <><p>Only the selected worker’s observation records are shown here.</p><pre>{JSON.stringify(Object.fromEntries(Object.entries(actorView?.hosts || {}).filter(([id, host]) => id === selectedHost.id || (host.fields['System info'] as { Hostname?: string } | undefined)?.Hostname === selectedHost.id || selectedHost.interfaces.some(i => String(i['IP Address']) === id))), null, 2)}</pre></>}</>}{selectedAgent && <><div className="eyebrow">PRIVATE WORKER STATE</div><h2>{selected?.replace('Red_', 'Worker ')}</h2><dl><dt>Known addresses</dt><dd>{selectedAgent.native.known.ip_address.length}</dd><dt>Own sessions</dt><dd>{selectedAgent.native.sessions.length}</dd><dt>Delivered inbox</dt><dd>{selectedAgent.inbox.length}</dd></dl><details open><summary>Own native knowledge</summary><pre>{JSON.stringify(selectedAgent.native, null, 2)}</pre></details></>}{selected === 'Coordinator' && <><div className="eyebrow">COGNITIVE COORDINATOR</div><h2>Delivered reports only</h2><p>No native cyber session. No privileged world access.</p><pre>{JSON.stringify(frame?.coordinator, null, 2)}</pre></>}</div></aside></div>
-          <div className="evidence-layout"><section className="actions-panel"><div className="panel-heading"><Activity size={16}/><h2>Actions at tick {frame?.tick ?? 0}</h2><span>Actual engine outcomes</span></div><table><thead><tr><th>Worker</th><th>Requested action / target</th><th>Native result</th></tr></thead><tbody>{frame?.actions.map(a => <tr key={a.actor}><td className="mono">{a.actor}</td><td><strong>{a.proposal.action}</strong><small className="mono">{a.proposal.target || '—'}</small><details><summary>Rationale & execution</summary><p>{a.proposal.rationale}</p><p>{a.concrete_action || a.native_action}</p>{a.rejection && <p className="error-text">{a.rejection}</p>}</details></td><td><span className={'outcome ' + a.outcome}>{a.valid ? a.outcome : 'REJECTED'}</span></td></tr>)}{!frame?.actions.length && <tr><td colSpan={3} className="empty-cell">No actions yet. This world is initialized and paused.</td></tr>}</tbody></table></section><section className="messages-panel"><div className="panel-heading"><Radio size={16}/><h2>Message transport</h2><span>Explicit simulation overlay</span></div><div className="message-list">{frame?.messages.slice(-12).reverse().map(m => <details key={m.id} className="message-row"><summary><span>{m.sender.replace('Red_', 'W')} <ArrowRight size={12}/> {m.recipient.replace('Red_', 'W')}</span><span className={'message-state ' + m.status}>{m.status.replace('dropped_', '')}</span></summary><small>{m.kind} · t{m.created_tick} → t{m.due_tick} · {m.bytes} bytes</small><pre>{JSON.stringify(m.payload, null, 2)}</pre></details>)}{!frame?.messages.length && <p className="empty-cell">No messages have been sent.</p>}</div></section></div>
+          <div className="lab-layout"><section className="network-panel"><div className="network-header"><div className="segmented"><button className={graphMode === 'network' ? 'active' : ''} onClick={() => setGraphMode('network')}><NetworkIcon size={15}/> Network</button><button className={graphMode === 'team' ? 'active' : ''} onClick={() => setGraphMode('team')}><Users size={15}/> Organization</button></div><label className="view-picker"><Radio size={13}/><select value={view} onChange={e => { setView(e.target.value); setSelected(null); }}><option value="truth">Researcher truth</option>{workerIds.map(a => <option key={a} value={a}>{a.replace('Red_', 'Worker ')} · private knowledge</option>)}</select></label></div><div className="graph-context"><span>{view === 'truth' ? 'PRIVILEGED RESEARCHER VIEW' : 'ONLY THIS WORKER’S KNOWN HOSTS · NO INFERRED LINKS'}</span><span>{graphMode === 'network' ? 'Physical connectivity ≠ unrestricted access' : 'Arrows show configured links · red links are interrupted'}</span></div>{frame ? <Network frame={frame} run={active} view={view} mode={graphMode} onSelect={select}/> : <div className="graph loading">Loading saved state…</div>}<div className="graph-legend"><span><i className="legend-dot muted"/>Uncontrolled</span><span><i className="legend-dot access"/>User access</span><span><i className="legend-dot privileged"/>Privileged access</span><span>◇ Router</span><span className="graph-tip">Click a node to inspect · scroll to zoom</span></div><div className="replay-controls"><button className="icon-button" aria-label="Play saved replay" onClick={() => { if (!replayPlaying) setReplayTick(0); setReplayPlaying(v => !v); }}>{replayPlaying ? <Pause size={15}/> : <Play size={15}/>}</button><span>REPLAY</span><input type="range" aria-label="Replay tick" min={0} max={active.tick} value={replayTick ?? active.tick} onChange={e => { setReplayPlaying(false); setReplayTick(Number(e.target.value)); }}/><span className="mono">{replayTick ?? active.tick}</span><button className={'text-button ' + (replayTick === null ? 'teal' : '')} onClick={() => { setReplayTick(null); setReplayPlaying(false); }}>Latest</button></div></section>
+          <aside className="inspector"><div className="panel-heading"><Layers3 size={16}/><h2>Inspector</h2></div><div className="inspector-body">{!selected && <div className="inspector-empty"><NetworkIcon size={29}/><h3>Follow the evidence.</h3><p>Select a host or an agent to inspect its state at tick {frame?.tick ?? 0}.</p></div>}{selectedHost && <><div className="eyebrow">{view === 'truth' ? selectedHost.subnet : 'OBSERVED HOST'}</div><h2>{view === 'truth' || actorView?.native.known.hostname.includes(selectedHost.id) ? selectedHost.id : 'Known address'}</h2>{view === 'truth' ? <><dl><dt>Role</dt><dd>{selectedHost.router ? 'Router' : selectedHost.target ? 'Mission target' : 'Network host'}</dd><dt>Red sessions</dt><dd>{selectedHost.sessions.filter(s => s.agent.startsWith('Red_')).length}</dd></dl><h3>Native services</h3><pre>{JSON.stringify(selectedHost.services, null, 2)}</pre><h3>Owned sessions</h3>{selectedHost.sessions.filter(s => s.agent.startsWith('Red_')).map(s => <div key={s.agent + s.id} className="session-row"><span>{s.agent}</span><strong>{s.username}</strong>{s.privileged && <Check size={13}/>}</div>)}<details><summary>Full observed system / interfaces</summary><pre>{JSON.stringify({ system: selectedHost.system, interfaces: selectedHost.interfaces }, null, 2)}</pre></details></> : <>{actorView && <KnowledgeInspector actor={actorView} host={selectedHost}/>}</>}</>}{selectedAgent && <><div className="eyebrow">PRIVATE WORKER STATE</div><h2>{selected?.replace('Red_', 'Worker ')}</h2><dl><dt>Known addresses</dt><dd>{selectedAgent.native.known.ip_address.length}</dd><dt>Own sessions</dt><dd>{selectedAgent.native.sessions.length}</dd><dt>Delivered inbox</dt><dd>{selectedAgent.inbox.length}</dd></dl><details open><summary>Own native knowledge</summary><pre>{JSON.stringify(selectedAgent.native, null, 2)}</pre></details><details><summary>Delivered inbox only</summary><pre>{JSON.stringify(selectedAgent.inbox,null,2)}</pre></details></>}{selected && view !== 'truth' && (selected === 'Coordinator' || workerIds.includes(selected) && selected !== view) && <p>Choose this worker’s private view, or Researcher truth, to inspect it.</p>}{selected === 'Coordinator' && view === 'truth' && <><div className="eyebrow">COGNITIVE COORDINATOR</div><h2>Delivered reports only</h2><p>No native cyber session. No privileged world access.</p><pre>{JSON.stringify(frame?.coordinator, null, 2)}</pre></>}</div></aside></div>
+          <div className="evidence-layout"><ActionEvidence frame={frame}/><section className="messages-panel"><div className="panel-heading"><Radio size={16}/><h2>Message transport</h2><span>Explicit simulation overlay</span></div><div className="message-list">{frame?.messages.slice(-12).reverse().map(m => <details key={m.id} className="message-row"><summary><span>{m.sender.replace('Red_', 'W')} <ArrowRight size={12}/> {m.recipient.replace('Red_', 'W')}</span><span className={'message-state ' + m.status}>{m.status.replace('dropped_', '')}</span></summary><small>{m.kind} · t{m.created_tick} → t{m.due_tick} · {m.bytes} bytes</small><pre>{JSON.stringify({payload:m.payload,evidence_ids:m.evidence_ids,status:m.status,created_tick:m.created_tick,due_tick:m.due_tick,resolved_tick:m.resolved_tick}, null, 2)}</pre></details>)}{!frame?.messages.length && <p className="empty-cell">No messages have been sent.</p>}</div></section></div>
           {live && active.purpose === 'exploration' && <section className="manual-panel"><div><h3>Manual action</h3><p>Exploration only. Interventions are logged and excluded from evaluation comparisons.</p></div><select aria-label="Manual actor" value={manualActor} onChange={e => { setManualActor(e.target.value); setManualTarget(''); }}>{workerIds.map(a => <option key={a}>{a}</option>)}</select><select aria-label="Manual action" value={manualAction} onChange={e => { setManualAction(e.target.value); setManualTarget(''); }}>{actions.map(a => <option key={a}>{a}</option>)}</select><select aria-label="Observed target" value={manualTarget} onChange={e => setManualTarget(e.target.value)}><option value="">Choose observed target</option>{possibleTargets?.map(t => <option key={t}>{t}</option>)}</select><button className="secondary" disabled={busy || active.status === 'running' || (manualAction !== 'Sleep' && !manualTarget)} onClick={() => control('step', { overrides: { [manualActor]: { action: manualAction, session: 0, target: manualTarget || null, rationale: 'Researcher manual intervention' } satisfies Proposal } })}>Apply & step</button></section>}
           {active.termination_reason && <p className="termination-note">Run ended: <strong>{active.termination_reason}</strong>{active.error ? ' · ' + active.error : ''}. Saved frames remain available.</p>}
         </>}

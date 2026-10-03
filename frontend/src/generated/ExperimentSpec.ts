@@ -15,7 +15,36 @@ export type WorldSeed = number;
 /**
  * @minItems 1
  */
-export type Targets = [string, ...string[]];
+export type Targets = [
+  (
+    | "User1"
+    | "User2"
+    | "User3"
+    | "User4"
+    | "Enterprise0"
+    | "Enterprise1"
+    | "Enterprise2"
+    | "Defender"
+    | "Op_Host0"
+    | "Op_Host1"
+    | "Op_Host2"
+    | "Op_Server0"
+  ),
+  ...(
+    | "User1"
+    | "User2"
+    | "User3"
+    | "User4"
+    | "Enterprise0"
+    | "Enterprise1"
+    | "Enterprise2"
+    | "Defender"
+    | "Op_Host0"
+    | "Op_Host1"
+    | "Op_Host2"
+    | "Op_Server0"
+  )[]
+];
 export type Defender = "passive" | "monitor";
 export type Architecture = "hierarchy" | "swarm" | "independent";
 export type Workers = number;
@@ -27,6 +56,18 @@ export type EnvelopesPerTick = number;
 export type Ttl = number;
 export type Seed = number;
 export type VerifiedIntel = boolean;
+export type Links = CommunicationLink[] | null;
+export type Sender = string;
+export type Recipient = string;
+export type StartTick = number;
+export type EndTick = number;
+export type Sender1 = string | null;
+export type Recipient1 = string | null;
+export type Bidirectional = boolean;
+/**
+ * @maxItems 100
+ */
+export type Interruptions = LinkInterruption[];
 export type Provider = "scripted" | "ollama";
 export type Model = string;
 export type Temperature = number;
@@ -381,6 +422,19 @@ export interface CommunicationConfig {
   ttl?: Ttl;
   seed?: Seed;
   verified_intel?: VerifiedIntel;
+  links?: Links;
+  interruptions?: Interruptions;
+}
+export interface CommunicationLink {
+  sender: Sender;
+  recipient: Recipient;
+}
+export interface LinkInterruption {
+  start_tick: StartTick;
+  end_tick: EndTick;
+  sender?: Sender1;
+  recipient?: Recipient1;
+  bidirectional?: Bidirectional;
 }
 export interface CognitionConfig {
   provider?: Provider;

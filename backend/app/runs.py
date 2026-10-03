@@ -55,6 +55,7 @@ class Run:
             self.memory = {a: PrivateMemory(a) for a in self.actors}
             self.bus = MessageBus(self.config.communication, self.actors, self.config.team.architecture)
             self.organization = Organization(self.config, self.actors)
+            self.relay_evidence = {}
             for a in self.actors:
                 self.memory[a].observe(result["observations"][a], result["views"][a])
             self.meta.update(status="ready", world_id=result["world"]["world_id"])
@@ -69,7 +70,7 @@ class Run:
         return self.meta
 
     def persist(self, result):
-        frame = dict(result, status=self.meta["status"], messages=self.bus.snapshot(), private_views={a: self.memory[a].public_view(self.mission(), self.budget()) for a in self.actors}, coordinator={"delivered_reports": copy.deepcopy(self.organization.reports), "assignments": copy.deepcopy(self.organization.assignments)} if self.config.team.architecture == "hierarchy" else None, cognition=self.cognition.summary(), manual_intervention=self.meta["manual_intervention"])
+        frame = dict(result, status=self.meta["status"], messages=self.bus.snapshot(), communication_topology=self.bus.topology(result["tick"]), private_views={a: self.memory[a].public_view(self.mission(), self.budget()) for a in self.actors}, coordinator={"delivered_reports": copy.deepcopy(self.organization.reports), "assignments": copy.deepcopy(self.organization.assignments)} if self.config.team.architecture == "hierarchy" else None, cognition=self.cognition.summary(), manual_intervention=self.meta["manual_intervention"])
         self.frames.append(frame)
         self.store.save_frame(self.id, frame)
         self.meta.update(tick=result["tick"], updated_at=now(), metrics=metrics(self.frames, self.cognition.summary()))
@@ -82,6 +83,11 @@ class Run:
         return {"objective": "privileged_access_all", "target_names": self.config.scenario.targets, "architecture": self.config.team.architecture, "worker_count": self.config.team.workers}
 
     async def bridge_messages(self, deliveries):
+        for message in deliveries.get("Coordinator", []):
+            if message["kind"] == "report" and message["sender"] in self.actors:
+                for eid in message["evidence_ids"]:
+                    if eid.split(":", 1)[0] == message["sender"]:
+                        self.relay_evidence.setdefault(eid, message["resolved_tick"])
         for actor in self.actors:
             messages = deliveries.get(actor, [])
             self.memory[actor].receive(messages)
@@ -94,11 +100,15 @@ class Run:
                 groups = {}
                 for eid in m["evidence_ids"]:
                     origin = eid.split(":", 1)[0]
-                    if origin in self.actors:
+                    authorized = m["sender"] == origin or (m["sender"] == "Coordinator" and m["kind"] == "assignment" and eid in self.relay_evidence and self.relay_evidence[eid] <= m["created_tick"])
+                    if origin in self.actors and authorized:
                         groups.setdefault(origin, []).append(eid)
+                    else:
+                        self.store.event(self.id, {"type": "intel_rejected", "tick": m["resolved_tick"], "message_id": m["id"], "recipient": actor, "evidence_id": eid, "reason": "Evidence was not observed by this sender or received by the coordinator before relay"})
                 for origin, ids in groups.items():
                     update = await self.engine.call("ingest_intel", sender=origin, recipient=actor, evidence_ids=ids)
                     self.memory[actor].view = update["view"]
+                    self.memory[actor].report(update["address_fragment"], update["accepted_evidence"], origin, m["resolved_tick"])
                     self.store.event(self.id, {"type": "intel_delivery", "tick": m["resolved_tick"], "message_id": m["id"], "recipient": actor, "origin": origin, "evidence_ids": update["accepted_evidence"], "address_fragment": update["address_fragment"]})
 
     async def advance(self, overrides=None):
@@ -123,7 +133,8 @@ class Run:
                     defaults = self.organization.scripted_assignments()
                     tasks = await self.cognition.coordinator(coord_view, defaults) if coord_view["delivered_reports"] else {}
                     for actor, task in tasks.items():
-                        self.bus.enqueue("Coordinator", [actor], "assignment", task, task["evidence_ids"], tick)
+                        if actor in self.bus.neighbors("Coordinator"):
+                            self.bus.enqueue("Coordinator", [actor], "assignment", task, task["evidence_ids"], tick)
                 proposals = {}
                 organization_rejections = {}
                 for actor in self.actors:
@@ -150,14 +161,14 @@ class Run:
                 result = await self.engine.call("step", proposals=proposals)
                 for record in result["actions"]:
                     if record["actor"] in organization_rejections:
-                        record.update(organization_rejections[record["actor"]], valid=False)
+                        record.update(organization_rejections[record["actor"]], valid=False, preconditions={"delivered_assignment": False})
                     self.memory[record["actor"]].history.append(record)
                 for actor in self.actors:
                     memory = self.memory[actor]
                     memory.observe(result["observations"][actor], result["views"][actor])
                     if self.config.team.architecture == "hierarchy":
                         report = {"candidates": candidates(memory), "recent_actions": memory.history[-4:], "known": memory.view["known"], "sessions": memory.view["sessions"]}
-                        self.bus.enqueue(actor, ["Coordinator"], "report", report, memory.evidence_ids(), tick)
+                        self.bus.enqueue(actor, self.bus.neighbors(actor), "report", report, memory.evidence_ids(), tick)
                     elif self.config.team.architecture == "swarm":
                         self.bus.enqueue(actor, self.bus.neighbors(actor), "claim", {"action_key": key(proposals[actor]), "proposal": proposals[actor], "known": memory.view["known"]}, memory.evidence_ids(), tick)
                 result.update(delivery_events=delivery_events, suppressed_proposals=suppressed)
