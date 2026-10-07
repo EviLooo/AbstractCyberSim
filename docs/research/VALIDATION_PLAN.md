@@ -1,12 +1,61 @@
 # Mission and organization software qualification
 
+**5 October 2026 plan-only revision:** future evidence-dependent qualification
+uses [revised-plan A1–A10](REVISED_GRADUATION_PLAN.md#12-acceptance-prove-decision-structure-before-studying-performance).
+Paired diagnostic, capability/credential, changed-condition and delivered-team
+evidence gates are not yet implemented or passed. They supplement, rather than
+reinterpret, the historical software fixtures below. No tests/runs/live calls
+were performed for this revision; broad performance sweeps remain later work.
+
+Later bounded checkpoint: [observed search and wider route qualification](OBSERVED_SEARCH_ACCEPTANCE.md)
+adds planner correctness/privacy/coordination checks and selected physical
+composition witnesses. It does not establish research difficulty or universal
+solvability. Earlier counts below are historical.
+
+5 October route-tradeoff extension: [native service/time/privilege and sensor
+acceptance](ROUTE_TRADEOFFS_ACCEPTANCE.md) adds bounded physical effects, private
+clues, denial/release, deadline outcomes and saved workbench evidence. See the
+[completion ledger](COMPLETION_LEDGER.md) for requirements still open. Historical
+counts below document earlier checkpoints, not closure of Phase 3.
+
 4 October 2026. Acceptance gates for the legacy workbench before custom
 research scenarios and live LLM qualification. The initial mission milestone
 covered T01/T03 and portions of T07–T10. The subsequent
 [Phase 1–2 gate](PHASE_1_2_ACCEPTANCE.md) closes T04–T10 within the enabled
 legacy/scripted scope; broader engine and scientific qualification remain pending.
 
+The subsequent [CC4 adapter acceptance](CC4_ADAPTER_ACCEPTANCE.md) adds a
+separate unmodified Python 3.12 backend. Its 14 bounded checks cover actor
+ownership, native durations, observed restoration, complete controlled-service
+missions, API artifacts and population settings. The full 61-test regression
+and two subsequently added checks passed; five frontend checks and the production
+build passed. The legacy evidence below remains specific to its original gates.
+
+The [sustained mission checkpoint](MISSION_COMPLEXITY_ACCEPTANCE.md) adds nine
+bounded cases. The complete current regression passes **101 tests**, with
+**eight frontend checks** and a passing build. It qualifies sampled simultaneous
+holds, inclusive deadlines, live privileged-host prerequisites, native Restore
+during dwell, legal recovery, persistence and private mission projection.
+Earlier counts below remain historical checkpoint evidence.
+
+The [baseline/diagnostic checkpoint](BASELINE_DIAGNOSTICS_ACCEPTANCE.md) adds
+fifteen cases. The complete current regression passes **116 tests**, with
+**nine frontend checks** and the build. Local-information policies complete
+bounded C0/C1/C2 development cells; organization traces, private projection,
+source choice, loss/recovery and hand-counted diagnostics are checked.
+This does not establish a scientifically calibrated complexity ladder.
+
 ## Execution boundary
+
+The subsequent [temporal-module checkpoint](TEMPORAL_COMPLEXITY_ACCEPTANCE.md)
+adds 17 bounded checks over the CC4 layer. The complete current regression passed 80 tests.
+Six frontend tests and the build pass. This is now a historical checkpoint;
+the [segmented route checkpoint](ROUTE_COMPLEXITY_ACCEPTANCE.md) adds twelve
+checks, bringing the full regression to **92 passed**, with **seven frontend
+checks** and a passing build. It qualifies native ACLs, explicit pivots,
+restoration/alternate-source recovery and private organizational pipelines.
+Legacy/adapter gates below retain their
+historical counts and scope; none is a scientific experiment.
 
 All acceptance runs are pytest fixtures in temporary storage. They use scripted
 or mocked cognition, never an installed model, evaluation matrix, hypothesis
@@ -149,9 +198,37 @@ and recovery are not established here. Native operational permission checks
 the existence of an Enterprise-named actor session and does not inspect its
 active flag; qualify/replace that rule before using recovery defense.
 
-The next construction milestone is **Phase 3 / T12**: qualified generic linear
-and branching enterprise profiles, with explicit access prerequisites and
-scripted legal-path/denied-shortcut fixtures. Extend this plan for each new
-profile, then T13 recovery. T11 live-model qualification remains separate and
-requires explicit authorization for model calls. Research pilot/freeze work
-remains in T17 and requires authorization for experiments.
+The next construction milestone is **Phase 3 / T12a–T12b**: profile contracts,
+compiler, qualified generic linear/branching worlds and native reachability.
+Then T12c/T12d/T13a adds observations, missions and bounded reactive recovery;
+T12e/T12f connects UI controls and diagnostic baselines. Follow
+[the revised complexity design](ENVIRONMENT_COMPLEXITY_DESIGN.md).
+T11 live-model qualification remains separate and requires explicit
+authorization for model calls. Research pilot/freeze work remains in T17 and
+requires authorization for experiments.
+
+## Planned Phase 3 gates — not yet executed
+
+The following are required future fixtures, not additions to the current 49-test
+qualification count. Keep every native check in isolated temporary storage.
+
+| Gate | Required assertion |
+| --- | --- |
+| Module contract and composition | Invalid dependencies/ranges/unqualified IDs rejected before initialization; declared supported combinations work; disable/no-op parity and fresh-world reset. |
+| Generation and physical access | Materialized static world reproducible; alternative route succeeds with owned active access; denied source/service/policy/privilege path fails without a crash; no hostname bypass. |
+| Service change | Compatible vulnerable variant succeeds where qualified; version-specific patch prevents the affected native technique; repeated attempts do not undo patch; cache/registry revisions consistent. |
+| Evidence privacy and refresh | Mutating undisclosed state leaves prompts/candidates identical; old report stays old; a legal re-observation reveals only permitted new facts; no automatic cause disclosure. |
+| Native recovery | Removal/restoration tested for all red actors on a host and native PID/session registries; controller loss and alternate-controller behavior; false evidence cannot restore removed access. |
+| Isolation versus restoration | Isolation changes remote reachability while preserving explicitly modeled persistence; restoration applies documented host/session effects; unisolation does not fabricate new access. |
+| Defender causality | Defender decisions depend only on its observations; event signal/decision/effect times honor delay/cooldown/budget; it cannot react to a not-yet-executed action; one defender turn per world tick. |
+| Mission/dwell | Actual target access required; dwell increments and resets correctly under loss; recovery deadline and infeasible conditions distinguished; report text never completes physical dependencies. |
+| Reactive versus scheduled change | Scheduled events identical for matched schedules; reactive policy/version matched but effect history follows attacker-specific observations; no architecture-specific targeting. |
+| UI/replay/config | Preset expands to saved resolved values; toggles affect new runs; truth events and worker symptoms differ; event timelines/dwell/evidence ages reconstruct offline. |
+| Optional durations/deception/user activity | Busy actions cannot double-execute; native ordering pinned; decoys/noise disclosed only by legal evidence; user activity cannot silently create attacker footholds. |
+
+Behavioral validation is a separate T17 dossier: mechanism/source/assumptions,
+expert trajectory review, uncertainty sensitivity and optional isolated-system
+comparison. Passing these software fixtures does not validate human realism or
+establish LLM/organization superiority. Development calibration must retain
+competent rule/replanning and single-agent controls, then freeze the held-out
+suite before final results are inspected.

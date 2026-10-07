@@ -1,5 +1,12 @@
 # Implementation contract definitions
 
+For the next bounded research profile, use
+[the revised contract/interface handoff](REVISED_GRADUATION_PLAN.md#10-architecture-and-programmer-interfaces).
+Its proposed diagnostic, explicit-method, artifact/token and evidence contracts
+require a new explicit runtime version; they do not currently exist. Old
+schema-1.0 configs and replay semantics stay unchanged. This document's original
+design contracts remain historical guidance where they agree with that handoff.
+
 These are language-neutral version-1 contract requirements. Implement JSON Schemas and generate Python/TypeScript types from them in T02. The examples use `0.1-design` until an implementation supplies validated runtime contracts. Treat new required fields or changed meanings as a schema-version change.
 
 ## Configuration and resolved world

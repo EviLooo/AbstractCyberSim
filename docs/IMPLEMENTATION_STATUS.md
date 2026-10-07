@@ -1,8 +1,83 @@
 # Workbench implementation status
 
+**6 October 2026:** all required graduation software gates R0–R7 are accepted.
+Immutable splits/source/model binding, paired analysis/plots/reproduction,
+final UI/demo and every-item audit are verified; see
+[final acceptance](research/FINAL_ACCEPTANCE_AUDIT.md). The required
+investigation, credentials, capabilities, Patch/Restore and organization behavior
+are implemented and native-tested. Current status is in
+[GRADUATION_REQUIREMENTS](research/GRADUATION_REQUIREMENTS.md) and
+[GRADUATION_CHECKPOINT](research/GRADUATION_CHECKPOINT.md). Historical status below
+remains evidence for older profiles, not a current incomplete-feature list.
+Scientific/expert review and live-provider qualification remain outstanding.
+
 4 October 2026 — Phase 1–2 software acceptance completed for the enabled legacy/scripted profile, local branch `research-workbench`. [Per-ticket evidence](research/PHASE_1_2_ACCEPTANCE.md).
 
 ## Implemented
+
+**Observed search and wider route qualification (5 October):** separate
+`local_search` policy with time/risk/deadline estimates, bounded observed-graph
+search, persistent connection facts shared by all providers, configurable
+weights and saved/UI plans. Fixed 1–8-worker, 1–3-layer, 2/3/9-alternative,
+0/3/5-addon witnesses and native restoration during service quarantine pass.
+149 Python tests, eleven frontend checks and the production build pass.
+[Exact acceptance and research boundaries](research/OBSERVED_SEARCH_ACCEPTANCE.md).
+Phase 3 remains incomplete; calibration, live LLM controls and remaining core
+mechanisms stay explicitly open in the ledger.
+
+**Generated route tradeoffs (T12b extension, 5 October):** seeded native SSH/FTP
+gateways, user/root service outcomes, configurable native exploit durations,
+partial scan assessments and a separate traffic sensor that temporarily changes
+native service ACLs. Controls and researcher/private visualization are delivered.
+[Exact effects, checks and limits](research/ROUTE_TRADEOFFS_ACCEPTANCE.md).
+Whole tickets remain open where qualification is incomplete; use the
+[completion ledger](research/COMPLETION_LEDGER.md) before changing milestone order.
+
+**Local baseline and diagnostics checkpoint (bounded T12f):** versioned local
+rules and observed-frontier replanning, shared remembered facts for all providers,
+configurable retries/backoff, source-aware delivered coordination, saved choices,
+readable UI cost tables and offline/CSV diagnostics are delivered. Both policies
+complete bounded C0/C1/C2 development fixtures; hierarchy/swarm checks retain
+distinct assignment/claim traces. **116 Python tests**, **nine frontend checks**
+and the build pass. No research experiments or live LLM calls were made.
+[Semantics, fixtures and limits](research/BASELINE_DIAGNOSTICS_ACCEPTANCE.md).
+Still open: **T11 live-model qualification and broader scenario calibration**.
+The later route-tradeoff extension above fills a missing environment requirement;
+review the ledger before advancing past other open core requirements.
+This is not closure of Phase 3 or a calibrated scientific complexity ladder.
+
+**Sustained missions (bounded T12d primitives):** configurable simultaneous
+privileged-access holds, inclusive mission/objective deadlines and live
+privileged-host prerequisites. Native defender effects reset affected progress;
+legal recovery is checked. UI controls, truth/private views, replay and metric
+exports are delivered. **101 Python tests**, **eight frontend checks** and the
+build pass. No research experiments or model calls were made.
+[Semantics and acceptance](research/MISSION_COMPLEXITY_ACCEPTANCE.md).
+Followed by the bounded baseline/diagnostics checkpoint above.
+
+**Segmented routes (first bounded T12b profile):** adjustable 1–3 gateway
+layers, one/two alternative sources and hardened SSH dead ends. Actual native
+host blocks gate scanning/exploitation; explicit `EstablishPivot` deployment
+requires actor-owned privileged access. Private source selection, independent
+caches, restoration/recovery and route visualization are delivered. The complete
+regression passes **92 Python tests**, plus **seven frontend checks** and the
+build. No experiments or model calls were made.
+[Semantics, evidence and limits](research/ROUTE_COMPLEXITY_ACCEPTANCE.md).
+Followed by the sustained mission checkpoint above.
+
+**Modular settings and temporal evidence:** opt-in CC4 observation delay/age,
+source-preserving private history/conflicts, legal refresh/replanning after
+observable loss, capability-derived controls and offline recovery evidence.
+The complete 80-test regression passed; six frontend checks
+and the build pass. This is partial T12a/T12c/T12e, not all of Phase 3.
+[Detailed semantics and limits](research/TEMPORAL_COMPLEXITY_ACCEPTANCE.md).
+
+**CC4 adapter implemented alongside legacy:** selectable isolated workers,
+native durations, controlled populations and bounded sensor-driven restore
+defense are delivered. The full 61-test regression passed, plus two added
+API/population checks; five frontend checks and the build pass. Phase 3 and
+research calibration remain incomplete. Full upstream Ray/wrapper compatibility
+is not claimed. [Evidence and limits](research/CC4_ADAPTER_ACCEPTANCE.md).
 
 | Area | Delivered behavior |
 | --- | --- |
@@ -31,13 +106,20 @@ The upstream CybORG acceptance API module previously passed: 7 passed, 1 skipped
 
 ## Pending from the full research design
 
+Phase 3 has been redesigned around independently configurable behavioral
+complexity modules; see [the updated environment handoff](research/ENVIRONMENT_COMPLEXITY_DESIGN.md)
+and [T12a–T12f/T13](research/IMPLEMENTATION_PLAN.md). Hierarchy versus swarm stays
+the main comparison. The bounded CC4 contract/compiler, observed restoration, timestamped beliefs,
+segmented routes and sustained mission primitives are implemented as documented
+above. Wider profile qualification and scientific calibration remain pending.
+
 - Generic four-zone generator, network variation beyond the inherited scenario, qualified linear/branching/recovery families, and explicit generic zone-access policy.
 - Qualified active defender and service-disruption mission. Monitor observes; it does not remediate.
 - The full upstream regression suite and every exploit/escalation precondition, generic NACL/block/bandwidth semantics, inactive-session behavior in the inherited operational gate, and broad seed solvability/difficulty calibration. Fixed legacy scan/exploit disconnection and actor-local operational-gate boundaries are checked.
 - Live Ollama/model verification, hosted providers, coordinator schema repair, evidence-preserving context summarization, pinned model digests, and provider seed/generalization studies.
 - Batch job execution/resumption/retry manager and experiment-launch controls. The planner exports jobs only. No research experiments are run or scheduled.
 - Final pairing by explicit replicate IDs, prespecified treatment interactions, missing/refused/technical-error outcome handling for final analysis, budget frontiers, and publication-quality plots.
-- Adaptive coordination and optional separate CC4/range adapters (conditional research extensions).
+- Full CC4 complexity/research qualification, adaptive coordination and optional range/defensive-transfer extensions.
 
 These features are not claimed complete. T04–T10 are accepted within the enabled legacy/scripted scope. The broader Phase 0 upstream audit/qualification, live-model qualification in T11, T12–T19, and the full scientific study remain incomplete. Initial T14 reducers, planner-only T15 portions and basic T16 export/comparison are implemented.
 

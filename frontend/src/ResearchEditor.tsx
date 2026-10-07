@@ -1,0 +1,26 @@
+import type {EpisodeConfig} from './types';
+type Settings = NonNullable<EpisodeConfig['scenario']['research']>;
+const targetA='restricted_zone_a_subnet_server_host_0', targetB='operational_zone_a_subnet_server_host_0';
+export default function ResearchEditor({config,onChange}:{config:EpisodeConfig;onChange:(c:EpisodeConfig)=>void}) {
+  const r=config.scenario.research;
+  if(!r)return null;
+  const update=(patch:Partial<Settings>)=>onChange({...config,scenario:{...config.scenario,research:{...r,...patch}}});
+  const mission=config.scenario.mission;
+  const updateMission=(patch:{hold_ticks?:number;deadline_tick?:number|null})=>onChange({...config,scenario:{...config.scenario,
+    mission:{hold_ticks:1,deadline_tick:null,objectives:[],...mission,...patch}}});
+  const number=(label:string,value:number,min:number,max:number,change:(n:number)=>void)=><label className="field">{label}<input type="number" min={min} max={max} value={value} onChange={e=>change(Number(e.target.value))}/></label>;
+  return <details className="communication-settings" open><summary>Investigative research environment</summary>
+    <label className="field">Recipe<select value={r.recipe} onChange={e=>{const recipe=e.target.value as Settings['recipe'];onChange({...config,scenario:{...config.scenario,targets:recipe==='combine'?[targetA,targetB]:[targetA],research:{...r,recipe,capability_coupling:recipe==='combine'?'bridge_and_token':'separate',change:recipe==='recover'?{...r.change,mode:'patch_rfi',response_budget:1}:{...r.change,mode:'none',response_budget:0}}}});}}><option value="linear_control">Linear control</option><option value="investigate">Investigate uncertain services</option><option value="combine">Combine bridge and token capabilities</option><option value="recover">Adapt to patch or restoration</option></select></label>
+    <label className="field">Service conditions<select value={r.conditions} onChange={e=>update({conditions:e.target.value as Settings['conditions']})}><option value="single">One condition dimension</option><option value="paired">Multiple condition dimensions</option></select></label>
+    <label className="field">Initial access<select value={r.initial_access} onChange={e=>update({initial_access:e.target.value as Settings['initial_access']})}><option value="common_entry">Common entry</option><option value="matched_split_entry" disabled={config.team.workers===1}>Matched split entry</option></select></label>
+    <div className="field-pair">{number('Observation delay',r.evidence.observation_delay,0,2,n=>update({evidence:{...r.evidence,observation_delay:n}}))}{number('Evidence stale after',r.evidence.stale_after,4,12,n=>update({evidence:{...r.evidence,stale_after:n}}))}</div>
+    {r.recipe==='recover'&&<><label className="field">Defensive change<select value={r.change.mode} onChange={e=>update({change:{...r.change,mode:e.target.value as 'patch_rfi'|'restore',response_budget:1}})}><option value="patch_rfi">Disable external imports</option><option value="restore">Native Restore</option></select></label>{number('Response delay',r.change.response_delay,2,8,n=>update({change:{...r.change,response_delay:n}}))}<p className="field-hint">One shared response, triggered by qualified service traffic.</p></>}
+    {number('Team access attempt budget',config.resources?.team_access_attempts??12,1,100,n=>onChange({...config,resources:{team_access_attempts:n}}))}
+    {number('Final simultaneous hold (ticks)',mission?.hold_ticks??1,1,3,n=>updateMission({hold_ticks:n}))}
+    <label className="field">Mission deadline (tick, optional)<input type="number" min="1" max={config.schedule.max_ticks} value={mission?.deadline_tick??''} placeholder="Episode tick limit" onChange={e=>updateMission({deadline_tick:e.target.value===''?null:Number(e.target.value)})}/></label>
+    <p className="field-hint">Core hold controls use 1–3 consecutive ticks of native privileged target access. An access loss resets the hold. Larger or staged requirements use JSON and need their own feasibility witness.</p>
+    <div className="field-pair">{number('Recipe seed',r.seed_namespaces.recipe,0,4294967295,n=>update({seed_namespaces:{...r.seed_namespaces,recipe:n}}))}{number('Event seed',r.seed_namespaces.event,0,4294967295,n=>update({seed_namespaces:{...r.seed_namespaces,event:n}}))}</div>
+    <details><summary>Researcher-only diagnostic fixtures</summary><label className="field">Service condition override<select value={r.condition_variant} onChange={e=>update({condition_variant:e.target.value as Settings['condition_variant']})}>{['seeded','import_enabled','import_disabled','source_denied','ssh_hardened'].map(v=><option key={v}>{v}</option>)}</select></label><label className="field">Cached token condition<select value={r.credential_variant} onChange={e=>update({credential_variant:e.target.value as Settings['credential_variant']})}>{['seeded','valid','wrong_scope','invalid'].map(v=><option key={v}>{v}</option>)}</select></label><p className="field-hint">These hidden settings never enter agent inputs. A native feasibility witness is saved when initialized. Unverified worlds are excluded from evaluation.</p></details>
+    <p className="field-hint">Fixed CC4 background; only selected role hosts accept access actions. Settings define a new world, and do not modify an existing run.</p>
+  </details>;
+}

@@ -11,7 +11,10 @@
       "targets": [
         "Op_Server0"
       ],
-      "defender": "passive"
+      "defender": "passive",
+      "cc4": null,
+      "complexity": null,
+      "mission": null
     },
     "team": {
       "architecture": "hierarchy",
@@ -31,6 +34,15 @@
     },
     "cognition": {
       "provider": "scripted",
+      "scripted_policy": "legacy",
+      "search": {
+        "risk_weight": 8.0,
+        "failure_penalty": 6.0,
+        "unknown_edge_penalty": 4.0,
+        "max_expansions": 128
+      },
+      "action_retry_limit": 2,
+      "failure_backoff_ticks": 0,
       "model": "",
       "temperature": 0.0,
       "max_output_tokens": 512,

@@ -1,8 +1,25 @@
 # AbstractCyberSim research implementation package
 
+**Current graduation implementation, 6 October 2026:** start with
+[approved scope](APPROVED_SCOPE.md), [execution Goal](GRADUATION_EXECUTION_GOAL.md),
+[requirement ledger](GRADUATION_REQUIREMENTS.md) and [checkpoint](GRADUATION_CHECKPOINT.md).
+The revised plan governs scope and strict gate order. R0–R6 software gates are
+accepted along with R7; all42 software items are audited in
+[final acceptance](FINAL_ACCEPTANCE_AUDIT.md). Investigative mechanisms and both
+organizations are implemented. Actual scientific/live/expert validation remains
+separate. The original source audit and older figures below are historical.
+
+[Researcher guide](RESEARCHER_GUIDE.md) · [Programmer handoff](PROGRAMMER_HANDOFF.md)
+· [Presentation](GRADUATION_PRESENTATION.md) · [Worked native examples](WORKED_MECHANISMS.md)
+· [Freeze/export workflow](FREEZE_WORKFLOW.md).
+
 Prepared 3 October 2026. This package specifies the full proposed system. A first implementation now exists; see [current implementation status](../IMPLEMENTATION_STATUS.md) and the [root README](../../README.md) for delivered features and pending work. Research results do not exist yet.
 
-The intended product is a local research workbench: configure LLM cyber teams, inspect their decisions and network effects, run controlled comparisons, and export reproducible evidence. The paper remains about agent-based modeling and organizational effects on simulated offensive cyber operations.
+The intended product is a local research workbench: configure LLM cyber teams,
+inspect decisions and network effects, run controlled comparisons and export
+evidence. The central comparison remains **hierarchy versus swarm LLM attacker
+teams** under complex, partially observed, changing tasks. Rule/planner and
+single-agent controls establish whether adaptation/coordination demands matter.
 
 ## Read in this order
 
@@ -14,15 +31,57 @@ The intended product is a local research workbench: configure LLM cyber teams, i
 6. [Runtime audit](repo-audit.json) and [audit script](../../tools/audit_cyborg.py): evidence for the narrow multi-attacker compatibility fix and verified-address delivery bridge.
 7. [Software validation plan](VALIDATION_PLAN.md): executable mission/organization acceptance fixtures, observed fixes, coverage and remaining limits.
 8. [Phase 1–2 acceptance](PHASE_1_2_ACCEPTANCE.md): per-ticket closure, current test results, UI evidence and the Phase 3 boundary.
+9. [Modular environment complexity](ENVIRONMENT_COMPLEXITY_DESIGN.md): renewed
+   literature evidence, realistic behavior mechanisms, configurable modules,
+   proposed contracts, UI/code split, qualification and revised build order.
+10. [CC4 compatibility audit](CC4_COMPATIBILITY_AUDIT.md): inspected revision,
+    nine bounded fixtures, isolated setup, native constraints and the decision to
+    target a separate CC4 adapter before further legacy environment extensions.
+11. [CC4 adapter acceptance](CC4_ADAPTER_ACCEPTANCE.md): delivered integration,
+    software checks, setup, UI evidence and the remaining research boundary.
+12. [Temporal complexity acceptance](TEMPORAL_COMPLEXITY_ACCEPTANCE.md): module
+    controls, delayed/stale evidence, source/history, recovery, software checks
+    and remaining T12 boundaries.
+13. [Route complexity acceptance](ROUTE_COMPLEXITY_ACCEPTANCE.md): native source
+    blocks, adjustable gateway layers/alternatives, hardened SSH accounts,
+    explicit pivot deployment, private source selection and research boundaries.
+
+14. [Mission complexity acceptance](MISSION_COMPLEXITY_ACCEPTANCE.md): sustained
+    simultaneous access, live physical prerequisites, inclusive deadlines,
+    native restoration/recovery, private projection and replay/export semantics.
+
+15. [Baseline and diagnostic acceptance](BASELINE_DIAGNOSTICS_ACCEPTANCE.md): local
+    rules, observed-frontier replanning, shared state facts, private choices,
+    bounded development cells, exports and remaining research gates.
+
+16. [Generated route tradeoffs](ROUTE_TRADEOFFS_ACCEPTANCE.md): seeded native
+    service/time/privilege differences, private clues and traffic-triggered
+    service quarantine; configurable synthetic assumptions and bounded evidence.
+17. [Completion ledger](COMPLETION_LEDGER.md): explicit implemented/open
+    requirements; explain proposed deferrals before advancing the plan.
 
 ## Main decisions
 
 - Build the research application in the parent AbstractCyberSim repository, with CybORG as a pinned dependency and a small documented compatibility patch.
+- Preserve hierarchy versus swarm as the primary comparison; use rule/planner,
+  single-agent and independent controls to diagnose adaptation and coordination.
+- Increase/decrease complexity through independently qualified module settings,
+  with explicit behavioral assumptions and evidence; do not equate host count,
+  randomness or use of an LLM with realism.
 - Use a segmented enterprise network, independent red workers, and a separate cognitive coordinator for hierarchy. Each worker owns its own simulator sessions and memory.
 - Expose ordinary research settings in the UI; persist the same configuration for a headless runner. New algorithms, action semantics, metrics, and scenario generators remain code extensions.
 - Separate the physical network, the communication topology, and each agent's knowledge. Display all three.
 - Keep the legacy simulator in its existing Python 3.8 environment; use a modern Python service and browser UI through a process boundary.
+- Target CC4 for the complex research backend in a separate environment/adapter;
+  the adapter is now selectable on Python 3.12 alongside legacy. [Software
+  acceptance](CC4_ADAPTER_ACCEPTANCE.md) is established; scientific qualification
+  and the full complexity program remain pending.
 - Run the same core research loop from both the UI and command line. The UI never determines experimental results.
+
+18. [Observed search and wider qualification](OBSERVED_SEARCH_ACCEPTANCE.md):
+    bounded planning, shared historical connection facts, UI settings/plans,
+    selected seed/population/service witnesses and native restoration during
+    quarantine, with explicit remaining scope.
 
 ## Evidence and limits
 

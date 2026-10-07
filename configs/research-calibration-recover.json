@@ -1,0 +1,94 @@
+{
+  "schema_version": "2.0",
+  "name": "Development calibration: recover",
+  "purpose": "exploration",
+  "scenario": {
+    "profile": "enterprise_cc4_research",
+    "world_seed": 1042,
+    "targets": [
+      "restricted_zone_a_subnet_server_host_0"
+    ],
+    "defender": "passive",
+    "cc4": {
+      "user_hosts": 3,
+      "server_hosts": 1,
+      "addon_services": 0,
+      "response_delay": 2,
+      "response_cooldown": 10,
+      "response_budget": 4
+    },
+    "complexity": null,
+    "mission": {
+      "hold_ticks": 3,
+      "deadline_tick": null,
+      "objectives": []
+    },
+    "research": {
+      "module_version": "1.0",
+      "recipe": "recover",
+      "conditions": "paired",
+      "condition_variant": "import_disabled",
+      "credential_variant": "invalid",
+      "capability_coupling": "separate",
+      "initial_access": "common_entry",
+      "evidence": {
+        "observation_delay": 2,
+        "stale_after": 8
+      },
+      "change": {
+        "mode": "restore",
+        "response_delay": 8,
+        "response_budget": 1
+      },
+      "seed_namespaces": {
+        "recipe": 8011,
+        "event": 701
+      },
+      "catalog": "minimal_access_v1",
+      "background_access": "deny",
+      "native_mission_phase_policy": "fixed_research_policy_v1"
+    }
+  },
+  "team": {
+    "architecture": "hierarchy",
+    "workers": 2,
+    "claim_ttl": 5
+  },
+  "communication": {
+    "extra_delay": 0,
+    "loss_probability": 0.0,
+    "bytes_per_tick": 1000000,
+    "envelopes_per_tick": 64,
+    "ttl": 10,
+    "seed": 17,
+    "verified_intel": true,
+    "links": null,
+    "interruptions": []
+  },
+  "cognition": {
+    "provider": "scripted",
+    "scripted_policy": "evidence_controller",
+    "search": {
+      "risk_weight": 8.0,
+      "failure_penalty": 6.0,
+      "unknown_edge_penalty": 4.0,
+      "max_expansions": 128
+    },
+    "action_retry_limit": 2,
+    "failure_backoff_ticks": 0,
+    "model": "",
+    "temperature": 0.0,
+    "max_output_tokens": 512,
+    "max_context_bytes": 128000,
+    "max_team_tokens": 40000,
+    "timeout_seconds": 60
+  },
+  "schedule": {
+    "mode": "per_worker",
+    "seed": 27,
+    "max_ticks": 180
+  },
+  "resources": {
+    "team_access_attempts": 12
+  }
+}

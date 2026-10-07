@@ -59,8 +59,32 @@ class Store:
     def recover(self):
         for m in self.list():
             if m["status"] not in ["completed", "stopped", "errored", "interrupted"]:
-                m.update(status="interrupted", termination_reason="service_restart", updated_at=now())
-                self.update(m)
+                self.interrupt(m['id'], 'service_restart')
+
+    def interrupt(self, run_id, reason):
+        """Retain partial evidence and recompute terminal metrics without native state."""
+        meta = self.get(run_id)
+        directory = self.path(run_id)
+        if (directory/'config.json').is_file() and (directory/'frames'/f"{meta['tick']:06d}.json").is_file():
+            from backend.app.evaluation import metrics
+            config = json.loads((directory/'config.json').read_text(encoding='utf-8'))
+            frames = [self.frame(run_id, tick) for tick in range(meta['tick']+1)]
+            usage = frames[-1].get('cognition', {})
+            # A provider can fail after the last native frame; retain saved usage.
+            usage = {key: meta.get('metrics', {}).get(key, value) for key,value in usage.items()}
+            meta['metrics'] = metrics(frames, usage, config['schedule']['max_ticks'], reason)
+            actors = frames[-1].get('private_views', {})
+            pending = {actor:view['native']['pending_action'] for actor,view in actors.items()
+                       if view.get('native', {}).get('pending_action')}
+            if pending and not (directory/'interrupted-actions.json').exists():
+                self.write_json(directory/'interrupted-actions.json', {
+                    'version':'1.0','tick':meta['tick'],'reason':reason,'actions':pending,
+                    'access_resources':{actor:view['native'].get('access_resources') for actor,view in actors.items()},
+                    'interpretation':'Saved unfinished actions have unknown outcomes; native state is not resumed.'})
+        meta.update(status='interrupted', termination_reason=reason, updated_at=now())
+        self.update(meta)
+        self.event(run_id, {'type':'executor_interrupted','tick':meta['tick'],'reason':reason})
+        return meta
 
     def save_frame(self, run_id, frame):
         self.write_json(self.path(run_id) / "frames" / f"{frame['tick']:06d}.json", frame)
@@ -88,11 +112,24 @@ class Store:
         end = min(len(rows), after + 200)
         return {"cursor": end, "items": [dict(json.loads(rows[i]), sequence=i + 1) for i in range(after, end)]}
 
-    def csv(self):
+    def csv(self, metadata=None):
         output = io.StringIO()
-        fields = ["id", "name", "status", "architecture", "workers", "world_id", "purpose", "manual_intervention", "tick", "termination_reason", "success", "charged_tokens", "invalid_actions", "duplicate_actions", "message_delivered", "message_dropped"]
+        fields = ["id", "name", "status", "architecture", "workers", "world_id", "purpose", "manual_intervention", "tick", "termination_reason", "success", "charged_tokens", "invalid_actions", "duplicate_actions", "message_delivered", "message_dropped", "mission_formula_version", "mission_hold_ticks", "mission_best_hold_ticks", "mission_resets", "objective_resets", "mission_deadline_tick", "scripted_policy", "decision_formula_version", "multiple_candidate_decisions", "changed_state_decisions", "completed_failed_actions", "source_switches"]
+        fields += ['profile','freeze_id','split','causal_world_hash','batch_id','job_id','attempt_id',
+                   'research_formula_version','restricted_completion_ticks','completion_censored',
+                   'admitted_access_attempts','completed_access_attempts','partial_access_attempts',
+                   'failed_access_attempts','completed_probes','completed_inspections',
+                   'unchanged_repeated_access_attempts','comparable_duplicate_admissions',
+                   'worker_wait_ticks','recipient_copy_bytes_created','recipient_copy_bytes_delivered',
+                   'assignment_copies','claim_copies','report_copies','peer_evidence_uses',
+                   'stale_evidence_uses','conflicting_evidence_records','contradicting_refresh_records',
+                   'access_method_changes','access_source_changes',
+                   'mean_evidence_age_at_admission','observed_access_losses',
+                   'unknown_usage_calls','provider_failures','provider_refusals','per_actor_usage',
+                   'recovery_records','compatibility_recovery_records']
         writer = csv.DictWriter(output, fieldnames=fields, extrasaction="ignore")
         writer.writeheader()
-        for meta in self.list():
-            writer.writerow(dict(meta, **meta.get("metrics", {})))
+        for meta in self.list() if metadata is None else metadata:
+            values = dict(meta, **meta.get("metrics", {}))
+            writer.writerow({k:json.dumps(v,sort_keys=True) if isinstance(v,(dict,list)) else v for k,v in values.items()})
         return output.getvalue()

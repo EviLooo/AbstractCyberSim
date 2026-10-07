@@ -11,6 +11,7 @@ from CybORG.Simulator.Actions import DiscoverRemoteSystems, DiscoverNetworkServi
 from CybORG.Simulator.Actions.ConcreteActions.Portscan import Portscan
 from CybORG.Simulator.SimulationController import SimulationController
 from packages.engine_worker.scenario import EnterpriseScenario
+from packages.engine_worker.common import normalized, canonical
 
 CATALOG = {c.__name__: c for c in [Sleep, DiscoverRemoteSystems, DiscoverNetworkServices, ExploitRemoteService, PrivilegeEscalate]}
 
@@ -33,24 +34,6 @@ class RecordedCybORG(CybORG):
         if self.env == "sim":
             return RecordingSimulationController(self.scenario_generator, agents, self.np_random)
         return super()._create_env_controller(env_config, agents)
-
-
-def normalized(value):
-    if isinstance(value, dict):
-        return {str(k): normalized(v) for k, v in value.items()}
-    if isinstance(value, (list, tuple, set)):
-        return [normalized(x) for x in value]
-    if value is None or isinstance(value, (str, int, float, bool)):
-        return value
-    if hasattr(value, "name"):
-        return value.name
-    if hasattr(value, "tolist"):
-        return normalized(value.tolist())
-    return str(value)
-
-
-def canonical(value):
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
 class EngineRuntime:

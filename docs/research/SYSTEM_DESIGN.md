@@ -1,12 +1,40 @@
 # Research workbench system design
 
+**Authoritative scope update, 5 October 2026:**
+[REVISED_GRADUATION_PLAN.md](REVISED_GRADUATION_PLAN.md), sections 4–11 and 16,
+specifies the bounded remaining architecture, native extension boundary, contracts
+and UI. The larger target layout and original legacy audit below are historical
+design material. CC4 is already selectable; wording below that says only legacy
+is enabled is superseded by CC4_ADAPTER_ACCEPTANCE.md. Credentials, diagnostic
+actions and patch are proposed required extensions, not current capabilities.
+No system code was changed for this plan revision.
+
 ## 1. Product and research boundary
 
-Build a local browser application where a researcher can select a cyber scenario, choose hierarchy or swarm, adjust team size and communication conditions, inspect a run, launch an experiment matrix, and export results. A programmer must be able to add a policy without rewriting the UI or the simulator.
+Build a local browser application where a researcher compares hierarchical and
+swarm LLM attacker teams on complex, partially observed, changing cyber tasks.
+Rule/planner, single-agent and independent-worker controls diagnose adaptation
+demands and coordination benefits. Researchers configure scenarios, team size,
+communication and complexity modules, inspect runs, launch planned matrices and
+export evidence. A programmer can add a policy or environment module without
+rewriting the UI or simulator.
 
-Preserve the paper's offensive mission: simulated attacker teams discover services, acquire sessions, gain privileges, and reach designated assets. The first primary objective is privileged access on designated targets. Service disruption is a separate mission profile added after its action semantics are tested. Do not substitute drone recovery or defensive orchestration without explicitly changing the paper.
+Preserve the offensive mission: teams discover services, acquire sessions,
+gain privileges and reach designated assets. The primary question is how
+organization changes adaptation, success and cost under specified cyber
+complexity. Include static controls and held-out changing tasks; qualify every
+new physical effect. The first objective is privileged target access, extended
+with optional dwell/dependencies. Service disruption is a separate later
+profile. Do not claim human attacker equivalence without human evaluation.
 
-The scientific claim concerns organizational behavior within a documented simulation. LLM decision-making does not automatically make the environment realistic or reproduce human attackers. The contribution must come from a validated method or new empirical insight.
+The scientific claim concerns adaptive LLM reasoning and organization within a documented simulation. LLM decision-making does not automatically make the environment realistic or reproduce human attackers. The contribution must come from a validated method or new empirical insight.
+
+The revised Phase 3 architecture is specified in
+[ENVIRONMENT_COMPLEXITY_DESIGN.md](ENVIRONMENT_COMPLEXITY_DESIGN.md). It adds a
+versioned profile compiler, native topology/service/reachability modules,
+timestamped observations, bounded active defense, physical mission evaluation,
+explicit event phases and capability-derived UI settings. This is proposed
+design; the accepted implementation still enables the legacy profile only.
 
 ## 2. CybORG audit and integration decisions
 
@@ -42,9 +70,18 @@ Further engine changes require a named regression case and a documented patch. A
 
 ### Current checkout versus CAGE Challenge 4
 
-The [CC4 repository](https://github.com/cage-challenge/cage-challenge-4) provides an enterprise MARL benchmark with five native defenders, varying hosts/services, action durations, and changing mission phases. It is a separate CybORG distribution. It is valuable for later defensive transfer evaluation but does not provide an arbitrary-size offensive-team experiment unchanged.
+The [CC4 repository](https://github.com/cage-challenge/cage-challenge-4) provides an enterprise MARL benchmark with five native defenders, varying hosts/services, action durations, and changing mission phases. It is a separate CybORG distribution. Its native mechanisms are useful for the offensive research environment; its stock scenario does not provide an arbitrary-size offensive-team experiment unchanged.
 
-Decision: start with the installed engine's enterprise action model and implement the research generator above it. Keep CC4 as an optional separate backend after the primary experiment works. Do not put both incompatible `CybORG` distributions into one Python environment. Do not compare their raw reward numbers as if they were equivalent tasks.
+Updated decision, 4 October 2026: the [CC4 compatibility audit](CC4_COMPATIBILITY_AUDIT.md)
+supports targeting CC4 for the complex research backend before extensively
+extending the legacy engine. A custom generator demonstrated 1/2/4/8 mobile
+workers and private session/scan ownership without patching the controller.
+Retain the accepted legacy backend and introduce an isolated CC4 adapter;
+that [adapter is implemented and selectable](CC4_ADAPTER_ACCEPTANCE.md), while
+complete research qualification remains pending. The original
+legacy design below remains the description of the implemented backend.
+Do not put both incompatible `CybORG` distributions into one Python environment.
+Do not compare their raw reward numbers as if they were equivalent tasks.
 
 ## 3. Entities and configurable team size
 

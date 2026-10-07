@@ -1,0 +1,60 @@
+{
+  "purpose": "supplementary_software_acceptance",
+  "organization_version": "1.1",
+  "source": "7754b5f075fd818ba0c21d1e71e1876a34c3bfb4ce89c366e800122b794ed55d",
+  "accepted_checks": [
+    {
+      "file": ".local\\organization-gate-separated-unit.xml",
+      "sha256": "4771b9c5f40f4d02d4637937536af8b71c9f72d0c351581c88e5e263595bb0f1",
+      "tests": 16,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "file": ".local\\organization-gate-actual-admission-final.xml",
+      "sha256": "86727b661b7948d9287a79fcd3f6e5aec299e1d876921c622e3d5b88a02c3bcb",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "file": ".local\\organization-gate-separated-native.xml",
+      "sha256": "3fde2b015ae856ce6217bace7f958059edf668eab41624970c3354b4aebfee41",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "file": ".local\\organization-gate-study-regression.xml",
+      "sha256": "6d7be2b94f971413af8e6054cda288f56dfcd4b7f3402aa982d56349bc23bd47",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0
+    }
+  ],
+  "overlapping_checks": true,
+  "strategy_files_unchanged": {
+    "backend/app/research_policy.py": "2a5489c6e455a5c151d746849d616dd8d6e61a77dab368a7d475099a352bdca9",
+    "backend/app/search_policy.py": "a87e4a24250f3e8a517cc8334ca3fec0d67adc6eb0d6ddc59dd7c72a325b171c"
+  },
+  "rejected_attempt_xml": [
+    ".local/organization-gate-native.xml",
+    ".local/organization-gate-targeted-native.xml"
+  ],
+  "qualification_receipt": ".local/calibration-initialization-20261006/initialization.json",
+  "paused_demo": {
+    "id": "f9f5d3cb080e452f8d7c08df833281a6",
+    "tick": 0,
+    "status": "ready",
+    "world_id": "b492f7e4cc9c742a317eb70a94a67ee363c5b2006fbd89cb8e13015067c0965c",
+    "code_fingerprint": "7754b5f075fd818ba0c21d1e71e1876a34c3bfb4ce89c366e800122b794ed55d"
+  },
+  "live_model_calls_this_turn": 0,
+  "local_model_launch": "retry_rejected_before_execution",
+  "limits": [
+    "No scientific sweep or model comparison",
+    "Supervisor/expert review outstanding",
+    "Development calibration not accepted as complete",
+    "Original pilot snapshots preserved and not pooled"
+  ]
+}

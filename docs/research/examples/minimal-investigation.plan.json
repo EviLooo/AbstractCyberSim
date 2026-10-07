@@ -1,0 +1,40 @@
+{
+  "status": "design_only_not_runtime_schema",
+  "plan": "../REVISED_GRADUATION_PLAN.md",
+  "note": "Proposed fields and development values. Current EpisodeConfig must reject this document.",
+  "proposed_episode": {
+    "schema_version": "2.0",
+    "name": "Investigate an unfamiliar access condition",
+    "purpose": "exploration",
+    "scenario": {
+      "profile": "enterprise_cc4_research",
+      "research": {
+        "module_version": "1.0",
+        "recipe": "investigate",
+        "conditions": "paired",
+        "capability_coupling": "separate",
+        "initial_access": "common_entry",
+        "evidence": {"observation_delay": 0, "stale_after": 8},
+        "change": {"mode": "none", "response_budget": 0},
+        "seed_namespaces": {"network": 101, "recipe": 401, "event": 701},
+        "catalog": "minimal_access_v1",
+        "background_access": "deny",
+        "native_mission_phase_policy": "fixed_research_policy_v1"
+      },
+      "mission": {"target_roles": ["archive_target"], "hold_ticks": 1, "deadline_tick": 100}
+    },
+    "team": {"architecture": "hierarchy", "workers": 2},
+    "communication": {"extra_delay": 0, "loss_probability": 0.0, "seed": 17},
+    "resources": {"team_access_attempts": 12},
+    "cognition": {"provider": "scripted", "policy": "evidence_controller_v1"},
+    "schedule": {"mode": "per_worker", "max_ticks": 100, "seed": 27}
+  },
+  "qualification_pair": {
+    "researcher_only": true,
+    "same_materialized_hosts_and_initial_observations": true,
+    "variant_a": "import_disabled_source_allowed",
+    "variant_b": "import_enabled_source_denied",
+    "legal_distinguishing_probe": "source_specific_connectivity_then_service_behavior",
+    "must_not_enter_agent_inputs": ["variant_name", "condition_truth", "complete_route", "witness"]
+  }
+}

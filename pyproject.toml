@@ -11,6 +11,7 @@ dependencies = ["fastapi>=0.115,<1", "uvicorn>=0.34,<1", "httpx>=0.28,<1", "pyda
 
 [project.optional-dependencies]
 dev = ["pytest>=8,<10"]
+analysis = ["matplotlib>=3.9,<4"]
 
 [project.scripts]
 research = "backend.app.cli:main"

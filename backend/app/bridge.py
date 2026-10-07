@@ -3,13 +3,14 @@ import asyncio
 import json
 import os
 from pathlib import Path
-from packages.contracts.models import ENGINE_COMMIT
+from packages.contracts.capabilities import ENGINE_LOCKS
 from backend.app.settings import ROOT, engine_python
 
 
 class EngineBridge:
-    def __init__(self, log_path: Path):
+    def __init__(self, log_path: Path, profile="enterprise_legacy"):
         self.log_path = log_path
+        self.profile = profile
         self.process = None
         self.counter = 0
         self.lock = asyncio.Lock()
@@ -18,10 +19,13 @@ class EngineBridge:
         self.log_path.parent.mkdir(parents=True, exist_ok=True)
         self.log = self.log_path.open("ab")
         try:
-            self.process = await asyncio.create_subprocess_exec(engine_python(), "-u", str(ROOT / "packages/engine_worker/main.py"), cwd=str(ROOT), stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=self.log, limit=8 * 1024 * 1024, env=dict(os.environ, PYTHONIOENCODING="utf-8"))
+            self.process = await asyncio.create_subprocess_exec(engine_python(self.profile), "-u", str(ROOT / "packages/engine_worker/main.py"), "--profile", self.profile, cwd=str(ROOT), stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=self.log, limit=8 * 1024 * 1024, env=dict(os.environ, PYTHONIOENCODING="utf-8"))
             hello = await self.call("hello")
-            if hello["engine_commit"] != ENGINE_COMMIT or not hello["python"].startswith("3.8.") or hello["gym"] != "0.23.1" or hello["numpy"] != "1.21.6":
+            expected = ENGINE_LOCKS[self.profile]
+            if any(hello.get(key) != expected[key] for key in ["engine_commit", "gym", "numpy"]) or not hello["python"].startswith(expected["python_prefix"]):
                 raise RuntimeError("Engine versions differ from the reviewed lock")
+            if self.profile in ("enterprise_cc4", "enterprise_cc4_research") and (hello.get("upstream_dirty") or self.profile not in hello.get("capabilities", [])):
+                raise RuntimeError("CC4 source or capabilities differ from the reviewed pin")
             return hello
         except BaseException:
             await self.close()

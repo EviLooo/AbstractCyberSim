@@ -1,5 +1,7 @@
 """Bounded JSONL protocol; all native/library output is routed to stderr."""
 import contextlib
+import argparse
+import os
 import json
 import platform
 import subprocess
@@ -9,16 +11,25 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "CybORG"))
 MAX_FRAME = 8 * 1024 * 1024
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--profile", choices=["enterprise_legacy", "enterprise_cc4", "enterprise_cc4_research"], default="enterprise_legacy")
+    profile = parser.parse_args().profile
+    checkout = Path(os.environ.get("CYBORG_CC4_CHECKOUT", str(ROOT / ".engine/cc4/checkout"))) if profile in ("enterprise_cc4", "enterprise_cc4_research") else ROOT / "CybORG"
+    sys.path.insert(0, str(checkout.resolve()))
     wire = sys.stdout
     with contextlib.redirect_stdout(sys.stderr):
         import gym
         import numpy
-        from packages.engine_worker.runtime import EngineRuntime
+        if profile == "enterprise_cc4_research":
+            from packages.engine_worker.cc4.research.runtime import EngineRuntime
+        elif profile == "enterprise_cc4":
+            from packages.engine_worker.cc4.runtime import EngineRuntime
+        else:
+            from packages.engine_worker.runtime import EngineRuntime
         runtime = EngineRuntime()
     while True:
         line = sys.stdin.buffer.readline(MAX_FRAME + 1)
@@ -34,9 +45,15 @@ def main():
             method, params = request["method"], request["params"]
             with contextlib.redirect_stdout(sys.stderr):
                 if method == "hello":
-                    result = {"version": "1.0", "python": platform.python_version(), "gym": gym.__version__, "numpy": numpy.__version__, "engine_commit": subprocess.check_output(["git", "-C", str(ROOT / "CybORG"), "rev-parse", "HEAD"], universal_newlines=True).strip(), "capabilities": ["enterprise_legacy", "joint_step", "verified_intel", "snapshot"]}
+                    import CybORG
+                    if profile in ("enterprise_cc4", "enterprise_cc4_research") and not Path(CybORG.__file__).resolve().is_relative_to(checkout.resolve()):
+                        raise ValueError("Simulator import did not come from the configured checkout")
+                    result = {"version": "1.0", "python": platform.python_version(), "gym": gym.__version__, "numpy": numpy.__version__, "engine_commit": subprocess.check_output(["git", "-C", str(checkout), "rev-parse", "HEAD"], universal_newlines=True).strip(), "capabilities": [profile, "joint_step", "verified_intel", "snapshot"], "upstream_dirty": bool(subprocess.check_output(["git", "-C", str(checkout), "status", "--porcelain"], universal_newlines=True).strip())}
                 elif method == "create":
                     result = runtime.create(params["config"])
+                elif method == "qualify" and profile == "enterprise_cc4_research":
+                    from packages.engine_worker.cc4.research.qualification import qualify
+                    result = qualify(params["config"])
                 elif method == "step":
                     result = runtime.step(params["proposals"])
                 elif method == "ingest_intel":

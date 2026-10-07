@@ -1,5 +1,6 @@
 """Local cognition providers. Scripted mode is explicitly not an LLM."""
 import hashlib
+import asyncio
 import json
 import os
 import time
@@ -13,6 +14,19 @@ class BudgetExceeded(RuntimeError):
     pass
 
 
+class ProviderRefusal(RuntimeError):
+    """Explicit structured refusal; never infer refusal from arbitrary prose."""
+    pass
+
+
+class InvalidDecision(ValueError):
+    pass
+
+
+class ContextExceeded(RuntimeError):
+    pass
+
+
 class Cognition:
     def __init__(self, config, transcript_path):
         self.config = config
@@ -21,7 +35,9 @@ class Cognition:
         self.calls = 0
         self.failures = 0
         self.unknown_usage = 0
+        self.refusals = 0
         self.prompt_hashes = {}
+        self.actor_usage = {}
         for role in ["worker", "coordinator"]:
             text = (ROOT / "prompts" / f"{role}.txt").read_text(encoding="utf-8")
             self.prompt_hashes[role] = hashlib.sha256(text.encode()).hexdigest()
@@ -34,7 +50,7 @@ class Cognition:
         # Do not truncate into invalid JSON or silently erase observations.
         # Context overflow is explicit and the episode records the error.
         if len(content.encode()) > self.config.max_context_bytes:
-            raise RuntimeError("Private context exceeds configured byte limit; increase the limit or implement an evidence-preserving summarizer")
+            raise ContextExceeded("Private context exceeds configured byte limit; increase the limit or implement an evidence-preserving summarizer")
         # One token per UTF-8 byte is a deliberately conservative reservation
         # for common byte/subword local models. Calls are serial so reservations
         # cannot race. Actual counts always settle the ledger.
@@ -59,16 +75,30 @@ class Cognition:
                 self.unknown_usage += 1
                 self.used += reserve
                 record.update(charged_tokens=reserve, usage_status="unknown_reserved")
+            if data.get('message',{}).get('refusal'):
+                self.refusals += 1
+                raise ProviderRefusal('Provider returned an explicit structured refusal')
             return json.loads(data["message"]["content"])
+        except asyncio.CancelledError:
+            self.failures += 1
+            self.unknown_usage += 1
+            self.used += reserve
+            record.update(error='cancelled_unknown_outcome', charged_tokens=reserve, usage_status='unknown_reserved')
+            raise
         except Exception as exc:
             self.failures += 1
             record["error"] = str(exc)
+            record["error_type"] = type(exc).__name__
             if "charged_tokens" not in record:
                 self.unknown_usage += 1
                 self.used += reserve
                 record.update(charged_tokens=reserve, usage_status="unknown_reserved")
             raise
         finally:
+            usage = self.actor_usage.setdefault(actor, {'role': role, 'calls': 0, 'charged_tokens': 0, 'repair_calls': 0})
+            usage['calls'] += 1
+            usage['charged_tokens'] += record.get('charged_tokens', 0)
+            usage['repair_calls'] += int('format_repair' in view)
             record["latency_seconds"] = time.monotonic() - start
             with self.path.open("a", encoding="utf-8") as f:
                 f.write(json.dumps(record, ensure_ascii=False) + "\n")
@@ -82,22 +112,31 @@ class Cognition:
             # One bounded format repair, charged and logged as a separate call.
             # Transport failures/timeouts are not silently retried to success.
             supplied["format_repair"] = {"error": str(exc), "instruction": "Return a valid action object matching the schema using only the original private context."}
-            result = await self.complete("worker", actor, supplied, ActionProposal.model_json_schema(), preferred)
-            return ActionProposal.model_validate(result).model_dump()
+            try:
+                result = await self.complete("worker", actor, supplied, ActionProposal.model_json_schema(), preferred)
+                return ActionProposal.model_validate(result).model_dump()
+            except (ValidationError,json.JSONDecodeError) as final:
+                raise InvalidDecision('Invalid worker decision after one charged format repair') from final
 
     async def coordinator(self, view, default):
         # The language model can choose task assignments; identity and sessions
         # remain bound by the runner and native gateway.
         schema = {"type": "object", "properties": {a: {"anyOf": [ActionProposal.model_json_schema(), {"type": "null"}]} for a in view["workers"]}, "additionalProperties": False}
         assignments = {a: v["proposal"] for a, v in default.items()}
-        raw = await self.complete("coordinator", "Coordinator", view, schema, assignments)
+        try:
+            raw = await self.complete("coordinator", "Coordinator", view, schema, assignments)
+        except json.JSONDecodeError as exc:
+            raise InvalidDecision('Coordinator response is not valid JSON') from exc
         if not isinstance(raw, dict) or set(raw) - set(view["workers"]):
-            raise ValueError("Invalid coordinator worker bindings")
+            raise InvalidDecision("Invalid coordinator worker bindings")
         result = {}
         for actor, proposal in raw.items():
             if proposal is None:
                 continue
-            p = ActionProposal.model_validate(proposal).model_dump()
+            try:
+                p = ActionProposal.model_validate(proposal).model_dump()
+            except ValidationError as exc:
+                raise InvalidDecision('Invalid coordinator action') from exc
             # Forward only references actually delivered to the coordinator.
             reports = view["delivered_reports"]
             evidence = list(dict.fromkeys(e for r in reports for e in r["evidence_ids"]))
@@ -105,4 +144,4 @@ class Cognition:
         return result
 
     def summary(self):
-        return {"provider": self.config.provider, "calls": self.calls, "charged_tokens": self.used, "unknown_usage_calls": self.unknown_usage, "provider_failures": self.failures, "prompt_hashes": self.prompt_hashes, "is_llm": self.config.provider != "scripted"}
+        return {"provider": self.config.provider, "scripted_policy": self.config.scripted_policy, "calls": self.calls, "charged_tokens": self.used, "unknown_usage_calls": self.unknown_usage, "provider_failures": self.failures, "provider_refusals": self.refusals, "prompt_hashes": self.prompt_hashes, "is_llm": self.config.provider != "scripted", "per_actor_usage": {a: dict(v) for a,v in self.actor_usage.items()}}

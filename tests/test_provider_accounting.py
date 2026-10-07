@@ -4,6 +4,25 @@ import json
 import httpx
 import pytest
 from backend.app.providers import BudgetExceeded, Cognition
+from backend.app.providers import ProviderRefusal
+
+
+def test_explicit_refusal_keeps_known_cost_and_has_no_repair(tmp_path, monkeypatch):
+    class Response:
+        def raise_for_status(self): pass
+        def json(self):
+            return {'message':{'refusal':'Structured fixture refusal'},'prompt_eval_count':10,'eval_count':4}
+    class Client:
+        def __init__(self,**kwargs): pass
+        async def __aenter__(self): return self
+        async def __aexit__(self,*args): pass
+        async def post(self,*args,**kwargs): return Response()
+    monkeypatch.setattr(httpx,'AsyncClient',Client)
+    cognition = Cognition(CognitionConfig(provider='ollama',model='fixture'),tmp_path/'transcript.jsonl')
+    with pytest.raises(ProviderRefusal):
+        asyncio.run(cognition.worker('Red_0',{}, {'action':'Sleep'}))
+    assert cognition.calls==1 and cognition.used==14 and cognition.refusals==1
+    assert cognition.unknown_usage==0 and cognition.actor_usage['Red_0']['repair_calls']==0
 from packages.contracts.models import CognitionConfig
 
 
@@ -75,3 +94,32 @@ def test_unknown_usage_after_transport_error_is_never_recorded_as_free(tmp_path,
     assert cognition.calls == 1 and cognition.failures == 1
     record = json.loads(cognition.path.read_text())
     assert record["usage_status"] == "unknown_reserved"
+
+
+def test_cancelled_inflight_provider_keeps_unknown_cost_and_actor_ledger(tmp_path, monkeypatch):
+    entered = None
+    class Client:
+        def __init__(self, **kwargs):
+            pass
+        async def __aenter__(self):
+            return self
+        async def __aexit__(self, *args):
+            pass
+        async def post(self, *args, **kwargs):
+            entered.set()
+            await asyncio.Event().wait()
+    monkeypatch.setattr(httpx, 'AsyncClient', Client)
+    cognition = Cognition(CognitionConfig(provider='ollama', model='mock-only'), tmp_path/'cancelled.jsonl')
+    async def check():
+        nonlocal entered
+        entered = asyncio.Event()
+        task = asyncio.create_task(cognition.worker('Red_0', {}, {'action':'Sleep'}))
+        await entered.wait()
+        task.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await task
+    asyncio.run(check())
+    record = json.loads(cognition.path.read_text(encoding='utf-8'))
+    assert record['error']=='cancelled_unknown_outcome'
+    assert cognition.used==record['reserved_tokens'] and cognition.unknown_usage==1
+    assert cognition.summary()['per_actor_usage']['Red_0']['charged_tokens']==cognition.used

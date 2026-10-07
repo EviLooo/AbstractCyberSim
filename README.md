@@ -2,6 +2,34 @@
 
 Local workbench for studying how offensive cyber agent organizations behave in CybORG. The application provides network and team visualization, private-agent inspection, tick controls, message transport, saved replay, configuration, and an experiment planner.
 
+The full approved graduation software scope is implemented and qualified through
+R7. The42-item final audit is saved in docs/research/FINAL_ACCEPTANCE_AUDIT.md. The
+[approved scope](docs/research/APPROVED_SCOPE.md),
+[persistent execution Goal](docs/research/GRADUATION_EXECUTION_GOAL.md),
+[requirement ledger](docs/research/GRADUATION_REQUIREMENTS.md) and
+[checkpoint](docs/research/GRADUATION_CHECKPOINT.md) define the work and evidence.
+The earlier four-worker hierarchy failure has been fixed and verified without
+raising its budgets. Historical acceptance figures below refer to older profiles.
+Scientific results, expert realism review and successful live-model qualification
+remain outstanding. No real targets are scanned or attacked.
+
+Use the current [researcher guide](docs/research/RESEARCHER_GUIDE.md),
+[programmer handoff](docs/research/PROGRAMMER_HANDOFF.md) and
+[simple presentation](docs/research/GRADUATION_PRESENTATION.md).
+The local graduation demo is **http://127.0.0.1:8797**. Select
+**Graduation · investigative CC4**; recipes and conditions, 1/2/4 workers,
+hierarchy/swarm/independent, evidence/transport delay, shared Patch or Restore,
+budgets and target hold/deadline are configurable. Initialize paused, then use
+explicit Step/Run controls. Replay/export make no model calls. Scripted controllers
+can succeed; the research does not assume a guaranteed LLM winner.
+
+Fresh research-only setup:
+
+```powershell
+./tools/setup_research.ps1 -ServicePython python -CC4Python 'C:/path/to/python312.exe'
+.venv/Scripts/python.exe -m backend.app.cli serve --port 8787
+```
+
 Implementation branch: `research-workbench`, based on the existing repository's `main`. The older Mesa prototype remains on `v-0.2`. Keep both in this repository; merge the workbench branch when it is reviewed. CybORG is a separate pinned Git submodule plus a documented two-line source patch.
 
 ## Start on this laptop
@@ -12,11 +40,48 @@ From the repository directory in PowerShell:
 ./tools/start.ps1
 ```
 
-Open **http://127.0.0.1:8787**. The installed service environment is `.venv` (Python 3.13.9). The engine uses the existing `cyborg38` environment (Python 3.8.11). No simulation, experiment, or model call starts when the server or page opens.
+Open **http://127.0.0.1:8787**. The service environment is `.venv` (Python 3.13.9).
+Legacy uses `cyborg38` (Python 3.8.11); the selectable CC4 engine uses
+`.engine/cc4/venv` (Python 3.12.5). Opening the server/page starts no actions or model calls.
+
+The latest observed-search preview runs at **http://127.0.0.1:8796**, with separate
+data in `.local/search-preview`, preserving earlier preview services. Select
+**Enterprise · CAGE Challenge 4** in Laboratory. [Adapter acceptance and limits](docs/research/CC4_ADAPTER_ACCEPTANCE.md).
 
 In Laboratory, select hierarchy/swarm/independent, choose 1–8 cyber workers, configure seeds and transport, then **Initialize environment**. This creates a paused native CybORG world. **Step** executes one joint tick; **Run**, **Pause**, and **Stop** control subsequent ticks. Click hosts or team members, switch researcher/private views, and use the replay slider to inspect saved evidence.
 
+For the search baseline, import `configs/cc4-search-tradeoffs.json` or choose
+**Scripted → Local search · observed routes and deadline**. Search settings
+control risk/failure/unknown-connection penalties and expansion limits; saved
+decision panels show estimated plans. [Semantics and qualification](docs/research/OBSERVED_SEARCH_ACCEPTANCE.md).
+
 Configuration changes apply to new runs. In exploration mode, manual actions are logged and make a run ineligible for evaluation comparisons. Evaluation runs prohibit manual actions. Restarting the service preserves replay evidence, but does not resume a native simulator checkpoint.
+
+For different route choices, import `configs/cc4-tradeoffs.json` or choose
+**Environment complexity → Fast exposed / slower quiet routes**. Configure
+SSH/FTP action times, sensor exposure, optional root-service gateways and
+temporary service blocking. Add a mission deadline to create time pressure.
+Increase user hosts per zone before adding alternatives (up to nine).
+[Exact mechanisms and software evidence](docs/research/ROUTE_TRADEOFFS_ACCEPTANCE.md).
+[Explicit implemented/open requirements](docs/research/COMPLETION_LEDGER.md).
+
+CC4 actions span native ticks; busy workers wait without extra cognition calls.
+The optional temporal module adds host/service observation delay, evidence age,
+source/history/conflicts and observable access loss/recovery. Use **Evidence age
+and recovery** to configure it, or import `configs/cc4-recovery.json`. Own action
+results and session status remain immediate. [Semantics and acceptance](docs/research/TEMPORAL_COMPLEXITY_ACCEPTANCE.md).
+Settings expose host/service counts and optional bounded sensor-driven recovery.
+The environment panel separates intended policy from actual firewall blocks.
+Green activity, phishing and automatic respawn are disabled in this profile.
+
+Install the CC4 backend with an isolated Python 3.12 interpreter:
+
+```powershell
+./tools/setup_cc4.ps1 -Python 'C:\Program Files\Python312\python.exe'
+```
+
+This pins an unmodified checkout and simulator dependencies without the upstream
+RL training stack. Keep both CybORG distributions in separate environments.
 
 ## Installation on another Windows laptop
 
@@ -57,7 +122,7 @@ Communication is a separately modeled research overlay with delay, loss, TTL, pe
 CybORG/                    pinned upstream submodule; existing local files preserved
 engine/                    manifest, dependency lock, compatibility-patch notes
 packages/contracts/        strict Pydantic models + generated JSON schemas
-packages/engine_worker/     Python 3.8 native scenario, action gateway, JSONL worker
+packages/engine_worker/     isolated legacy/CC4 adapters, action gateways, JSONL worker
 backend/app/               modern API, process bridge, cognition, organizations,
                            communication, run lifecycle, storage, evaluation
 frontend/                  React/TypeScript + Cytoscape interface; npm lock
@@ -126,16 +191,38 @@ Comparison excludes manual, unfinished, non-evaluation, and unknown-usage runs. 
 
 ## Software verification
 
+Choose **Decision policy** under Scripted for local rules or local replanning.
+Retry/backoff settings, remembered local facts, considered choices and cost
+estimates are saved; the decision panel has a readable choice table and private
+worker projection. Use [`configs/cc4-local-replan.json`](configs/cc4-local-replan.json)
+or [`configs/cc4-local-rules.json`](configs/cc4-local-rules.json).
+[Acceptance and limits](docs/research/BASELINE_DIAGNOSTICS_ACCEPTANCE.md).
+
+CC4 also supports configurable sustained access, inclusive deadlines and live
+privileged-host prerequisites. Use [`configs/cc4-mission.json`](configs/cc4-mission.json)
+or **Mission duration and objectives**. Researcher replay displays confirmed
+holds, resets and failures; private views show only owned access and public
+requirements. [Semantics and acceptance](docs/research/MISSION_COMPLEXITY_ACCEPTANCE.md).
+
+CC4 now includes opt-in segmented source routes. Use
+[`configs/cc4-routes.json`](configs/cc4-routes.json), or select **Segmented routes
+and alternatives** under **Environment complexity**. Configure 1–3 gateway
+layers, 1–2 alternatives and optional hardened SSH dead ends. The route flow
+shows actual source permissions separately from the physical network. Manual
+actions can select an owned source; `EstablishPivot` is an explicit privileged
+deployment extension with an empty scan cache. Native firewall checks and
+restoration still decide execution. [Semantics and limits](docs/research/ROUTE_COMPLEXITY_ACCEPTANCE.md).
+
 ```powershell
 ./.venv/Scripts/python.exe -m pytest -q
 node --experimental-strip-types --test frontend/tests/research-ui.test.mjs
 npm run build --prefix frontend
 ```
 
-Engine checks take bounded fixture steps in temporary test storage; these are software checks, not research experiments or LLM studies. The 49 passing Python tests include complete native missions with hierarchy/swarm/independent teams of 1/2/8 workers, 1/2/4/8 actor discovery/scan/exploit checks, blocked-route and session-ownership boundaries, delivered-only coordination, scheduled outages, CLI/API parity and pause/continue determinism. Four frontend logic tests check replay context, private projection and actual topology; the command above was verified on Node 24.14.0 with TypeScript stripping. See the [Phase 1–2 acceptance checklist](docs/research/PHASE_1_2_ACCEPTANCE.md), exact fixtures and limits in the [validation plan](docs/research/VALIDATION_PLAN.md), and the [native action explanation](docs/NATIVE_ACTION_LOGIC.md).
+Engine checks take bounded fixture steps in temporary test storage; these are software checks, not research experiments or LLM studies. The complete current regression passed 116 Python tests. Coverage includes native missions, actor ownership, delivered-only coordination, scheduling, API/CLI parity, CC4 action durations, observed restoration, delayed evidence privacy and temporal recovery. Nine frontend checks cover replay context, private projection, topology, CC4 labels, private belief evidence, private route projection and private mission projection and private decision projection; the production build passes on Node 24.14.0. See the [CC4 adapter acceptance](docs/research/CC4_ADAPTER_ACCEPTANCE.md), [Phase 1–2 acceptance checklist](docs/research/PHASE_1_2_ACCEPTANCE.md), exact fixtures and limits in the [validation plan](docs/research/VALIDATION_PLAN.md), and the [native action explanation](docs/NATIVE_ACTION_LOGIC.md).
 
 ## Research status
 
-This is the first implementation of the workbench, not completed research. The enabled native profile is CybORG's legacy Scenario2 enterprise (13 hosts plus three routers), with passive/monitor-only defense and a privileged-access mission. Four-zone custom layouts, recovery defense, disruption objectives, batch execution/resumption, model generalization, and final study calibration remain pending. The full proposed research is in [docs/research/README.md](docs/research/README.md).
+This is an implemented workbench with software acceptance, not completed research. Both the legacy Scenario2 enterprise and isolated CAGE Challenge 4 enterprise profiles are selectable. CC4 adds configurable native zone populations, multi-tick actions, bounded observed restoration and opt-in temporal evidence modules and segmented source routes. Richer modular complexity, arbitrary topology, service-disruption objectives, batch execution/resumption, model generalization and scientific calibration remain pending. The full proposed research is in [docs/research/README.md](docs/research/README.md).
 
 Framework documentation: [CybORG](https://github.com/cage-challenge/CybORG), [FastAPI](https://fastapi.tiangolo.com/), [React](https://react.dev/learn), [Cytoscape.js](https://js.cytoscape.org/), [Ollama chat API](https://docs.ollama.com/api/chat). Upstream CybORG retains its license in the submodule.

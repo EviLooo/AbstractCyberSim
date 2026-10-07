@@ -1,5 +1,13 @@
 # Configuration examples
 
+The 5 October [graduation plan](../REVISED_GRADUATION_PLAN.md) adds
+[minimal-investigation.plan.json](minimal-investigation.plan.json) and
+[minimal-recovery.plan.json](minimal-recovery.plan.json). These show proposed
+bounded profile fields, paired hidden-condition qualification and architecture
+matching. They are **design-only and intentionally rejected by current runtime
+schema-1.0**. No example was executed. Earlier examples/commands below remain
+historical design material; runtime-supported configs live under `configs/`.
+
 These files define the proposed configuration contract. The research runner, generators, policies, and UI described by them are not implemented yet. Do not invoke the current drone dashboard with these files.
 
 - `hierarchy.episode.json`: four offensive workers plus a coordinator, mock cognition, four-zone branching world, bounded communication, and shared resource limits.
@@ -40,3 +48,10 @@ Environment and model secrets belong in local settings, outside these files. A r
 - Changing settings produces a new resolved-config hash/run; scientific runs are immutable.
 
 The supplied examples use mock cognition so no API spending is implied. Their role is to communicate parameter names and expected behavior to the implementer.
+
+## Modular complexity example
+
+`complexity-profile.v2.design.json` is a proposed Phase 3 profile recipe. It is
+**design-only** and must be rejected by current schema-1.0 APIs. The authoritative
+module semantics and build order are in
+[ENVIRONMENT_COMPLEXITY_DESIGN.md](../ENVIRONMENT_COMPLEXITY_DESIGN.md).
