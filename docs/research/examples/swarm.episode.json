@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.1-design",
+  "name": "four-worker-swarm-demo",
+  "mode": "exploration",
+  "allow_manual_intervention": true,
+  "engine": {
+    "backend": "cyborg_legacy_sim",
+    "upstream_commit": "2742b5e0ce4330c9b14006b38acd3b5ebe00d6fd",
+    "required_patch_ids": ["portscan-actor-session-v1"]
+  },
+  "scenario": {
+    "profile": "enterprise_research",
+    "version": "1",
+    "family": "branching",
+    "parameters": {
+      "zone_count": 4,
+      "host_counts": {"entry": 2, "user": 4, "enterprise": 3, "sensitive": 2},
+      "routing": "qualified_zone_policy_v1",
+      "service_template_set": "audited_enterprise_v1",
+      "initial_knowledge": "entry_host_only",
+      "foothold_profile": "same_entry_host_separate_sessions"
+    },
+    "objective": {"id": "privileged_access_all", "target_role": "sensitive_target"},
+    "defender": {"preset": "passive_v1"},
+    "green": {"preset": "sleep_v1"}
+  },
+  "team": {"workers": 4, "session_ownership": "individual"},
+  "policy": {
+    "organization": "swarm",
+    "version": "1",
+    "parameters": {"claim_protocol": "evidence_claim_v1", "claim_expiry_ticks": 3}
+  },
+  "cognition": {
+    "provider": "mock",
+    "model_preset": "scripted_v1",
+    "worker_prompt": "offensive_worker_v1",
+    "coordinator_prompt": "hierarchy_coordinator_v1",
+    "temperature": 0,
+    "context_tokens": 4096,
+    "max_output_tokens": 320,
+    "schema_repair_attempts": 1
+  },
+  "communication": {
+    "topology": "by_policy",
+    "transport": "virtual_overlay",
+    "sharing": "discoveries_and_status",
+    "extra_delay_ticks": 0,
+    "loss_rate": 0,
+    "team_delivery_bytes_per_tick": 4096,
+    "team_delivery_envelopes_per_tick": 16,
+    "ttl_ticks": 5
+  },
+  "scheduler": {"mode": "per_worker", "team_action_cap": null},
+  "limits": {"max_ticks": 100, "team_llm_tokens": 40000, "max_cost_usd": null},
+  "seeds": {"world": 7, "engine": 17, "communication": 27, "scheduler": 37, "provider": 47},
+  "logging": {"truth_snapshot_every_tick": true, "record_provider_transcripts": true}
+}

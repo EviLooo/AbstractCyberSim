@@ -1,0 +1,85 @@
+{
+  "document_kind": "design_only_not_runtime_episode_config",
+  "proposed_schema_version": "2.0",
+  "profile_id": "enterprise_research/branching_recovery",
+  "profile_version": "draft-1",
+  "preset": "C2-custom",
+  "generation": {
+    "world_seed": 101,
+    "native_seed": 201,
+    "sensor_seed": 301,
+    "defender_seed": 401,
+    "event_seed": 501,
+    "split": "development"
+  },
+  "modules": {
+    "topology": {
+      "enabled": true,
+      "version": "draft-1",
+      "zones": 4,
+      "ordinary_hosts": 16,
+      "routers": "materialized_separately",
+      "alternative_routes": 2,
+      "dependency_depth": 3,
+      "dead_end_branches": 1,
+      "reachability_policy": "explicit_source_service_v1"
+    },
+    "services": {
+      "enabled": true,
+      "version": "draft-1",
+      "template_catalog": "qualified_native_templates_v1",
+      "explicit_technique_choice": false,
+      "mixed_initial_privilege_outcomes": true
+    },
+    "observations": {
+      "enabled": true,
+      "version": "draft-1",
+      "delay_ticks": 0,
+      "timestamped_evidence": true,
+      "decoys_enabled": false
+    },
+    "defense": {
+      "enabled": true,
+      "version": "draft-1",
+      "policy": "reactive_monitor_investigate_restore_v1",
+      "reaction_delay_ticks": 3,
+      "max_responses": 1,
+      "excluded_response_host_roles": ["initial_entry"],
+      "sensor_coverage_template": "gateway_hosts_v1",
+      "omniscient": false
+    },
+    "technical_change": {
+      "enabled": true,
+      "version": "draft-1",
+      "allowed_transitions": ["qualified_host_restore"],
+      "scheduled_events": [],
+      "permanent_loss_of_all_entry_access": false
+    },
+    "mission": {
+      "enabled": true,
+      "version": "draft-1",
+      "target_roles": ["sensitive_app", "sensitive_archive"],
+      "objective": "active_privileged_access_all",
+      "dwell_ticks": 3,
+      "horizon_ticks": 150
+    },
+    "temporal": {
+      "enabled": true,
+      "version": "draft-1",
+      "action_duration_profile": "one_native_joint_tick",
+      "event_phase": "after_native_tick_before_observation",
+      "busy_action_support_required": false
+    },
+    "benign_activity": {
+      "enabled": false,
+      "version": "draft-1"
+    }
+  },
+  "treatment_separate_from_world": {
+    "architecture": "hierarchy_or_swarm",
+    "workers": 4,
+    "tool_schedule": "team_cap_one",
+    "communication_profile": "healthy",
+    "cognition_profile": "same_qualified_model_and_budget"
+  }
+}

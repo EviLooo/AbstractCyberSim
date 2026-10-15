@@ -1,0 +1,36 @@
+{
+  "schema_version": "0.1-design",
+  "name": "coordination-demo-grid",
+  "base_episode": "hierarchy.episode.json",
+  "fixed_overrides": {
+    "mode": "evaluation",
+    "allow_manual_intervention": false
+  },
+  "factors": {
+    "organization": ["hierarchy", "swarm"],
+    "worker_counts": [2, 4],
+    "world_seeds": [101, 102, 103, 104, 105],
+    "extra_delay_ticks": [0, 1],
+    "loss_rates": [0, 0.1]
+  },
+  "replicates_per_world": 2,
+  "pair_by": ["world_id", "worker_count", "extra_delay_ticks", "loss_rate", "replicate"],
+  "derive_policy_parameters_from_registered_defaults": true,
+  "expected_episode_count": 160,
+  "execution": {
+    "concurrency": 1,
+    "resume_verified_completed_jobs": true,
+    "technical_retry_attempts": 1,
+    "max_batch_cost_usd": null,
+    "max_batch_llm_tokens": 6400000
+  },
+  "analysis": {
+    "primary_endpoint": "mission_success",
+    "comparison": "paired_hierarchy_minus_swarm",
+    "cluster_unit": "world_id",
+    "confidence_level": 0.95,
+    "bootstrap_resamples": 2000,
+    "bootstrap_seed": 2026,
+    "report_all_termination_categories": true
+  }
+}

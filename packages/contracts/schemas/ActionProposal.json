@@ -1,0 +1,134 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "action": {
+      "enum": [
+        "Sleep",
+        "DiscoverRemoteSystems",
+        "DiscoverNetworkServices",
+        "ExploitRemoteService",
+        "PrivilegeEscalate",
+        "EstablishPivot",
+        "Probe",
+        "InspectArtifacts",
+        "AttemptAccess"
+      ],
+      "title": "Action",
+      "type": "string"
+    },
+    "session": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Session",
+      "type": "integer"
+    },
+    "target": {
+      "anyOf": [
+        {
+          "maxLength": 100,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Target"
+    },
+    "rationale": {
+      "default": "",
+      "maxLength": 1000,
+      "title": "Rationale",
+      "type": "string"
+    },
+    "method": {
+      "anyOf": [
+        {
+          "enum": [
+            "web_rfi",
+            "ssh_weak_auth",
+            "credential_login"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Method"
+    },
+    "probe": {
+      "anyOf": [
+        {
+          "enum": [
+            "connectivity",
+            "service_behavior",
+            "auth_policy"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Probe"
+    },
+    "port": {
+      "anyOf": [
+        {
+          "enum": [
+            22,
+            80
+          ],
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Port"
+    },
+    "token_ref": {
+      "anyOf": [
+        {
+          "maxLength": 100,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Token Ref"
+    },
+    "source_host": {
+      "anyOf": [
+        {
+          "maxLength": 100,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Host"
+    },
+    "basis_evidence_ids": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 16,
+      "title": "Basis Evidence Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "action"
+  ],
+  "title": "ActionProposal",
+  "type": "object"
+}

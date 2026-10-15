@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "name": "CC4 enterprise exploration",
+  "purpose": "exploration",
+  "scenario": {
+    "profile": "enterprise_cc4",
+    "world_seed": 100,
+    "targets": [
+      "restricted_zone_a_subnet_server_host_0"
+    ],
+    "defender": "monitor",
+    "cc4": {
+      "user_hosts": 3,
+      "server_hosts": 1,
+      "addon_services": 4,
+      "response_delay": 2,
+      "response_cooldown": 10,
+      "response_budget": 4
+    },
+    "complexity": null,
+    "mission": null
+  },
+  "team": {
+    "architecture": "hierarchy",
+    "workers": 4,
+    "claim_ttl": 5
+  },
+  "communication": {
+    "extra_delay": 0,
+    "loss_probability": 0,
+    "bytes_per_tick": 65536,
+    "envelopes_per_tick": 64,
+    "ttl": 10,
+    "seed": 17,
+    "verified_intel": true,
+    "links": null,
+    "interruptions": []
+  },
+  "cognition": {
+    "provider": "scripted",
+    "scripted_policy": "legacy",
+    "search": {
+      "risk_weight": 8,
+      "failure_penalty": 6,
+      "unknown_edge_penalty": 4,
+      "max_expansions": 128
+    },
+    "action_retry_limit": 2,
+    "failure_backoff_ticks": 0,
+    "model": "",
+    "temperature": 0,
+    "max_output_tokens": 512,
+    "max_context_bytes": 24000,
+    "max_team_tokens": 40000,
+    "timeout_seconds": 60
+  },
+  "schedule": {
+    "mode": "per_worker",
+    "seed": 27,
+    "max_ticks": 100
+  }
+}

@@ -1,0 +1,1057 @@
+{
+  "$defs": {
+    "BeliefSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "stale_after": {
+          "default": 8,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Stale After",
+          "type": "integer"
+        },
+        "observation_delay": {
+          "default": 0,
+          "maximum": 20,
+          "minimum": 0,
+          "title": "Observation Delay",
+          "type": "integer"
+        }
+      },
+      "title": "BeliefSettings",
+      "type": "object"
+    },
+    "CC4Settings": {
+      "additionalProperties": false,
+      "properties": {
+        "user_hosts": {
+          "default": 3,
+          "maximum": 10,
+          "minimum": 3,
+          "title": "User Hosts",
+          "type": "integer"
+        },
+        "server_hosts": {
+          "default": 1,
+          "maximum": 6,
+          "minimum": 1,
+          "title": "Server Hosts",
+          "type": "integer"
+        },
+        "addon_services": {
+          "default": 4,
+          "maximum": 5,
+          "minimum": 0,
+          "title": "Addon Services",
+          "type": "integer"
+        },
+        "response_delay": {
+          "default": 2,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Response Delay",
+          "type": "integer"
+        },
+        "response_cooldown": {
+          "default": 10,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Response Cooldown",
+          "type": "integer"
+        },
+        "response_budget": {
+          "default": 4,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Response Budget",
+          "type": "integer"
+        }
+      },
+      "title": "CC4Settings",
+      "type": "object"
+    },
+    "ChangeSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "default": "none",
+          "enum": [
+            "none",
+            "patch_rfi",
+            "restore"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "response_delay": {
+          "default": 4,
+          "maximum": 8,
+          "minimum": 2,
+          "title": "Response Delay",
+          "type": "integer"
+        },
+        "response_budget": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Response Budget",
+          "type": "integer"
+        }
+      },
+      "title": "ChangeSettings",
+      "type": "object"
+    },
+    "CognitionConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "provider": {
+          "default": "scripted",
+          "enum": [
+            "scripted",
+            "ollama"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "scripted_policy": {
+          "default": "legacy",
+          "enum": [
+            "legacy",
+            "local_rules",
+            "local_replan",
+            "local_search",
+            "fixed_workflow",
+            "evidence_controller",
+            "observed_planner"
+          ],
+          "title": "Scripted Policy",
+          "type": "string"
+        },
+        "search": {
+          "$ref": "#/$defs/SearchSettings"
+        },
+        "action_retry_limit": {
+          "default": 2,
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Action Retry Limit",
+          "type": "integer"
+        },
+        "failure_backoff_ticks": {
+          "default": 0,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Failure Backoff Ticks",
+          "type": "integer"
+        },
+        "model": {
+          "default": "",
+          "maxLength": 120,
+          "title": "Model",
+          "type": "string"
+        },
+        "temperature": {
+          "default": 0,
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Temperature",
+          "type": "number"
+        },
+        "max_output_tokens": {
+          "default": 512,
+          "maximum": 4096,
+          "minimum": 64,
+          "title": "Max Output Tokens",
+          "type": "integer"
+        },
+        "max_context_bytes": {
+          "default": 24000,
+          "maximum": 128000,
+          "minimum": 4000,
+          "title": "Max Context Bytes",
+          "type": "integer"
+        },
+        "max_team_tokens": {
+          "default": 40000,
+          "maximum": 10000000,
+          "minimum": 1000,
+          "title": "Max Team Tokens",
+          "type": "integer"
+        },
+        "timeout_seconds": {
+          "default": 60,
+          "maximum": 300,
+          "minimum": 1,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        }
+      },
+      "title": "CognitionConfig",
+      "type": "object"
+    },
+    "CommunicationConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "extra_delay": {
+          "default": 0,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Extra Delay",
+          "type": "integer"
+        },
+        "loss_probability": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Loss Probability",
+          "type": "number"
+        },
+        "bytes_per_tick": {
+          "default": 65536,
+          "maximum": 10000000,
+          "minimum": 256,
+          "title": "Bytes Per Tick",
+          "type": "integer"
+        },
+        "envelopes_per_tick": {
+          "default": 64,
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Envelopes Per Tick",
+          "type": "integer"
+        },
+        "ttl": {
+          "default": 10,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Ttl",
+          "type": "integer"
+        },
+        "seed": {
+          "default": 17,
+          "maximum": 4294967295,
+          "minimum": 0,
+          "title": "Seed",
+          "type": "integer"
+        },
+        "verified_intel": {
+          "default": true,
+          "title": "Verified Intel",
+          "type": "boolean"
+        },
+        "links": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/CommunicationLink"
+              },
+              "maxItems": 64,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Links"
+        },
+        "interruptions": {
+          "items": {
+            "$ref": "#/$defs/LinkInterruption"
+          },
+          "maxItems": 100,
+          "title": "Interruptions",
+          "type": "array"
+        }
+      },
+      "title": "CommunicationConfig",
+      "type": "object"
+    },
+    "CommunicationLink": {
+      "additionalProperties": false,
+      "properties": {
+        "sender": {
+          "pattern": "^(Red_[0-7]|Coordinator)$",
+          "title": "Sender",
+          "type": "string"
+        },
+        "recipient": {
+          "pattern": "^(Red_[0-7]|Coordinator)$",
+          "title": "Recipient",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sender",
+        "recipient"
+      ],
+      "title": "CommunicationLink",
+      "type": "object"
+    },
+    "ComplexitySettings": {
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Version",
+          "type": "string"
+        },
+        "beliefs": {
+          "$ref": "#/$defs/BeliefSettings"
+        },
+        "routes": {
+          "$ref": "#/$defs/RouteSettings"
+        }
+      },
+      "title": "ComplexitySettings",
+      "type": "object"
+    },
+    "EpisodeConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "default": "1.0",
+          "enum": [
+            "1.0",
+            "2.0"
+          ],
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "name": {
+          "default": "Enterprise exploration",
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "purpose": {
+          "default": "exploration",
+          "enum": [
+            "exploration",
+            "evaluation"
+          ],
+          "title": "Purpose",
+          "type": "string"
+        },
+        "scenario": {
+          "$ref": "#/$defs/ScenarioConfig"
+        },
+        "team": {
+          "$ref": "#/$defs/TeamConfig"
+        },
+        "communication": {
+          "$ref": "#/$defs/CommunicationConfig"
+        },
+        "cognition": {
+          "$ref": "#/$defs/CognitionConfig"
+        },
+        "schedule": {
+          "$ref": "#/$defs/ScheduleConfig"
+        },
+        "resources": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResourceSettings"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "EpisodeConfig",
+      "type": "object"
+    },
+    "EvidenceSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "observation_delay": {
+          "default": 0,
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Observation Delay",
+          "type": "integer"
+        },
+        "stale_after": {
+          "default": 8,
+          "maximum": 12,
+          "minimum": 4,
+          "title": "Stale After",
+          "type": "integer"
+        }
+      },
+      "title": "EvidenceSettings",
+      "type": "object"
+    },
+    "LinkInterruption": {
+      "additionalProperties": false,
+      "properties": {
+        "start_tick": {
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Start Tick",
+          "type": "integer"
+        },
+        "end_tick": {
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "End Tick",
+          "type": "integer"
+        },
+        "sender": {
+          "anyOf": [
+            {
+              "pattern": "^(Red_[0-7]|Coordinator)$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sender"
+        },
+        "recipient": {
+          "anyOf": [
+            {
+              "pattern": "^(Red_[0-7]|Coordinator)$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recipient"
+        },
+        "bidirectional": {
+          "default": true,
+          "title": "Bidirectional",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "start_tick",
+        "end_tick"
+      ],
+      "title": "LinkInterruption",
+      "type": "object"
+    },
+    "MissionSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "hold_ticks": {
+          "default": 1,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Hold Ticks",
+          "type": "integer"
+        },
+        "deadline_tick": {
+          "anyOf": [
+            {
+              "maximum": 10000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deadline Tick"
+        },
+        "objectives": {
+          "items": {
+            "$ref": "#/$defs/ObjectiveSettings"
+          },
+          "maxItems": 16,
+          "title": "Objectives",
+          "type": "array"
+        }
+      },
+      "title": "MissionSettings",
+      "type": "object"
+    },
+    "ObjectiveSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 48,
+          "minLength": 1,
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "targets": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12,
+          "minItems": 1,
+          "title": "Targets",
+          "type": "array"
+        },
+        "requires_privileged_hosts": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12,
+          "title": "Requires Privileged Hosts",
+          "type": "array"
+        },
+        "hold_ticks": {
+          "default": 1,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Hold Ticks",
+          "type": "integer"
+        },
+        "deadline_tick": {
+          "anyOf": [
+            {
+              "maximum": 10000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deadline Tick"
+        }
+      },
+      "required": [
+        "id",
+        "targets"
+      ],
+      "title": "ObjectiveSettings",
+      "type": "object"
+    },
+    "ResearchSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "module_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Module Version",
+          "type": "string"
+        },
+        "recipe": {
+          "default": "investigate",
+          "enum": [
+            "linear_control",
+            "investigate",
+            "combine",
+            "recover"
+          ],
+          "title": "Recipe",
+          "type": "string"
+        },
+        "conditions": {
+          "default": "paired",
+          "enum": [
+            "single",
+            "paired"
+          ],
+          "title": "Conditions",
+          "type": "string"
+        },
+        "condition_variant": {
+          "default": "seeded",
+          "enum": [
+            "seeded",
+            "import_disabled",
+            "source_denied",
+            "import_enabled",
+            "ssh_hardened"
+          ],
+          "title": "Condition Variant",
+          "type": "string"
+        },
+        "credential_variant": {
+          "default": "seeded",
+          "enum": [
+            "seeded",
+            "valid",
+            "wrong_scope",
+            "invalid"
+          ],
+          "title": "Credential Variant",
+          "type": "string"
+        },
+        "capability_coupling": {
+          "default": "separate",
+          "enum": [
+            "separate",
+            "bridge_and_token"
+          ],
+          "title": "Capability Coupling",
+          "type": "string"
+        },
+        "initial_access": {
+          "default": "common_entry",
+          "enum": [
+            "common_entry",
+            "matched_split_entry"
+          ],
+          "title": "Initial Access",
+          "type": "string"
+        },
+        "evidence": {
+          "$ref": "#/$defs/EvidenceSettings"
+        },
+        "change": {
+          "$ref": "#/$defs/ChangeSettings"
+        },
+        "seed_namespaces": {
+          "$ref": "#/$defs/SeedNamespaces"
+        },
+        "catalog": {
+          "const": "minimal_access_v1",
+          "default": "minimal_access_v1",
+          "title": "Catalog",
+          "type": "string"
+        },
+        "background_access": {
+          "const": "deny",
+          "default": "deny",
+          "title": "Background Access",
+          "type": "string"
+        },
+        "native_mission_phase_policy": {
+          "const": "fixed_research_policy_v1",
+          "default": "fixed_research_policy_v1",
+          "title": "Native Mission Phase Policy",
+          "type": "string"
+        }
+      },
+      "title": "ResearchSettings",
+      "type": "object"
+    },
+    "ResourceSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "team_access_attempts": {
+          "default": 12,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Team Access Attempts",
+          "type": "integer"
+        }
+      },
+      "title": "ResourceSettings",
+      "type": "object"
+    },
+    "RouteSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "depth": {
+          "default": 1,
+          "maximum": 3,
+          "minimum": 1,
+          "title": "Depth",
+          "type": "integer"
+        },
+        "alternatives": {
+          "default": 2,
+          "maximum": 9,
+          "minimum": 1,
+          "title": "Alternatives",
+          "type": "integer"
+        },
+        "hardened_dead_end": {
+          "default": false,
+          "title": "Hardened Dead End",
+          "type": "boolean"
+        },
+        "tradeoffs": {
+          "$ref": "#/$defs/RouteTradeoffs"
+        }
+      },
+      "title": "RouteSettings",
+      "type": "object"
+    },
+    "RouteTradeoffs": {
+      "additionalProperties": false,
+      "description": "Synthetic durations and a separate traffic sensor, not exploit success odds.",
+      "properties": {
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "fast_exploit_ticks": {
+          "default": 2,
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Fast Exploit Ticks",
+          "type": "integer"
+        },
+        "quiet_exploit_ticks": {
+          "default": 8,
+          "maximum": 30,
+          "minimum": 2,
+          "title": "Quiet Exploit Ticks",
+          "type": "integer"
+        },
+        "privileged_route": {
+          "default": false,
+          "title": "Privileged Route",
+          "type": "boolean"
+        },
+        "privileged_exploit_ticks": {
+          "default": 6,
+          "maximum": 30,
+          "minimum": 1,
+          "title": "Privileged Exploit Ticks",
+          "type": "integer"
+        },
+        "fast_detection_probability": {
+          "default": 0.9,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Fast Detection Probability",
+          "type": "number"
+        },
+        "quiet_detection_probability": {
+          "default": 0.1,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Quiet Detection Probability",
+          "type": "number"
+        },
+        "privileged_detection_probability": {
+          "default": 0.4,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Privileged Detection Probability",
+          "type": "number"
+        },
+        "reactive_blocks": {
+          "default": true,
+          "title": "Reactive Blocks",
+          "type": "boolean"
+        },
+        "reaction_delay": {
+          "default": 2,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Reaction Delay",
+          "type": "integer"
+        },
+        "block_ticks": {
+          "default": 12,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Block Ticks",
+          "type": "integer"
+        },
+        "response_budget": {
+          "default": 4,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Response Budget",
+          "type": "integer"
+        }
+      },
+      "title": "RouteTradeoffs",
+      "type": "object"
+    },
+    "ScenarioConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "default": "enterprise_legacy",
+          "enum": [
+            "enterprise_legacy",
+            "enterprise_cc4",
+            "enterprise_cc4_research"
+          ],
+          "title": "Profile",
+          "type": "string"
+        },
+        "world_seed": {
+          "default": 7,
+          "maximum": 4294967295,
+          "minimum": 0,
+          "title": "World Seed",
+          "type": "integer"
+        },
+        "targets": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12,
+          "minItems": 1,
+          "title": "Targets",
+          "type": "array"
+        },
+        "defender": {
+          "default": "passive",
+          "enum": [
+            "passive",
+            "monitor",
+            "reactive_restore"
+          ],
+          "title": "Defender",
+          "type": "string"
+        },
+        "cc4": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CC4Settings"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "complexity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ComplexitySettings"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "mission": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MissionSettings"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "research": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResearchSettings"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "ScenarioConfig",
+      "type": "object"
+    },
+    "ScheduleConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "default": "per_worker",
+          "enum": [
+            "per_worker",
+            "team_cap_one"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "seed": {
+          "default": 27,
+          "maximum": 4294967295,
+          "minimum": 0,
+          "title": "Seed",
+          "type": "integer"
+        },
+        "max_ticks": {
+          "default": 100,
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Max Ticks",
+          "type": "integer"
+        }
+      },
+      "title": "ScheduleConfig",
+      "type": "object"
+    },
+    "SearchSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "risk_weight": {
+          "default": 8,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Risk Weight",
+          "type": "number"
+        },
+        "failure_penalty": {
+          "default": 6,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Failure Penalty",
+          "type": "number"
+        },
+        "unknown_edge_penalty": {
+          "default": 4,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Unknown Edge Penalty",
+          "type": "number"
+        },
+        "max_expansions": {
+          "default": 128,
+          "maximum": 4096,
+          "minimum": 1,
+          "title": "Max Expansions",
+          "type": "integer"
+        }
+      },
+      "title": "SearchSettings",
+      "type": "object"
+    },
+    "SeedNamespaces": {
+      "additionalProperties": false,
+      "properties": {
+        "recipe": {
+          "default": 401,
+          "maximum": 4294967295,
+          "minimum": 0,
+          "title": "Recipe",
+          "type": "integer"
+        },
+        "event": {
+          "default": 701,
+          "maximum": 4294967295,
+          "minimum": 0,
+          "title": "Event",
+          "type": "integer"
+        }
+      },
+      "title": "SeedNamespaces",
+      "type": "object"
+    },
+    "TeamConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "architecture": {
+          "default": "hierarchy",
+          "enum": [
+            "hierarchy",
+            "swarm",
+            "independent"
+          ],
+          "title": "Architecture",
+          "type": "string"
+        },
+        "workers": {
+          "default": 4,
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Workers",
+          "type": "integer"
+        },
+        "claim_ttl": {
+          "default": 5,
+          "maximum": 50,
+          "minimum": 1,
+          "title": "Claim Ttl",
+          "type": "integer"
+        }
+      },
+      "title": "TeamConfig",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "name": {
+      "default": "Organization comparison",
+      "maxLength": 100,
+      "title": "Name",
+      "type": "string"
+    },
+    "base": {
+      "$ref": "#/$defs/EpisodeConfig"
+    },
+    "architectures": {
+      "items": {
+        "enum": [
+          "hierarchy",
+          "swarm",
+          "independent"
+        ],
+        "type": "string"
+      },
+      "maxItems": 3,
+      "minItems": 1,
+      "title": "Architectures",
+      "type": "array"
+    },
+    "worker_counts": {
+      "items": {
+        "type": "integer"
+      },
+      "maxItems": 8,
+      "minItems": 1,
+      "title": "Worker Counts",
+      "type": "array"
+    },
+    "world_seeds": {
+      "items": {
+        "type": "integer"
+      },
+      "maxItems": 1000,
+      "minItems": 1,
+      "title": "World Seeds",
+      "type": "array"
+    },
+    "delays": {
+      "items": {
+        "type": "integer"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Delays",
+      "type": "array"
+    },
+    "losses": {
+      "items": {
+        "type": "number"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Losses",
+      "type": "array"
+    },
+    "replicates": {
+      "default": 1,
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Replicates",
+      "type": "integer"
+    }
+  },
+  "title": "ExperimentSpec",
+  "type": "object"
+}

@@ -1,0 +1,218 @@
+{
+  "python": "3.8.11",
+  "numpy": "1.21.6",
+  "gym": "0.23.1",
+  "cyborg_commit": "2742b5e0ce4330c9b14006b38acd3b5ebe00d6fd",
+  "probes": [
+    {
+      "actor_count": 1,
+      "error": "KeyError('Red')"
+    },
+    {
+      "actor_count": 2,
+      "error": "KeyError('Red')"
+    },
+    {
+      "actor_count": 4,
+      "error": "KeyError('Red')"
+    }
+  ],
+  "with_temporary_portscan_fix": [
+    {
+      "actor_count": 1,
+      "hosts_including_routers": 16,
+      "active_red_actors": [
+        "Red_0"
+      ],
+      "initial_action_space_ips": {
+        "10.0.241.193": false,
+        "10.0.241.197": false,
+        "10.0.241.200": false,
+        "10.0.241.195": false,
+        "10.0.159.254": false,
+        "10.0.159.245": false,
+        "10.0.159.251": false,
+        "10.0.159.250": false,
+        "10.0.175.35": true,
+        "10.0.175.39": false,
+        "10.0.175.40": false,
+        "10.0.175.38": false,
+        "10.0.175.43": false,
+        "10.0.241.202": false,
+        "10.0.159.242": false,
+        "10.0.175.44": false
+      },
+      "discovery_results": {
+        "Red_0": "TRUE"
+      },
+      "scan_results": {
+        "Red_0": "TRUE"
+      },
+      "exploit_results": {
+        "Red_0": "TRUE"
+      },
+      "sessions_per_actor": {
+        "Red_0": 2
+      },
+      "reward_return_keys": [
+        "Red_0",
+        "Blue"
+      ],
+      "research_red_reward_values": [
+        {
+          "probe": 0.0,
+          "action_cost": 0
+        }
+      ],
+      "message_bits": 16,
+      "warning": "Feasibility probe only; duplicated footholds, empty rewards, no comparative policies or LLMs."
+    },
+    {
+      "actor_count": 2,
+      "hosts_including_routers": 16,
+      "active_red_actors": [
+        "Red_0",
+        "Red_1"
+      ],
+      "initial_action_space_ips": {
+        "10.0.241.193": false,
+        "10.0.241.197": false,
+        "10.0.241.200": false,
+        "10.0.241.195": false,
+        "10.0.159.254": false,
+        "10.0.159.245": false,
+        "10.0.159.251": false,
+        "10.0.159.250": false,
+        "10.0.175.35": true,
+        "10.0.175.39": false,
+        "10.0.175.40": false,
+        "10.0.175.38": false,
+        "10.0.175.43": false,
+        "10.0.241.202": false,
+        "10.0.159.242": false,
+        "10.0.175.44": false
+      },
+      "discovery_results": {
+        "Red_0": "TRUE",
+        "Red_1": "TRUE"
+      },
+      "scan_results": {
+        "Red_0": "TRUE",
+        "Red_1": "TRUE"
+      },
+      "exploit_results": {
+        "Red_0": "TRUE",
+        "Red_1": "TRUE"
+      },
+      "sessions_per_actor": {
+        "Red_0": 2,
+        "Red_1": 2
+      },
+      "reward_return_keys": [
+        "Red_0",
+        "Red_1",
+        "Blue"
+      ],
+      "research_red_reward_values": [
+        {
+          "probe": 0.0,
+          "action_cost": 0
+        },
+        {
+          "probe": 0.0,
+          "action_cost": 0
+        }
+      ],
+      "message_bits": 16,
+      "warning": "Feasibility probe only; duplicated footholds, empty rewards, no comparative policies or LLMs."
+    },
+    {
+      "actor_count": 4,
+      "hosts_including_routers": 16,
+      "active_red_actors": [
+        "Red_0",
+        "Red_1",
+        "Red_2",
+        "Red_3"
+      ],
+      "initial_action_space_ips": {
+        "10.0.241.193": false,
+        "10.0.241.197": false,
+        "10.0.241.200": false,
+        "10.0.241.195": false,
+        "10.0.159.254": false,
+        "10.0.159.245": false,
+        "10.0.159.251": false,
+        "10.0.159.250": false,
+        "10.0.175.35": true,
+        "10.0.175.39": false,
+        "10.0.175.40": false,
+        "10.0.175.38": false,
+        "10.0.175.43": false,
+        "10.0.241.202": false,
+        "10.0.159.242": false,
+        "10.0.175.44": false
+      },
+      "discovery_results": {
+        "Red_0": "TRUE",
+        "Red_1": "TRUE",
+        "Red_2": "TRUE",
+        "Red_3": "TRUE"
+      },
+      "scan_results": {
+        "Red_0": "TRUE",
+        "Red_1": "TRUE",
+        "Red_2": "TRUE",
+        "Red_3": "TRUE"
+      },
+      "exploit_results": {
+        "Red_0": "TRUE",
+        "Red_1": "TRUE",
+        "Red_2": "TRUE",
+        "Red_3": "TRUE"
+      },
+      "sessions_per_actor": {
+        "Red_0": 2,
+        "Red_1": 2,
+        "Red_2": 2,
+        "Red_3": 2
+      },
+      "reward_return_keys": [
+        "Blue",
+        "Red_0",
+        "Red_2",
+        "Red_3",
+        "Red_1"
+      ],
+      "research_red_reward_values": [
+        {
+          "probe": 0.0,
+          "action_cost": 0
+        },
+        {
+          "probe": 0.0,
+          "action_cost": 0
+        },
+        {
+          "probe": 0.0,
+          "action_cost": 0
+        },
+        {
+          "probe": 0.0,
+          "action_cost": 0
+        }
+      ],
+      "message_bits": 16,
+      "warning": "Feasibility probe only; duplicated footholds, empty rewards, no comparative policies or LLMs."
+    }
+  ],
+  "verified_address_bridge_probe": {
+    "before_verified_address_update": "InvalidAction",
+    "after_verified_address_update": "DiscoverNetworkServices",
+    "bridge_populated_port_cache": false,
+    "recipient_scan_result": "TRUE",
+    "recipient_scan_populated_own_cache": true,
+    "bridge_granted_sessions": 0,
+    "warning": "Trusted observation-fragment feasibility probe; full transport and provenance verifier not implemented."
+  }
+}

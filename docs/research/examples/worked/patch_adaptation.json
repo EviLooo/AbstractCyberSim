@@ -1,0 +1,2995 @@
+{
+  "purpose": "software_qualification",
+  "mechanism": "patch_adaptation",
+  "run_id": "de53a03221e94b5b9ab43aadb9f593cc",
+  "code_fingerprint": "7ffd9a5e8c3e865b0fbc1d8bf158acdfa19da88a6e0f37c73ca48632c89ed7f6",
+  "config_hash": "6099f5b97fe4f905845f861b58f2c795ba6c4991476e7dc2f8c9f8c1acd2ae3b",
+  "world_id": "dd4870152045ad4ec7bfc16500991701eb81eb9105fd61682ad9563d32b67c90",
+  "feasibility_status": "native_witness_validated",
+  "catalog_version": "minimal_access_v1",
+  "config": {
+    "schema_version": "2.0",
+    "name": "Software review · patch_adaptation",
+    "purpose": "evaluation",
+    "scenario": {
+      "profile": "enterprise_cc4_research",
+      "world_seed": 100,
+      "targets": [
+        "restricted_zone_a_subnet_server_host_0"
+      ],
+      "defender": "passive",
+      "cc4": {
+        "user_hosts": 3,
+        "server_hosts": 1,
+        "addon_services": 0,
+        "response_delay": 2,
+        "response_cooldown": 10,
+        "response_budget": 4
+      },
+      "complexity": null,
+      "mission": {
+        "hold_ticks": 3,
+        "deadline_tick": null,
+        "objectives": []
+      },
+      "research": {
+        "module_version": "1.0",
+        "recipe": "recover",
+        "conditions": "paired",
+        "condition_variant": "import_enabled",
+        "credential_variant": "valid",
+        "capability_coupling": "separate",
+        "initial_access": "common_entry",
+        "evidence": {
+          "observation_delay": 0,
+          "stale_after": 8
+        },
+        "change": {
+          "mode": "patch_rfi",
+          "response_delay": 4,
+          "response_budget": 1
+        },
+        "seed_namespaces": {
+          "recipe": 401,
+          "event": 701
+        },
+        "catalog": "minimal_access_v1",
+        "background_access": "deny",
+        "native_mission_phase_policy": "fixed_research_policy_v1"
+      }
+    },
+    "team": {
+      "architecture": "independent",
+      "workers": 1,
+      "claim_ttl": 5
+    },
+    "communication": {
+      "extra_delay": 0,
+      "loss_probability": 0.0,
+      "bytes_per_tick": 1000000,
+      "envelopes_per_tick": 64,
+      "ttl": 10,
+      "seed": 17,
+      "verified_intel": true,
+      "links": null,
+      "interruptions": []
+    },
+    "cognition": {
+      "provider": "scripted",
+      "scripted_policy": "evidence_controller",
+      "search": {
+        "risk_weight": 8.0,
+        "failure_penalty": 6.0,
+        "unknown_edge_penalty": 4.0,
+        "max_expansions": 128
+      },
+      "action_retry_limit": 2,
+      "failure_backoff_ticks": 0,
+      "model": "",
+      "temperature": 0.0,
+      "max_output_tokens": 512,
+      "max_context_bytes": 128000,
+      "max_team_tokens": 40000,
+      "timeout_seconds": 60
+    },
+    "schedule": {
+      "mode": "per_worker",
+      "seed": 27,
+      "max_ticks": 180
+    },
+    "resources": {
+      "team_access_attempts": 12
+    }
+  },
+  "metrics": {
+    "formula_version": "1.0",
+    "success": true,
+    "success_tick": 19,
+    "time_to_success_censored": false,
+    "attempted_actions": 9,
+    "invalid_actions": 0,
+    "invalid_rate": 0.0,
+    "duplicate_actions": 0,
+    "message_delivered": 0,
+    "message_dropped": 0,
+    "message_pending": 0,
+    "provider": "scripted",
+    "scripted_policy": "evidence_controller",
+    "calls": 0,
+    "charged_tokens": 0,
+    "unknown_usage_calls": 0,
+    "provider_failures": 0,
+    "provider_refusals": 0,
+    "prompt_hashes": {
+      "worker": "0a231c89de30f83c2d0873fed75e7b7f0054dafe5bde2cc0edc796c5e8135746",
+      "coordinator": "cdb462849181dcb0827f5bd3baaca8d6d21d2b100782f1b9e60cadeb2627b7da"
+    },
+    "is_llm": false,
+    "per_actor_usage": {},
+    "mission_formula_version": "1.0",
+    "mission_hold_ticks": 3,
+    "mission_best_hold_ticks": 3,
+    "mission_resets": 0,
+    "objective_resets": 0,
+    "mission_deadline_tick": null,
+    "mission_failure": null,
+    "decision_formula_version": "1.0",
+    "multiple_candidate_decisions": 9,
+    "changed_state_decisions": 0,
+    "completed_failed_actions": 1,
+    "source_switches": 1,
+    "research_formula_version": "research_metrics_v1.1",
+    "native_ticks_observed": 19,
+    "declared_horizon": 180,
+    "restricted_completion_ticks": 19,
+    "completion_censored": false,
+    "outcome_reason": "mission_success",
+    "admitted_access_attempts": 2,
+    "completed_access_attempts": 2,
+    "partial_access_attempts": 0,
+    "failed_access_attempts": 1,
+    "completed_probes": 3,
+    "completed_inspections": 2,
+    "unchanged_repeated_access_attempts": 0,
+    "comparable_duplicate_admissions": 0,
+    "worker_wait_ticks": 0,
+    "recipient_copy_bytes_created": 0,
+    "recipient_copy_bytes_delivered": 0,
+    "assignment_copies": 0,
+    "claim_copies": 0,
+    "report_copies": 0,
+    "evidence_uses": 8,
+    "peer_evidence_uses": 0,
+    "stale_evidence_uses": 2,
+    "conflicting_evidence_records": 0,
+    "contradicting_refresh_records": 10,
+    "access_method_changes": 1,
+    "access_source_changes": 0,
+    "mean_evidence_age_at_admission": 4.875,
+    "observed_access_losses": 0,
+    "recovery_records": [],
+    "compatibility_recovery_records": [
+      {
+        "actor": "Red_0",
+        "address": "10.0.196.254",
+        "source_host": "contractor_network_subnet_user_host_0",
+        "observable_change_tick": 11,
+        "basis_evidence_id": "Red_0:11:11",
+        "renewed_access_latency": 4,
+        "renewed_method": "credential_login",
+        "renewed_source": "contractor_network_subnet_user_host_0",
+        "censored": false
+      }
+    ],
+    "no_observable_access_loss": true,
+    "limitations": "Conservative repeated-attempt rule; waiting includes voluntary Sleep. Reports are claims; age is not correctness. No loss is not zero recovery latency."
+  },
+  "trajectory": [
+    {
+      "tick": 1,
+      "actor": "Red_0",
+      "proposal": {
+        "action": "InspectArtifacts",
+        "session": 0,
+        "target": "contractor_network_subnet_user_host_0",
+        "rationale": "Inspect an owned local session for fallible leads and token references",
+        "method": null,
+        "probe": null,
+        "port": null,
+        "token_ref": null,
+        "source_host": "contractor_network_subnet_user_host_0",
+        "basis_evidence_ids": []
+      },
+      "valid": true,
+      "outcome": "IN_PROGRESS",
+      "lifecycle": "submitted",
+      "preconditions": {
+        "active_owned_local_session": true
+      },
+      "state_delta": {
+        "sessions_added": [],
+        "controller_changes": [],
+        "sessions_lost": [],
+        "privilege_changes": [],
+        "knowledge_added": {
+          "ip_address": [],
+          "subnet": [],
+          "hostname": []
+        },
+        "scan_cache_updates": {}
+      },
+      "private_evidence": [],
+      "decision": {
+        "policy": "evidence_controller",
+        "version": "1.0",
+        "tick": 1,
+        "status": "ranked",
+        "own_missing_goals": [
+          "restricted_zone_a_subnet_server_host_0"
+        ],
+        "believed_team_missing_goals": [
+          "restricted_zone_a_subnet_server_host_0"
+        ],
+        "state_change": {
+          "belief_epoch": 0
+        },
+        "candidate_count": 2,
+        "alternatives": [
+          {
+            "proposal": {
+              "action": "InspectArtifacts",
+              "session": 0,
+              "target": "contractor_network_subnet_user_host_0",
+              "rationale": "Inspect an owned local session for fallible leads and token references",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 2,
+            "estimated_remaining_ticks": 0,
+            "reason": "Inspect an owned local session for fallible leads and token references",
+            "priority": 0
+          },
+          {
+            "proposal": {
+              "action": "DiscoverRemoteSystems",
+              "session": 0,
+              "target": "10.0.20.0/24",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 50
+          }
+        ],
+        "plans": [],
+        "limits": {
+          "max_graph_expansions": 128
+        },
+        "qualification": "optimistic software controller; no global optimality, calibrated probabilities or scientific advantage",
+        "selected": {
+          "action": "InspectArtifacts",
+          "session": 0,
+          "target": "contractor_network_subnet_user_host_0",
+          "rationale": "Inspect an owned local session for fallible leads and token references",
+          "method": null,
+          "probe": null,
+          "port": null,
+          "token_ref": null,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "basis_evidence_ids": []
+        },
+        "organization": "independent",
+        "manual_override": false,
+        "admitted_proposal": {
+          "action": "InspectArtifacts",
+          "session": 0,
+          "target": "contractor_network_subnet_user_host_0",
+          "rationale": "Inspect an owned local session for fallible leads and token references",
+          "method": null,
+          "probe": null,
+          "port": null,
+          "token_ref": null,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "basis_evidence_ids": []
+        }
+      }
+    },
+    {
+      "tick": 2,
+      "actor": "Red_0",
+      "proposal": {
+        "action": "InspectArtifacts",
+        "session": 0,
+        "target": "contractor_network_subnet_user_host_0",
+        "rationale": "Inspect an owned local session for fallible leads and token references",
+        "method": null,
+        "probe": null,
+        "port": null,
+        "token_ref": null,
+        "source_host": "contractor_network_subnet_user_host_0",
+        "basis_evidence_ids": []
+      },
+      "valid": true,
+      "outcome": "TRUE",
+      "lifecycle": "completed",
+      "preconditions": {},
+      "state_delta": {
+        "sessions_added": [],
+        "controller_changes": [],
+        "sessions_lost": [],
+        "privilege_changes": [],
+        "knowledge_added": {
+          "ip_address": [
+            "10.0.196.254",
+            "10.0.20.162",
+            "10.0.20.26",
+            "10.0.74.254"
+          ],
+          "subnet": [],
+          "hostname": [
+            "contractor_network_subnet_user_host_1",
+            "contractor_network_subnet_user_host_2",
+            "public_access_zone_subnet_server_host_0",
+            "restricted_zone_a_subnet_server_host_0"
+          ]
+        },
+        "scan_cache_updates": {}
+      },
+      "private_evidence": [
+        {
+          "host": "contractor_network_subnet_user_host_0",
+          "evidence_id": "Red_0:2:2",
+          "origin": "Red_0",
+          "observed_tick": 2,
+          "received_tick": 2,
+          "source": "self_observed",
+          "kind": "artifact",
+          "text": "Cached job account reference; a maintenance host stores the current record.",
+          "lead": {
+            "hostname": "restricted_zone_a_subnet_server_host_0",
+            "address": "10.0.196.254"
+          },
+          "account": "user",
+          "claimed_scope": "restricted_zone_a_subnet_server_host_0",
+          "token_ref": "tok-e7334c0247cc252dfbeb",
+          "artifact_id": "note-0895196420baee3e",
+          "age": 0,
+          "stale": false
+        },
+        {
+          "host": "contractor_network_subnet_user_host_0",
+          "evidence_id": "Red_0:2:2",
+          "origin": "Red_0",
+          "observed_tick": 2,
+          "received_tick": 2,
+          "source": "self_observed",
+          "kind": "artifact",
+          "text": "Administration notes mention two maintenance hosts.",
+          "leads": [
+            {
+              "hostname": "contractor_network_subnet_user_host_2",
+              "address": "10.0.20.26"
+            },
+            {
+              "hostname": "contractor_network_subnet_user_host_1",
+              "address": "10.0.20.162"
+            }
+          ],
+          "artifact_id": "note-acd611f07532421a",
+          "age": 0,
+          "stale": false
+        },
+        {
+          "host": "contractor_network_subnet_user_host_0",
+          "evidence_id": "Red_0:2:2",
+          "origin": "Red_0",
+          "observed_tick": 2,
+          "received_tick": 2,
+          "source": "self_observed",
+          "kind": "artifact",
+          "text": "A public application appears in a maintenance note.",
+          "lead": {
+            "hostname": "public_access_zone_subnet_server_host_0",
+            "address": "10.0.74.254"
+          },
+          "artifact_id": "note-642ddbf677acff92",
+          "age": 0,
+          "stale": false
+        }
+      ],
+      "decision": null
+    },
+    {
+      "tick": 3,
+      "actor": "Red_0",
+      "proposal": {
+        "action": "DiscoverNetworkServices",
+        "session": 0,
+        "target": "10.0.196.254",
+        "rationale": "fixed public workflow",
+        "method": null,
+        "probe": null,
+        "port": null,
+        "token_ref": null,
+        "source_host": "contractor_network_subnet_user_host_0",
+        "basis_evidence_ids": []
+      },
+      "valid": true,
+      "outcome": "TRUE",
+      "lifecycle": "completed",
+      "preconditions": {
+        "active_owned_controller": true,
+        "observed_target": true
+      },
+      "state_delta": {
+        "sessions_added": [],
+        "controller_changes": [],
+        "sessions_lost": [],
+        "privilege_changes": [],
+        "knowledge_added": {
+          "ip_address": [],
+          "subnet": [],
+          "hostname": []
+        },
+        "scan_cache_updates": {
+          "0": {
+            "10.0.196.254": [
+              80,
+              22
+            ]
+          }
+        }
+      },
+      "private_evidence": [],
+      "decision": {
+        "policy": "evidence_controller",
+        "version": "1.0",
+        "tick": 3,
+        "status": "ranked",
+        "own_missing_goals": [
+          "restricted_zone_a_subnet_server_host_0"
+        ],
+        "believed_team_missing_goals": [
+          "restricted_zone_a_subnet_server_host_0"
+        ],
+        "state_change": {
+          "belief_epoch": 0
+        },
+        "candidate_count": 22,
+        "alternatives": [
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.196.254",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": true,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 7
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.20.162",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.20.26",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.74.254",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverRemoteSystems",
+              "session": 0,
+              "target": "10.0.20.0/24",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 50
+          }
+        ],
+        "plans": [],
+        "limits": {
+          "max_graph_expansions": 128
+        },
+        "qualification": "optimistic software controller; no global optimality, calibrated probabilities or scientific advantage",
+        "selected": {
+          "action": "DiscoverNetworkServices",
+          "session": 0,
+          "target": "10.0.196.254",
+          "rationale": "fixed public workflow",
+          "method": null,
+          "probe": null,
+          "port": null,
+          "token_ref": null,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "basis_evidence_ids": []
+        },
+        "organization": "independent",
+        "manual_override": false,
+        "admitted_proposal": {
+          "action": "DiscoverNetworkServices",
+          "session": 0,
+          "target": "10.0.196.254",
+          "rationale": "fixed public workflow",
+          "method": null,
+          "probe": null,
+          "port": null,
+          "token_ref": null,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "basis_evidence_ids": []
+        }
+      }
+    },
+    {
+      "tick": 4,
+      "actor": "Red_0",
+      "proposal": {
+        "action": "Probe",
+        "session": 0,
+        "target": "10.0.196.254",
+        "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+        "method": null,
+        "probe": "service_behavior",
+        "port": 80,
+        "token_ref": null,
+        "source_host": "contractor_network_subnet_user_host_0",
+        "basis_evidence_ids": []
+      },
+      "valid": true,
+      "outcome": "IN_PROGRESS",
+      "lifecycle": "submitted",
+      "preconditions": {
+        "active_owned_controller": true,
+        "observed_target": true
+      },
+      "state_delta": {
+        "sessions_added": [],
+        "controller_changes": [],
+        "sessions_lost": [],
+        "privilege_changes": [],
+        "knowledge_added": {
+          "ip_address": [],
+          "subnet": [],
+          "hostname": []
+        },
+        "scan_cache_updates": {}
+      },
+      "private_evidence": [],
+      "decision": {
+        "policy": "evidence_controller",
+        "version": "1.0",
+        "tick": 4,
+        "status": "ranked",
+        "own_missing_goals": [
+          "restricted_zone_a_subnet_server_host_0"
+        ],
+        "believed_team_missing_goals": [
+          "restricted_zone_a_subnet_server_host_0"
+        ],
+        "state_change": {
+          "belief_epoch": 0
+        },
+        "candidate_count": 25,
+        "alternatives": [
+          {
+            "proposal": {
+              "action": "Probe",
+              "session": 0,
+              "target": "10.0.196.254",
+              "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+              "method": null,
+              "probe": "service_behavior",
+              "port": 80,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": true,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 2,
+            "estimated_remaining_ticks": 0,
+            "reason": "Diagnose a selected service from this owned source; refresh stale evidence",
+            "priority": 8
+          },
+          {
+            "proposal": {
+              "action": "Probe",
+              "session": 0,
+              "target": "10.0.196.254",
+              "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+              "method": null,
+              "probe": "auth_policy",
+              "port": 22,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": true,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 2,
+            "estimated_remaining_ticks": 0,
+            "reason": "Diagnose a selected service from this owned source; refresh stale evidence",
+            "priority": 9
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.20.162",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.20.26",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.74.254",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverRemoteSystems",
+              "session": 0,
+              "target": "10.0.20.0/24",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 50
+          }
+        ],
+        "plans": [],
+        "limits": {
+          "max_graph_expansions": 128
+        },
+        "qualification": "optimistic software controller; no global optimality, calibrated probabilities or scientific advantage",
+        "selected": {
+          "action": "Probe",
+          "session": 0,
+          "target": "10.0.196.254",
+          "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+          "method": null,
+          "probe": "service_behavior",
+          "port": 80,
+          "token_ref": null,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "basis_evidence_ids": []
+        },
+        "organization": "independent",
+        "manual_override": false,
+        "admitted_proposal": {
+          "action": "Probe",
+          "session": 0,
+          "target": "10.0.196.254",
+          "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+          "method": null,
+          "probe": "service_behavior",
+          "port": 80,
+          "token_ref": null,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "basis_evidence_ids": []
+        }
+      }
+    },
+    {
+      "tick": 5,
+      "actor": "Red_0",
+      "proposal": {
+        "action": "Probe",
+        "session": 0,
+        "target": "10.0.196.254",
+        "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+        "method": null,
+        "probe": "service_behavior",
+        "port": 80,
+        "token_ref": null,
+        "source_host": "contractor_network_subnet_user_host_0",
+        "basis_evidence_ids": []
+      },
+      "valid": true,
+      "outcome": "TRUE",
+      "lifecycle": "completed",
+      "preconditions": {},
+      "state_delta": {
+        "sessions_added": [],
+        "controller_changes": [],
+        "sessions_lost": [],
+        "privilege_changes": [],
+        "knowledge_added": {
+          "ip_address": [],
+          "subnet": [],
+          "hostname": []
+        },
+        "scan_cache_updates": {}
+      },
+      "private_evidence": [
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:5:5",
+          "origin": "Red_0",
+          "observed_tick": 5,
+          "received_tick": 5,
+          "source": "self_observed",
+          "kind": "probe",
+          "probe": "service_behavior",
+          "port": 80,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "external_import_accepted",
+          "age": 0,
+          "stale": false
+        }
+      ],
+      "decision": null
+    },
+    {
+      "tick": 6,
+      "actor": "Red_0",
+      "proposal": {
+        "action": "AttemptAccess",
+        "session": 0,
+        "target": "10.0.196.254",
+        "rationale": "Current source probe accepts external imports; attempt that explicit method",
+        "method": "web_rfi",
+        "probe": null,
+        "port": null,
+        "token_ref": null,
+        "source_host": "contractor_network_subnet_user_host_0",
+        "basis_evidence_ids": [
+          "Red_0:5:5"
+        ]
+      },
+      "valid": true,
+      "outcome": "IN_PROGRESS",
+      "lifecycle": "submitted",
+      "preconditions": {
+        "active_owned_controller": true,
+        "observed_target": true,
+        "own_service_scan": true,
+        "selected_method": true
+      },
+      "state_delta": {
+        "sessions_added": [],
+        "controller_changes": [],
+        "sessions_lost": [],
+        "privilege_changes": [],
+        "knowledge_added": {
+          "ip_address": [],
+          "subnet": [],
+          "hostname": []
+        },
+        "scan_cache_updates": {}
+      },
+      "private_evidence": [
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:5:5",
+          "origin": "Red_0",
+          "observed_tick": 5,
+          "received_tick": 5,
+          "source": "self_observed",
+          "kind": "probe",
+          "probe": "service_behavior",
+          "port": 80,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "external_import_accepted",
+          "age": 1,
+          "stale": false
+        }
+      ],
+      "decision": {
+        "policy": "evidence_controller",
+        "version": "1.0",
+        "tick": 6,
+        "status": "ranked",
+        "own_missing_goals": [
+          "restricted_zone_a_subnet_server_host_0"
+        ],
+        "believed_team_missing_goals": [
+          "restricted_zone_a_subnet_server_host_0"
+        ],
+        "state_change": {
+          "belief_epoch": 0
+        },
+        "candidate_count": 25,
+        "alternatives": [
+          {
+            "proposal": {
+              "action": "AttemptAccess",
+              "session": 0,
+              "target": "10.0.196.254",
+              "rationale": "Current source probe accepts external imports; attempt that explicit method",
+              "method": "web_rfi",
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": [
+                "Red_0:5:5"
+              ]
+            },
+            "observed_goal": true,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 4,
+            "estimated_remaining_ticks": 0,
+            "reason": "Current source probe accepts external imports; attempt that explicit method",
+            "priority": 6
+          },
+          {
+            "proposal": {
+              "action": "Probe",
+              "session": 0,
+              "target": "10.0.196.254",
+              "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+              "method": null,
+              "probe": "auth_policy",
+              "port": 22,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": [
+                "Red_0:5:5"
+              ]
+            },
+            "observed_goal": true,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 2,
+            "estimated_remaining_ticks": 0,
+            "reason": "Diagnose a selected service from this owned source; refresh stale evidence",
+            "priority": 9
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.20.162",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.20.26",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.74.254",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverRemoteSystems",
+              "session": 0,
+              "target": "10.0.20.0/24",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 50
+          }
+        ],
+        "plans": [],
+        "limits": {
+          "max_graph_expansions": 128
+        },
+        "qualification": "optimistic software controller; no global optimality, calibrated probabilities or scientific advantage",
+        "selected": {
+          "action": "AttemptAccess",
+          "session": 0,
+          "target": "10.0.196.254",
+          "rationale": "Current source probe accepts external imports; attempt that explicit method",
+          "method": "web_rfi",
+          "probe": null,
+          "port": null,
+          "token_ref": null,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "basis_evidence_ids": [
+            "Red_0:5:5"
+          ]
+        },
+        "organization": "independent",
+        "manual_override": false,
+        "admitted_proposal": {
+          "action": "AttemptAccess",
+          "session": 0,
+          "target": "10.0.196.254",
+          "rationale": "Current source probe accepts external imports; attempt that explicit method",
+          "method": "web_rfi",
+          "probe": null,
+          "port": null,
+          "token_ref": null,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "basis_evidence_ids": [
+            "Red_0:5:5"
+          ]
+        }
+      }
+    },
+    {
+      "tick": 9,
+      "actor": "Red_0",
+      "proposal": {
+        "action": "AttemptAccess",
+        "session": 0,
+        "target": "10.0.196.254",
+        "rationale": "Current source probe accepts external imports; attempt that explicit method",
+        "method": "web_rfi",
+        "probe": null,
+        "port": null,
+        "token_ref": null,
+        "source_host": "contractor_network_subnet_user_host_0",
+        "basis_evidence_ids": [
+          "Red_0:5:5"
+        ]
+      },
+      "valid": true,
+      "outcome": "FALSE",
+      "lifecycle": "completed",
+      "preconditions": {},
+      "state_delta": {
+        "sessions_added": [],
+        "controller_changes": [],
+        "sessions_lost": [],
+        "privilege_changes": [],
+        "knowledge_added": {
+          "ip_address": [],
+          "subnet": [],
+          "hostname": []
+        },
+        "scan_cache_updates": {}
+      },
+      "private_evidence": [
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:5:5",
+          "origin": "Red_0",
+          "observed_tick": 5,
+          "received_tick": 5,
+          "source": "self_observed",
+          "kind": "probe",
+          "probe": "service_behavior",
+          "port": 80,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "external_import_accepted",
+          "age": 4,
+          "stale": false
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:9:9",
+          "origin": "Red_0",
+          "observed_tick": 9,
+          "received_tick": 9,
+          "source": "self_observed",
+          "kind": "access_result",
+          "method": "web_rfi",
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "access_not_established",
+          "age": 0,
+          "stale": false
+        }
+      ],
+      "decision": null
+    },
+    {
+      "tick": 10,
+      "actor": "Red_0",
+      "proposal": {
+        "action": "Probe",
+        "session": 0,
+        "target": "10.0.196.254",
+        "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+        "method": null,
+        "probe": "service_behavior",
+        "port": 80,
+        "token_ref": null,
+        "source_host": "contractor_network_subnet_user_host_0",
+        "basis_evidence_ids": [
+          "Red_0:5:5",
+          "Red_0:9:9"
+        ]
+      },
+      "valid": true,
+      "outcome": "IN_PROGRESS",
+      "lifecycle": "submitted",
+      "preconditions": {
+        "active_owned_controller": true,
+        "observed_target": true
+      },
+      "state_delta": {
+        "sessions_added": [],
+        "controller_changes": [],
+        "sessions_lost": [],
+        "privilege_changes": [],
+        "knowledge_added": {
+          "ip_address": [],
+          "subnet": [],
+          "hostname": []
+        },
+        "scan_cache_updates": {}
+      },
+      "private_evidence": [
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:5:5",
+          "origin": "Red_0",
+          "observed_tick": 5,
+          "received_tick": 5,
+          "source": "self_observed",
+          "kind": "probe",
+          "probe": "service_behavior",
+          "port": 80,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "external_import_accepted",
+          "age": 5,
+          "stale": false
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:9:9",
+          "origin": "Red_0",
+          "observed_tick": 9,
+          "received_tick": 9,
+          "source": "self_observed",
+          "kind": "access_result",
+          "method": "web_rfi",
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "access_not_established",
+          "age": 1,
+          "stale": false
+        }
+      ],
+      "decision": {
+        "policy": "evidence_controller",
+        "version": "1.0",
+        "tick": 10,
+        "status": "ranked",
+        "own_missing_goals": [
+          "restricted_zone_a_subnet_server_host_0"
+        ],
+        "believed_team_missing_goals": [
+          "restricted_zone_a_subnet_server_host_0"
+        ],
+        "state_change": {
+          "belief_epoch": 0
+        },
+        "candidate_count": 25,
+        "alternatives": [
+          {
+            "proposal": {
+              "action": "Probe",
+              "session": 0,
+              "target": "10.0.196.254",
+              "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+              "method": null,
+              "probe": "service_behavior",
+              "port": 80,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": [
+                "Red_0:5:5",
+                "Red_0:9:9"
+              ]
+            },
+            "observed_goal": true,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 2,
+            "estimated_remaining_ticks": 0,
+            "reason": "Diagnose a selected service from this owned source; refresh stale evidence",
+            "priority": 8
+          },
+          {
+            "proposal": {
+              "action": "Probe",
+              "session": 0,
+              "target": "10.0.196.254",
+              "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+              "method": null,
+              "probe": "auth_policy",
+              "port": 22,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": [
+                "Red_0:5:5",
+                "Red_0:9:9"
+              ]
+            },
+            "observed_goal": true,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 2,
+            "estimated_remaining_ticks": 0,
+            "reason": "Diagnose a selected service from this owned source; refresh stale evidence",
+            "priority": 9
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.20.162",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.20.26",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.74.254",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverRemoteSystems",
+              "session": 0,
+              "target": "10.0.20.0/24",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 50
+          }
+        ],
+        "plans": [],
+        "limits": {
+          "max_graph_expansions": 128
+        },
+        "qualification": "optimistic software controller; no global optimality, calibrated probabilities or scientific advantage",
+        "selected": {
+          "action": "Probe",
+          "session": 0,
+          "target": "10.0.196.254",
+          "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+          "method": null,
+          "probe": "service_behavior",
+          "port": 80,
+          "token_ref": null,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "basis_evidence_ids": [
+            "Red_0:5:5",
+            "Red_0:9:9"
+          ]
+        },
+        "organization": "independent",
+        "manual_override": false,
+        "admitted_proposal": {
+          "action": "Probe",
+          "session": 0,
+          "target": "10.0.196.254",
+          "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+          "method": null,
+          "probe": "service_behavior",
+          "port": 80,
+          "token_ref": null,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "basis_evidence_ids": [
+            "Red_0:5:5",
+            "Red_0:9:9"
+          ]
+        }
+      }
+    },
+    {
+      "tick": 11,
+      "actor": "Red_0",
+      "proposal": {
+        "action": "Probe",
+        "session": 0,
+        "target": "10.0.196.254",
+        "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+        "method": null,
+        "probe": "service_behavior",
+        "port": 80,
+        "token_ref": null,
+        "source_host": "contractor_network_subnet_user_host_0",
+        "basis_evidence_ids": [
+          "Red_0:5:5",
+          "Red_0:9:9"
+        ]
+      },
+      "valid": true,
+      "outcome": "TRUE",
+      "lifecycle": "completed",
+      "preconditions": {},
+      "state_delta": {
+        "sessions_added": [],
+        "controller_changes": [],
+        "sessions_lost": [],
+        "privilege_changes": [],
+        "knowledge_added": {
+          "ip_address": [],
+          "subnet": [],
+          "hostname": []
+        },
+        "scan_cache_updates": {}
+      },
+      "private_evidence": [
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:5:5",
+          "origin": "Red_0",
+          "observed_tick": 5,
+          "received_tick": 5,
+          "source": "self_observed",
+          "kind": "probe",
+          "probe": "service_behavior",
+          "port": 80,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "external_import_accepted",
+          "age": 6,
+          "stale": false
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:9:9",
+          "origin": "Red_0",
+          "observed_tick": 9,
+          "received_tick": 9,
+          "source": "self_observed",
+          "kind": "access_result",
+          "method": "web_rfi",
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "access_not_established",
+          "age": 2,
+          "stale": false
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:11:11",
+          "origin": "Red_0",
+          "observed_tick": 11,
+          "received_tick": 11,
+          "source": "self_observed",
+          "kind": "probe",
+          "probe": "service_behavior",
+          "port": 80,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "external_import_refused",
+          "age": 0,
+          "stale": false
+        }
+      ],
+      "decision": null
+    },
+    {
+      "tick": 12,
+      "actor": "Red_0",
+      "proposal": {
+        "action": "Probe",
+        "session": 0,
+        "target": "10.0.196.254",
+        "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+        "method": null,
+        "probe": "auth_policy",
+        "port": 22,
+        "token_ref": null,
+        "source_host": "contractor_network_subnet_user_host_0",
+        "basis_evidence_ids": [
+          "Red_0:5:5",
+          "Red_0:9:9",
+          "Red_0:11:11"
+        ]
+      },
+      "valid": true,
+      "outcome": "IN_PROGRESS",
+      "lifecycle": "submitted",
+      "preconditions": {
+        "active_owned_controller": true,
+        "observed_target": true
+      },
+      "state_delta": {
+        "sessions_added": [],
+        "controller_changes": [],
+        "sessions_lost": [],
+        "privilege_changes": [],
+        "knowledge_added": {
+          "ip_address": [],
+          "subnet": [],
+          "hostname": []
+        },
+        "scan_cache_updates": {}
+      },
+      "private_evidence": [
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:5:5",
+          "origin": "Red_0",
+          "observed_tick": 5,
+          "received_tick": 5,
+          "source": "self_observed",
+          "kind": "probe",
+          "probe": "service_behavior",
+          "port": 80,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "external_import_accepted",
+          "age": 7,
+          "stale": false
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:9:9",
+          "origin": "Red_0",
+          "observed_tick": 9,
+          "received_tick": 9,
+          "source": "self_observed",
+          "kind": "access_result",
+          "method": "web_rfi",
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "access_not_established",
+          "age": 3,
+          "stale": false
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:11:11",
+          "origin": "Red_0",
+          "observed_tick": 11,
+          "received_tick": 11,
+          "source": "self_observed",
+          "kind": "probe",
+          "probe": "service_behavior",
+          "port": 80,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "external_import_refused",
+          "age": 1,
+          "stale": false
+        }
+      ],
+      "decision": {
+        "policy": "evidence_controller",
+        "version": "1.0",
+        "tick": 12,
+        "status": "ranked",
+        "own_missing_goals": [
+          "restricted_zone_a_subnet_server_host_0"
+        ],
+        "believed_team_missing_goals": [
+          "restricted_zone_a_subnet_server_host_0"
+        ],
+        "state_change": {
+          "belief_epoch": 0
+        },
+        "candidate_count": 25,
+        "alternatives": [
+          {
+            "proposal": {
+              "action": "Probe",
+              "session": 0,
+              "target": "10.0.196.254",
+              "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+              "method": null,
+              "probe": "auth_policy",
+              "port": 22,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": [
+                "Red_0:5:5",
+                "Red_0:9:9",
+                "Red_0:11:11"
+              ]
+            },
+            "observed_goal": true,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 2,
+            "estimated_remaining_ticks": 0,
+            "reason": "Diagnose a selected service from this owned source; refresh stale evidence",
+            "priority": 9
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.20.162",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.20.26",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.74.254",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverRemoteSystems",
+              "session": 0,
+              "target": "10.0.20.0/24",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 50
+          }
+        ],
+        "plans": [],
+        "limits": {
+          "max_graph_expansions": 128
+        },
+        "qualification": "optimistic software controller; no global optimality, calibrated probabilities or scientific advantage",
+        "selected": {
+          "action": "Probe",
+          "session": 0,
+          "target": "10.0.196.254",
+          "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+          "method": null,
+          "probe": "auth_policy",
+          "port": 22,
+          "token_ref": null,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "basis_evidence_ids": [
+            "Red_0:5:5",
+            "Red_0:9:9",
+            "Red_0:11:11"
+          ]
+        },
+        "organization": "independent",
+        "manual_override": false,
+        "admitted_proposal": {
+          "action": "Probe",
+          "session": 0,
+          "target": "10.0.196.254",
+          "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+          "method": null,
+          "probe": "auth_policy",
+          "port": 22,
+          "token_ref": null,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "basis_evidence_ids": [
+            "Red_0:5:5",
+            "Red_0:9:9",
+            "Red_0:11:11"
+          ]
+        }
+      }
+    },
+    {
+      "tick": 13,
+      "actor": "Red_0",
+      "proposal": {
+        "action": "Probe",
+        "session": 0,
+        "target": "10.0.196.254",
+        "rationale": "Diagnose a selected service from this owned source; refresh stale evidence",
+        "method": null,
+        "probe": "auth_policy",
+        "port": 22,
+        "token_ref": null,
+        "source_host": "contractor_network_subnet_user_host_0",
+        "basis_evidence_ids": [
+          "Red_0:5:5",
+          "Red_0:9:9",
+          "Red_0:11:11"
+        ]
+      },
+      "valid": true,
+      "outcome": "TRUE",
+      "lifecycle": "completed",
+      "preconditions": {},
+      "state_delta": {
+        "sessions_added": [],
+        "controller_changes": [],
+        "sessions_lost": [],
+        "privilege_changes": [],
+        "knowledge_added": {
+          "ip_address": [],
+          "subnet": [],
+          "hostname": []
+        },
+        "scan_cache_updates": {}
+      },
+      "private_evidence": [
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:5:5",
+          "origin": "Red_0",
+          "observed_tick": 5,
+          "received_tick": 5,
+          "source": "self_observed",
+          "kind": "probe",
+          "probe": "service_behavior",
+          "port": 80,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "external_import_accepted",
+          "age": 8,
+          "stale": true
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:9:9",
+          "origin": "Red_0",
+          "observed_tick": 9,
+          "received_tick": 9,
+          "source": "self_observed",
+          "kind": "access_result",
+          "method": "web_rfi",
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "access_not_established",
+          "age": 4,
+          "stale": false
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:11:11",
+          "origin": "Red_0",
+          "observed_tick": 11,
+          "received_tick": 11,
+          "source": "self_observed",
+          "kind": "probe",
+          "probe": "service_behavior",
+          "port": 80,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "external_import_refused",
+          "age": 2,
+          "stale": false
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:13:13",
+          "origin": "Red_0",
+          "observed_tick": 13,
+          "received_tick": 13,
+          "source": "self_observed",
+          "kind": "probe",
+          "probe": "auth_policy",
+          "port": 22,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "password_and_account_token_supported",
+          "age": 0,
+          "stale": false
+        }
+      ],
+      "decision": null
+    },
+    {
+      "tick": 14,
+      "actor": "Red_0",
+      "proposal": {
+        "action": "AttemptAccess",
+        "session": 0,
+        "target": "10.0.196.254",
+        "rationale": "Delivered artifact claims this scope; validity remains unverified until login",
+        "method": "credential_login",
+        "probe": null,
+        "port": null,
+        "token_ref": "tok-e7334c0247cc252dfbeb",
+        "source_host": "contractor_network_subnet_user_host_0",
+        "basis_evidence_ids": [
+          "Red_0:5:5",
+          "Red_0:9:9",
+          "Red_0:11:11",
+          "Red_0:13:13",
+          "Red_0:2:2"
+        ]
+      },
+      "valid": true,
+      "outcome": "IN_PROGRESS",
+      "lifecycle": "submitted",
+      "preconditions": {
+        "active_owned_controller": true,
+        "observed_target": true,
+        "own_service_scan": true,
+        "selected_method": true,
+        "token_possessed": true
+      },
+      "state_delta": {
+        "sessions_added": [],
+        "controller_changes": [],
+        "sessions_lost": [],
+        "privilege_changes": [],
+        "knowledge_added": {
+          "ip_address": [],
+          "subnet": [],
+          "hostname": []
+        },
+        "scan_cache_updates": {}
+      },
+      "private_evidence": [
+        {
+          "host": "contractor_network_subnet_user_host_0",
+          "evidence_id": "Red_0:2:2",
+          "origin": "Red_0",
+          "observed_tick": 2,
+          "received_tick": 2,
+          "source": "self_observed",
+          "kind": "artifact",
+          "text": "Cached job account reference; a maintenance host stores the current record.",
+          "lead": {
+            "hostname": "restricted_zone_a_subnet_server_host_0",
+            "address": "10.0.196.254"
+          },
+          "account": "user",
+          "claimed_scope": "restricted_zone_a_subnet_server_host_0",
+          "token_ref": "tok-e7334c0247cc252dfbeb",
+          "artifact_id": "note-0895196420baee3e",
+          "age": 12,
+          "stale": true
+        },
+        {
+          "host": "contractor_network_subnet_user_host_0",
+          "evidence_id": "Red_0:2:2",
+          "origin": "Red_0",
+          "observed_tick": 2,
+          "received_tick": 2,
+          "source": "self_observed",
+          "kind": "artifact",
+          "text": "Administration notes mention two maintenance hosts.",
+          "leads": [
+            {
+              "hostname": "contractor_network_subnet_user_host_2",
+              "address": "10.0.20.26"
+            },
+            {
+              "hostname": "contractor_network_subnet_user_host_1",
+              "address": "10.0.20.162"
+            }
+          ],
+          "artifact_id": "note-acd611f07532421a",
+          "age": 12,
+          "stale": true
+        },
+        {
+          "host": "contractor_network_subnet_user_host_0",
+          "evidence_id": "Red_0:2:2",
+          "origin": "Red_0",
+          "observed_tick": 2,
+          "received_tick": 2,
+          "source": "self_observed",
+          "kind": "artifact",
+          "text": "A public application appears in a maintenance note.",
+          "lead": {
+            "hostname": "public_access_zone_subnet_server_host_0",
+            "address": "10.0.74.254"
+          },
+          "artifact_id": "note-642ddbf677acff92",
+          "age": 12,
+          "stale": true
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:5:5",
+          "origin": "Red_0",
+          "observed_tick": 5,
+          "received_tick": 5,
+          "source": "self_observed",
+          "kind": "probe",
+          "probe": "service_behavior",
+          "port": 80,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "external_import_accepted",
+          "age": 9,
+          "stale": true
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:9:9",
+          "origin": "Red_0",
+          "observed_tick": 9,
+          "received_tick": 9,
+          "source": "self_observed",
+          "kind": "access_result",
+          "method": "web_rfi",
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "access_not_established",
+          "age": 5,
+          "stale": false
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:11:11",
+          "origin": "Red_0",
+          "observed_tick": 11,
+          "received_tick": 11,
+          "source": "self_observed",
+          "kind": "probe",
+          "probe": "service_behavior",
+          "port": 80,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "external_import_refused",
+          "age": 3,
+          "stale": false
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:13:13",
+          "origin": "Red_0",
+          "observed_tick": 13,
+          "received_tick": 13,
+          "source": "self_observed",
+          "kind": "probe",
+          "probe": "auth_policy",
+          "port": 22,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "password_and_account_token_supported",
+          "age": 1,
+          "stale": false
+        }
+      ],
+      "decision": {
+        "policy": "evidence_controller",
+        "version": "1.0",
+        "tick": 14,
+        "status": "ranked",
+        "own_missing_goals": [
+          "restricted_zone_a_subnet_server_host_0"
+        ],
+        "believed_team_missing_goals": [
+          "restricted_zone_a_subnet_server_host_0"
+        ],
+        "state_change": {
+          "belief_epoch": 0
+        },
+        "candidate_count": 25,
+        "alternatives": [
+          {
+            "proposal": {
+              "action": "AttemptAccess",
+              "session": 0,
+              "target": "10.0.196.254",
+              "rationale": "Delivered artifact claims this scope; validity remains unverified until login",
+              "method": "credential_login",
+              "probe": null,
+              "port": null,
+              "token_ref": "tok-e7334c0247cc252dfbeb",
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": [
+                "Red_0:5:5",
+                "Red_0:9:9",
+                "Red_0:11:11",
+                "Red_0:13:13",
+                "Red_0:2:2"
+              ]
+            },
+            "observed_goal": true,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 2,
+            "estimated_remaining_ticks": 0,
+            "reason": "Delivered artifact claims this scope; validity remains unverified until login",
+            "priority": 5
+          },
+          {
+            "proposal": {
+              "action": "AttemptAccess",
+              "session": 0,
+              "target": "10.0.196.254",
+              "rationale": "Reachable password service; account weakness remains a hypothesis",
+              "method": "ssh_weak_auth",
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": [
+                "Red_0:5:5",
+                "Red_0:9:9",
+                "Red_0:11:11",
+                "Red_0:13:13"
+              ]
+            },
+            "observed_goal": true,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 4,
+            "estimated_remaining_ticks": 0,
+            "reason": "Reachable password service; account weakness remains a hypothesis",
+            "priority": 7
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.20.162",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.20.26",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.74.254",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverRemoteSystems",
+              "session": 0,
+              "target": "10.0.20.0/24",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 50
+          }
+        ],
+        "plans": [],
+        "limits": {
+          "max_graph_expansions": 128
+        },
+        "qualification": "optimistic software controller; no global optimality, calibrated probabilities or scientific advantage",
+        "selected": {
+          "action": "AttemptAccess",
+          "session": 0,
+          "target": "10.0.196.254",
+          "rationale": "Delivered artifact claims this scope; validity remains unverified until login",
+          "method": "credential_login",
+          "probe": null,
+          "port": null,
+          "token_ref": "tok-e7334c0247cc252dfbeb",
+          "source_host": "contractor_network_subnet_user_host_0",
+          "basis_evidence_ids": [
+            "Red_0:5:5",
+            "Red_0:9:9",
+            "Red_0:11:11",
+            "Red_0:13:13",
+            "Red_0:2:2"
+          ]
+        },
+        "organization": "independent",
+        "manual_override": false,
+        "admitted_proposal": {
+          "action": "AttemptAccess",
+          "session": 0,
+          "target": "10.0.196.254",
+          "rationale": "Delivered artifact claims this scope; validity remains unverified until login",
+          "method": "credential_login",
+          "probe": null,
+          "port": null,
+          "token_ref": "tok-e7334c0247cc252dfbeb",
+          "source_host": "contractor_network_subnet_user_host_0",
+          "basis_evidence_ids": [
+            "Red_0:5:5",
+            "Red_0:9:9",
+            "Red_0:11:11",
+            "Red_0:13:13",
+            "Red_0:2:2"
+          ]
+        }
+      }
+    },
+    {
+      "tick": 15,
+      "actor": "Red_0",
+      "proposal": {
+        "action": "AttemptAccess",
+        "session": 0,
+        "target": "10.0.196.254",
+        "rationale": "Delivered artifact claims this scope; validity remains unverified until login",
+        "method": "credential_login",
+        "probe": null,
+        "port": null,
+        "token_ref": "tok-e7334c0247cc252dfbeb",
+        "source_host": "contractor_network_subnet_user_host_0",
+        "basis_evidence_ids": [
+          "Red_0:5:5",
+          "Red_0:9:9",
+          "Red_0:11:11",
+          "Red_0:13:13",
+          "Red_0:2:2"
+        ]
+      },
+      "valid": true,
+      "outcome": "TRUE",
+      "lifecycle": "completed",
+      "preconditions": {},
+      "state_delta": {
+        "sessions_added": [
+          {
+            "id": 1,
+            "hostname": "restricted_zone_a_subnet_server_host_0",
+            "username": "user",
+            "privileged": false,
+            "controller": false,
+            "active": true
+          }
+        ],
+        "controller_changes": [],
+        "sessions_lost": [],
+        "privilege_changes": [],
+        "knowledge_added": {
+          "ip_address": [],
+          "subnet": [
+            "10.0.196.0/24"
+          ],
+          "hostname": []
+        },
+        "scan_cache_updates": {}
+      },
+      "private_evidence": [
+        {
+          "host": "contractor_network_subnet_user_host_0",
+          "evidence_id": "Red_0:2:2",
+          "origin": "Red_0",
+          "observed_tick": 2,
+          "received_tick": 2,
+          "source": "self_observed",
+          "kind": "artifact",
+          "text": "Cached job account reference; a maintenance host stores the current record.",
+          "lead": {
+            "hostname": "restricted_zone_a_subnet_server_host_0",
+            "address": "10.0.196.254"
+          },
+          "account": "user",
+          "claimed_scope": "restricted_zone_a_subnet_server_host_0",
+          "token_ref": "tok-e7334c0247cc252dfbeb",
+          "artifact_id": "note-0895196420baee3e",
+          "age": 13,
+          "stale": true
+        },
+        {
+          "host": "contractor_network_subnet_user_host_0",
+          "evidence_id": "Red_0:2:2",
+          "origin": "Red_0",
+          "observed_tick": 2,
+          "received_tick": 2,
+          "source": "self_observed",
+          "kind": "artifact",
+          "text": "Administration notes mention two maintenance hosts.",
+          "leads": [
+            {
+              "hostname": "contractor_network_subnet_user_host_2",
+              "address": "10.0.20.26"
+            },
+            {
+              "hostname": "contractor_network_subnet_user_host_1",
+              "address": "10.0.20.162"
+            }
+          ],
+          "artifact_id": "note-acd611f07532421a",
+          "age": 13,
+          "stale": true
+        },
+        {
+          "host": "contractor_network_subnet_user_host_0",
+          "evidence_id": "Red_0:2:2",
+          "origin": "Red_0",
+          "observed_tick": 2,
+          "received_tick": 2,
+          "source": "self_observed",
+          "kind": "artifact",
+          "text": "A public application appears in a maintenance note.",
+          "lead": {
+            "hostname": "public_access_zone_subnet_server_host_0",
+            "address": "10.0.74.254"
+          },
+          "artifact_id": "note-642ddbf677acff92",
+          "age": 13,
+          "stale": true
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:5:5",
+          "origin": "Red_0",
+          "observed_tick": 5,
+          "received_tick": 5,
+          "source": "self_observed",
+          "kind": "probe",
+          "probe": "service_behavior",
+          "port": 80,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "external_import_accepted",
+          "age": 10,
+          "stale": true
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:9:9",
+          "origin": "Red_0",
+          "observed_tick": 9,
+          "received_tick": 9,
+          "source": "self_observed",
+          "kind": "access_result",
+          "method": "web_rfi",
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "access_not_established",
+          "age": 6,
+          "stale": false
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:11:11",
+          "origin": "Red_0",
+          "observed_tick": 11,
+          "received_tick": 11,
+          "source": "self_observed",
+          "kind": "probe",
+          "probe": "service_behavior",
+          "port": 80,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "external_import_refused",
+          "age": 4,
+          "stale": false
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:13:13",
+          "origin": "Red_0",
+          "observed_tick": 13,
+          "received_tick": 13,
+          "source": "self_observed",
+          "kind": "probe",
+          "probe": "auth_policy",
+          "port": 22,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "password_and_account_token_supported",
+          "age": 2,
+          "stale": false
+        },
+        {
+          "host": "10.0.196.254",
+          "evidence_id": "Red_0:15:15",
+          "origin": "Red_0",
+          "observed_tick": 15,
+          "received_tick": 15,
+          "source": "self_observed",
+          "kind": "access_result",
+          "method": "credential_login",
+          "source_host": "contractor_network_subnet_user_host_0",
+          "response": "access_established",
+          "age": 0,
+          "stale": false
+        }
+      ],
+      "decision": null
+    },
+    {
+      "tick": 16,
+      "actor": "Red_0",
+      "proposal": {
+        "action": "PrivilegeEscalate",
+        "session": 0,
+        "target": "restricted_zone_a_subnet_server_host_0",
+        "rationale": "Gain own privilege needed for the goal or a source pivot",
+        "method": null,
+        "probe": null,
+        "port": null,
+        "token_ref": null,
+        "source_host": "contractor_network_subnet_user_host_0",
+        "basis_evidence_ids": []
+      },
+      "valid": true,
+      "outcome": "IN_PROGRESS",
+      "lifecycle": "submitted",
+      "preconditions": {
+        "active_owned_controller": true,
+        "observed_target": true
+      },
+      "state_delta": {
+        "sessions_added": [],
+        "controller_changes": [],
+        "sessions_lost": [],
+        "privilege_changes": [],
+        "knowledge_added": {
+          "ip_address": [],
+          "subnet": [],
+          "hostname": []
+        },
+        "scan_cache_updates": {}
+      },
+      "private_evidence": [],
+      "decision": {
+        "policy": "evidence_controller",
+        "version": "1.0",
+        "tick": 16,
+        "status": "ranked",
+        "own_missing_goals": [
+          "restricted_zone_a_subnet_server_host_0"
+        ],
+        "believed_team_missing_goals": [
+          "restricted_zone_a_subnet_server_host_0"
+        ],
+        "state_change": {
+          "belief_epoch": 0
+        },
+        "candidate_count": 20,
+        "alternatives": [
+          {
+            "proposal": {
+              "action": "PrivilegeEscalate",
+              "session": 0,
+              "target": "restricted_zone_a_subnet_server_host_0",
+              "rationale": "Gain own privilege needed for the goal or a source pivot",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": true,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 2,
+            "estimated_remaining_ticks": 0,
+            "reason": "Gain own privilege needed for the goal or a source pivot",
+            "priority": -1
+          },
+          {
+            "proposal": {
+              "action": "InspectArtifacts",
+              "session": 1,
+              "target": "restricted_zone_a_subnet_server_host_0",
+              "rationale": "Inspect an owned local session for fallible leads and token references",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "restricted_zone_a_subnet_server_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": true,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 2,
+            "estimated_remaining_ticks": 0,
+            "reason": "Inspect an owned local session for fallible leads and token references",
+            "priority": 0
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.20.162",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.20.26",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.74.254",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverRemoteSystems",
+              "session": 0,
+              "target": "10.0.196.0/24",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 50
+          },
+          {
+            "proposal": {
+              "action": "DiscoverRemoteSystems",
+              "session": 0,
+              "target": "10.0.20.0/24",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 50
+          }
+        ],
+        "plans": [],
+        "limits": {
+          "max_graph_expansions": 128
+        },
+        "qualification": "optimistic software controller; no global optimality, calibrated probabilities or scientific advantage",
+        "selected": {
+          "action": "PrivilegeEscalate",
+          "session": 0,
+          "target": "restricted_zone_a_subnet_server_host_0",
+          "rationale": "Gain own privilege needed for the goal or a source pivot",
+          "method": null,
+          "probe": null,
+          "port": null,
+          "token_ref": null,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "basis_evidence_ids": []
+        },
+        "organization": "independent",
+        "manual_override": false,
+        "admitted_proposal": {
+          "action": "PrivilegeEscalate",
+          "session": 0,
+          "target": "restricted_zone_a_subnet_server_host_0",
+          "rationale": "Gain own privilege needed for the goal or a source pivot",
+          "method": null,
+          "probe": null,
+          "port": null,
+          "token_ref": null,
+          "source_host": "contractor_network_subnet_user_host_0",
+          "basis_evidence_ids": []
+        }
+      }
+    },
+    {
+      "tick": 17,
+      "actor": "Red_0",
+      "proposal": {
+        "action": "PrivilegeEscalate",
+        "session": 0,
+        "target": "restricted_zone_a_subnet_server_host_0",
+        "rationale": "Gain own privilege needed for the goal or a source pivot",
+        "method": null,
+        "probe": null,
+        "port": null,
+        "token_ref": null,
+        "source_host": "contractor_network_subnet_user_host_0",
+        "basis_evidence_ids": []
+      },
+      "valid": true,
+      "outcome": "TRUE",
+      "lifecycle": "completed",
+      "preconditions": {},
+      "state_delta": {
+        "sessions_added": [],
+        "controller_changes": [],
+        "sessions_lost": [],
+        "privilege_changes": [
+          {
+            "session_id": 1,
+            "hostname": "restricted_zone_a_subnet_server_host_0",
+            "before": "user",
+            "after": "root"
+          }
+        ],
+        "knowledge_added": {
+          "ip_address": [],
+          "subnet": [],
+          "hostname": []
+        },
+        "scan_cache_updates": {}
+      },
+      "private_evidence": [],
+      "decision": null
+    },
+    {
+      "tick": 18,
+      "actor": "Red_0",
+      "proposal": {
+        "action": "InspectArtifacts",
+        "session": 1,
+        "target": "restricted_zone_a_subnet_server_host_0",
+        "rationale": "Inspect an owned local session for fallible leads and token references",
+        "method": null,
+        "probe": null,
+        "port": null,
+        "token_ref": null,
+        "source_host": "restricted_zone_a_subnet_server_host_0",
+        "basis_evidence_ids": []
+      },
+      "valid": true,
+      "outcome": "IN_PROGRESS",
+      "lifecycle": "submitted",
+      "preconditions": {
+        "active_owned_local_session": true
+      },
+      "state_delta": {
+        "sessions_added": [],
+        "controller_changes": [],
+        "sessions_lost": [],
+        "privilege_changes": [],
+        "knowledge_added": {
+          "ip_address": [],
+          "subnet": [],
+          "hostname": []
+        },
+        "scan_cache_updates": {}
+      },
+      "private_evidence": [],
+      "decision": {
+        "policy": "evidence_controller",
+        "version": "1.0",
+        "tick": 18,
+        "status": "ranked",
+        "own_missing_goals": [],
+        "believed_team_missing_goals": [],
+        "state_change": {
+          "belief_epoch": 0
+        },
+        "candidate_count": 20,
+        "alternatives": [
+          {
+            "proposal": {
+              "action": "InspectArtifacts",
+              "session": 1,
+              "target": "restricted_zone_a_subnet_server_host_0",
+              "rationale": "Inspect an owned local session for fallible leads and token references",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "restricted_zone_a_subnet_server_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 2,
+            "estimated_remaining_ticks": 0,
+            "reason": "Inspect an owned local session for fallible leads and token references",
+            "priority": 0
+          },
+          {
+            "proposal": {
+              "action": "EstablishPivot",
+              "session": 0,
+              "target": "restricted_zone_a_subnet_server_host_0",
+              "rationale": "Create an owned source and empty local scan cache",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 2,
+            "estimated_remaining_ticks": 0,
+            "reason": "Create an owned source and empty local scan cache",
+            "priority": 5
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.20.162",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.20.26",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverNetworkServices",
+              "session": 0,
+              "target": "10.0.74.254",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 17
+          },
+          {
+            "proposal": {
+              "action": "DiscoverRemoteSystems",
+              "session": 0,
+              "target": "10.0.196.0/24",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 50
+          },
+          {
+            "proposal": {
+              "action": "DiscoverRemoteSystems",
+              "session": 0,
+              "target": "10.0.20.0/24",
+              "rationale": "fixed public workflow",
+              "method": null,
+              "probe": null,
+              "port": null,
+              "token_ref": null,
+              "source_host": "contractor_network_subnet_user_host_0",
+              "basis_evidence_ids": []
+            },
+            "observed_goal": false,
+            "failures": 0,
+            "observed_failures": 0,
+            "estimated_action_ticks": 1,
+            "estimated_remaining_ticks": 0,
+            "reason": "fixed public workflow",
+            "priority": 50
+          }
+        ],
+        "plans": [],
+        "limits": {
+          "max_graph_expansions": 128
+        },
+        "qualification": "optimistic software controller; no global optimality, calibrated probabilities or scientific advantage",
+        "selected": {
+          "action": "InspectArtifacts",
+          "session": 1,
+          "target": "restricted_zone_a_subnet_server_host_0",
+          "rationale": "Inspect an owned local session for fallible leads and token references",
+          "method": null,
+          "probe": null,
+          "port": null,
+          "token_ref": null,
+          "source_host": "restricted_zone_a_subnet_server_host_0",
+          "basis_evidence_ids": []
+        },
+        "organization": "independent",
+        "manual_override": false,
+        "admitted_proposal": {
+          "action": "InspectArtifacts",
+          "session": 1,
+          "target": "restricted_zone_a_subnet_server_host_0",
+          "rationale": "Inspect an owned local session for fallible leads and token references",
+          "method": null,
+          "probe": null,
+          "port": null,
+          "token_ref": null,
+          "source_host": "restricted_zone_a_subnet_server_host_0",
+          "basis_evidence_ids": []
+        }
+      }
+    },
+    {
+      "tick": 19,
+      "actor": "Red_0",
+      "proposal": {
+        "action": "InspectArtifacts",
+        "session": 1,
+        "target": "restricted_zone_a_subnet_server_host_0",
+        "rationale": "Inspect an owned local session for fallible leads and token references",
+        "method": null,
+        "probe": null,
+        "port": null,
+        "token_ref": null,
+        "source_host": "restricted_zone_a_subnet_server_host_0",
+        "basis_evidence_ids": []
+      },
+      "valid": true,
+      "outcome": "TRUE",
+      "lifecycle": "completed",
+      "preconditions": {},
+      "state_delta": {
+        "sessions_added": [],
+        "controller_changes": [],
+        "sessions_lost": [],
+        "privilege_changes": [],
+        "knowledge_added": {
+          "ip_address": [],
+          "subnet": [],
+          "hostname": []
+        },
+        "scan_cache_updates": {}
+      },
+      "private_evidence": [],
+      "decision": null
+    }
+  ],
+  "delivered_messages": [],
+  "defender_history": [
+    {
+      "type": "research_defender_signal",
+      "host": "restricted_zone_a_subnet_server_host_0",
+      "signal_tick": 3,
+      "sensor": "qualified reachable service traffic",
+      "action": "AggressiveServiceDiscovery"
+    },
+    {
+      "type": "research_defender_decision",
+      "host": "restricted_zone_a_subnet_server_host_0",
+      "actor": "blue_agent_0",
+      "signal_tick": 3,
+      "decision_tick": 7,
+      "action": "PatchService",
+      "duration": 1,
+      "remaining_responses": 0
+    },
+    {
+      "type": "research_defender_effect",
+      "host": "restricted_zone_a_subnet_server_host_0",
+      "actor": "blue_agent_0",
+      "action": "PatchService",
+      "effect_tick": 7,
+      "outcome": "TRUE"
+    },
+    {
+      "type": "research_defender_signal",
+      "host": "restricted_zone_a_subnet_server_host_0",
+      "signal_tick": 9,
+      "sensor": "qualified reachable service traffic",
+      "action": "AttemptAccess"
+    }
+  ],
+  "observed_access_events": {
+    "Red_0": []
+  },
+  "limitations": [
+    "Deliberately selected bounded software fixture, not a scientific performance sample.",
+    "Review is pending; a software-qualified trajectory does not establish external realism.",
+    "Compact JSON selects cited/target evidence and message metadata; ZIP preserves full frames/payloads."
+  ]
+}

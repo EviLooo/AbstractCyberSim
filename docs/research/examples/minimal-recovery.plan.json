@@ -1,0 +1,47 @@
+{
+  "status": "design_only_not_runtime_schema",
+  "plan": "../REVISED_GRADUATION_PLAN.md",
+  "note": "Design values, not measured difficulty. No run or model call is implied by this example.",
+  "proposed_episode": {
+    "schema_version": "2.0",
+    "name": "Combine private discoveries and recover after patch",
+    "purpose": "exploration",
+    "scenario": {
+      "profile": "enterprise_cc4_research",
+      "research": {
+        "module_version": "1.0",
+        "recipe": "recover",
+        "conditions": "paired",
+        "capability_coupling": "bridge_and_token",
+        "initial_access": "matched_split_entry",
+        "evidence": {"observation_delay": 1, "stale_after": 8},
+        "change": {
+          "mode": "reactive_patch",
+          "sensor_policy": "observed_service_traffic_v1",
+          "reaction_delay": 4,
+          "response_budget": 1,
+          "entry_hosts_excluded": true,
+          "patch_persists": true
+        },
+        "seed_namespaces": {"network": 102, "recipe": 402, "event": 702},
+        "catalog": "minimal_access_v1",
+        "background_access": "deny",
+        "native_mission_phase_policy": "fixed_research_policy_v1"
+      },
+      "mission": {"target_roles": ["data_target_a", "data_target_b"], "hold_ticks": 3, "deadline_tick": 160}
+    },
+    "team": {"architecture": "swarm", "workers": 2},
+    "communication": {"extra_delay": 2, "loss_probability": 0.0, "seed": 17},
+    "resources": {"team_access_attempts": 16},
+    "cognition": {"provider": "scripted", "policy": "evidence_controller_v1"},
+    "schedule": {"mode": "per_worker", "max_ticks": 160, "seed": 27}
+  },
+  "planned_pairing": {
+    "change_only": "team.architecture",
+    "other_architecture": "hierarchy",
+    "materialized_world_and_worker_placements_must_match": true,
+    "hierarchy_coordinator_has_no_sessions": true,
+    "count_all_coordinator_tokens": true,
+    "qualification_required": "Recovery witness after persistent patch plus delivered credential evidence; no port/session transfer"
+  }
+}

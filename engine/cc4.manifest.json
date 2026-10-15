@@ -1,0 +1,10 @@
+{
+  "upstream_url": "https://github.com/cage-challenge/cage-challenge-4.git",
+  "commit": "8c3c50ca54b176c2de199847944e8dcc035497e3",
+  "python": "3.12",
+  "profile": "enterprise_cc4",
+  "requirements": "cc4.requirements.lock",
+  "patches": [],
+  "scenario": "ResearchScenario: native enterprise zones, independently owned mobile workers",
+  "qualification": "Bounded software integration; scientific realism and research calibration pending"
+}

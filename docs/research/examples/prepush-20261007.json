@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-07",
+  "branch": "research-workbench",
+  "purpose": "pre-push software checks",
+  "checks": [
+    {
+      "suite": "Python non-engine suite",
+      "tests": 96,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xml_sha256": "c8f5e57818db2b9aaafdf5dbe0bb11eaa0053c50e9a8aa76a9edda38dd4059ca"
+    },
+    {
+      "suite": "Hierarchy admission including native gateway",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xml_sha256": "cdcbccd45d7f716ec6e663081bf4e0159c0a571d47abccafe6ed27fdbd6d069c"
+    }
+  ],
+  "overlap": "Six hierarchy-admission unit cases overlap the non-engine suite; totals are not independent evidence.",
+  "frontend_build": "npm run build passed",
+  "ui_tests": {
+    "command": "node --experimental-strip-types --test frontend/tests/research-ui.test.mjs",
+    "passed": 15,
+    "failed": 0
+  },
+  "diff_check": "passed",
+  "credential_pattern_check": "No high-confidence private-key or credential patterns found in publication candidates.",
+  "limits": "No scientific sweeps or new model calls. Full historical native coverage is recorded in existing acceptance audits; this is a focused pre-push regression check.",
+  "dependencies": "CC4 is installed by tools/setup_cc4.ps1 at the manifest revision. Legacy CybORG submodule remains pinned upstream with its existing reproducible tools/patch_engine.py modification.",
+  "local_only": "Virtual environments, model blobs, .local runs and logs, built frontend assets and generated full ZIP archives remain ignored."
+}

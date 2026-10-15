@@ -1,0 +1,270 @@
+{
+  "purpose": "bounded software compatibility fixtures; not research experiments",
+  "upstream_url": "https://github.com/cage-challenge/cage-challenge-4",
+  "upstream_commit": "8c3c50ca54b176c2de199847944e8dcc035497e3",
+  "upstream_dirty": false,
+  "python": "3.12.5",
+  "packages": {
+    "numpy": "1.26.4",
+    "gym": "0.26.2",
+    "gymnasium": "0.28.1",
+    "networkx": "3.2.1",
+    "pygame": "2.5.2",
+    "PyYAML": "6.0.1"
+  },
+  "checks": [
+    {
+      "name": "stock_layout_and_hidden_keys",
+      "status": "pass",
+      "details": {
+        "hosts": 90,
+        "red_identities": [
+          "red_agent_0",
+          "red_agent_1",
+          "red_agent_2",
+          "red_agent_3",
+          "red_agent_4",
+          "red_agent_5"
+        ],
+        "active_reds": [
+          "red_agent_0"
+        ],
+        "known_ips": [
+          "10.0.20.253"
+        ],
+        "hidden_ip_keys_present": 89,
+        "requirement": "filter known=False keys before policy/UI exposure"
+      }
+    },
+    {
+      "name": "external_workers_1",
+      "status": "pass",
+      "details": {
+        "worker_count": 1,
+        "hosts": 90,
+        "joint_discovery_ticks": 1,
+        "exploit_duration": 4,
+        "owned_target_sessions": {
+          "red_agent_0": [
+            1
+          ]
+        },
+        "exploit_outcomes": {
+          "red_agent_0": [
+            "TRUE"
+          ]
+        },
+        "scan_cache_private": true,
+        "fixture": "custom generator, stock controller/actions, sleeping policies"
+      }
+    },
+    {
+      "name": "external_workers_2",
+      "status": "pass",
+      "details": {
+        "worker_count": 2,
+        "hosts": 90,
+        "joint_discovery_ticks": 1,
+        "exploit_duration": 4,
+        "owned_target_sessions": {
+          "red_agent_0": [
+            1
+          ],
+          "red_agent_1": [
+            1
+          ]
+        },
+        "exploit_outcomes": {
+          "red_agent_0": [
+            "FALSE",
+            "TRUE"
+          ],
+          "red_agent_1": [
+            "TRUE"
+          ]
+        },
+        "scan_cache_private": true,
+        "fixture": "custom generator, stock controller/actions, sleeping policies"
+      }
+    },
+    {
+      "name": "external_workers_4",
+      "status": "pass",
+      "details": {
+        "worker_count": 4,
+        "hosts": 90,
+        "joint_discovery_ticks": 1,
+        "exploit_duration": 4,
+        "owned_target_sessions": {
+          "red_agent_0": [
+            1
+          ],
+          "red_agent_1": [
+            1
+          ],
+          "red_agent_2": [
+            1
+          ],
+          "red_agent_3": [
+            1
+          ]
+        },
+        "exploit_outcomes": {
+          "red_agent_0": [
+            "TRUE"
+          ],
+          "red_agent_1": [
+            "FALSE",
+            "FALSE",
+            "FALSE",
+            "TRUE"
+          ],
+          "red_agent_2": [
+            "TRUE"
+          ],
+          "red_agent_3": [
+            "TRUE"
+          ]
+        },
+        "scan_cache_private": true,
+        "fixture": "custom generator, stock controller/actions, sleeping policies"
+      }
+    },
+    {
+      "name": "external_workers_8",
+      "status": "pass",
+      "details": {
+        "worker_count": 8,
+        "hosts": 90,
+        "joint_discovery_ticks": 1,
+        "exploit_duration": 4,
+        "owned_target_sessions": {
+          "red_agent_0": [
+            1
+          ],
+          "red_agent_1": [
+            1
+          ],
+          "red_agent_2": [
+            1
+          ],
+          "red_agent_3": [
+            1
+          ],
+          "red_agent_4": [
+            1
+          ],
+          "red_agent_5": [
+            1
+          ],
+          "red_agent_6": [
+            1
+          ],
+          "red_agent_7": [
+            1
+          ]
+        },
+        "exploit_outcomes": {
+          "red_agent_0": [
+            "TRUE"
+          ],
+          "red_agent_1": [
+            "TRUE"
+          ],
+          "red_agent_2": [
+            "TRUE"
+          ],
+          "red_agent_3": [
+            "TRUE"
+          ],
+          "red_agent_4": [
+            "TRUE"
+          ],
+          "red_agent_5": [
+            "TRUE"
+          ],
+          "red_agent_6": [
+            "TRUE"
+          ],
+          "red_agent_7": [
+            "TRUE"
+          ]
+        },
+        "scan_cache_private": true,
+        "fixture": "custom generator, stock controller/actions, sleeping policies"
+      }
+    },
+    {
+      "name": "stock_handover_and_five_tick_restore",
+      "status": "pass",
+      "details": {
+        "custom_generator": false,
+        "destination_owner": [
+          "red_agent_1"
+        ],
+        "contractor_exploit_outcomes": [
+          "TRUE"
+        ],
+        "destination_exploit_outcomes": [
+          "TRUE"
+        ],
+        "automatic_zone_handover": true,
+        "recipient_observation_present": true,
+        "other_worker_automatically_knows_destination": true,
+        "restore_ticks": 5,
+        "restore_removed_red_sessions": true,
+        "block_denied_scan": true,
+        "allow_restored_scan": true
+      }
+    },
+    {
+      "name": "custom_mobile_worker_cross_zone",
+      "status": "pass",
+      "details": {
+        "custom_generator": true,
+        "destination_owner": [
+          "red_agent_0"
+        ],
+        "contractor_exploit_outcomes": [
+          "FALSE",
+          "TRUE"
+        ],
+        "destination_exploit_outcomes": [
+          "TRUE"
+        ],
+        "automatic_zone_handover": false,
+        "recipient_observation_present": true,
+        "other_worker_automatically_knows_destination": false
+      }
+    },
+    {
+      "name": "verified_address_delivery_hook",
+      "status": "pass",
+      "details": {
+        "sender_discovery_not_automatically_shared": true,
+        "verified_interface_update_unlocks_scan": true,
+        "update_grants_no_sessions_or_ports": true
+      }
+    },
+    {
+      "name": "mission_phase_policy_semantics",
+      "status": "pass",
+      "details": {
+        "phases": [
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          2,
+          2,
+          2
+        ],
+        "green_permissions_changed": true,
+        "blocks_unchanged": true,
+        "meaning": "intended policy changes; no automatic firewall enforcement"
+      }
+    }
+  ]
+}
