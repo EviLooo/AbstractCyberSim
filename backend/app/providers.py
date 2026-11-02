@@ -58,11 +58,12 @@ class Cognition:
         if self.used + reserve > self.config.max_team_tokens:
             raise BudgetExceeded("Insufficient remaining team budget to reserve this call")
         start = time.monotonic()
-        record = {"role": role, "actor": actor, "model_requested": self.config.model, "prompt_hash": self.prompt_hashes[role], "input": view, "schema": schema, "reserved_tokens": reserve}
+        think = False
+        record = {"role": role, "actor": actor, "model_requested": self.config.model, "prompt_hash": self.prompt_hashes[role], "input": view, "schema": schema, "reserved_tokens": reserve, "think": think}
         self.calls += 1
         try:
             async with httpx.AsyncClient(timeout=self.config.timeout_seconds) as client:
-                response = await client.post(os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434").rstrip("/") + "/api/chat", json={"model": self.config.model, "messages": [{"role": "system", "content": system}, {"role": "user", "content": content}], "format": schema, "stream": False, "options": {"temperature": self.config.temperature, "num_predict": self.config.max_output_tokens}})
+                response = await client.post(os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434").rstrip("/") + "/api/chat", json={"model": self.config.model, "messages": [{"role": "system", "content": system}, {"role": "user", "content": content}], "format": schema, "stream": False, "think": think, "options": {"temperature": self.config.temperature, "num_predict": self.config.max_output_tokens}})
                 response.raise_for_status()
                 data = response.json()
             # Log actual response/usage before attempting to parse the decision.
