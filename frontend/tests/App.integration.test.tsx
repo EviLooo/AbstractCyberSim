@@ -127,6 +127,8 @@ test('Network/Organization switching preserves the legend and private worker inf
   expect(screen.getByRole('heading', { name: fixture.run.name })).toBeTruthy();
   expect(requests).toContain('POST /api/configs/validate');
   expect(screen.queryByRole('alert')).toBeNull();
+  expect(screen.getByText('TEAM ACCOUNTED TOKENS', { exact: true }).parentElement?.querySelector('strong')?.textContent).toBe('0');
+  expect(screen.getByText('LLM calls: 0', { exact: true })).toBeTruthy();
 
   const networkLegend = legendContaining('Uncontrolled');
   for (const text of ['User access', 'Privileged access', '◇ Router']) expect(networkLegend.getByText(text, { exact: true })).toBeTruthy();
@@ -149,6 +151,9 @@ test('Network/Organization switching preserves the legend and private worker inf
 
   const knowledgeView = screen.getByRole('combobox', { name: 'Knowledge view' });
   fireEvent.change(knowledgeView, { target: { value: 'Red_0' } });
+  expect(screen.getByText('OWN ACCOUNTED TOKENS', { exact: true })).toBeTruthy();
+  expect(screen.queryByText('TEAM ACCOUNTED TOKENS', { exact: true })).toBeNull();
+  expect(screen.queryByText('LLM calls: 0', { exact: true })).toBeNull();
   expect(teamLegend.getByText('Worker', { exact: true })).toBeTruthy();
   expect(graphElement('Coordinator-to-Red_0').data.label).toBe('1');
   for (const link of ['Red_0-to-Coordinator', 'Coordinator-to-Red_1', 'Red_1-to-Coordinator']) expect(graphElement(link).data.label).toBe('—');
