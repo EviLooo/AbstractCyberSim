@@ -3,7 +3,7 @@ import asyncio
 import json
 import httpx
 import pytest
-from backend.app.providers import BudgetExceeded, Cognition
+from backend.app.providers import BudgetExceeded, Cognition, InvalidDecision
 from backend.app.providers import ProviderRefusal
 
 
@@ -52,14 +52,98 @@ def test_format_repair_is_bounded_and_both_calls_are_charged(tmp_path, monkeypat
             return Response()
 
     monkeypatch.setattr(httpx, "AsyncClient", Client)
-    cognition = Cognition(CognitionConfig(provider="ollama", model="fixture"), tmp_path / "transcript.jsonl")
+    config = CognitionConfig(provider="ollama", model="fixture")
+    cognition = Cognition(config, tmp_path / "transcript.jsonl")
     result = asyncio.run(cognition.worker("Red_0", {"actor": "Red_0", "native": {"known": {}}}, {"action": "Sleep"}))
     assert result["action"] == "Sleep"
     assert cognition.used == 28 and cognition.calls == 2
     assert len(requests) == 2
+    assert all(request["think"] is False for request in requests)
+    assert all(request["options"]["num_predict"] == config.max_output_tokens for request in requests)
     transcripts = [json.loads(l) for l in cognition.path.read_text().splitlines()]
     assert transcripts[1]["input"]["format_repair"]
+    assert all(record["think"] is False for record in transcripts)
     assert [r["charged_tokens"] for r in transcripts] == [14, 14]
+
+
+def test_worker_and_coordinator_share_structured_decision_policy(tmp_path, monkeypatch):
+    replies = [json.dumps({"action": "Sleep"}), json.dumps({"Red_0": None})]
+    requests = []
+
+    class Response:
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return {"message": {"content": replies.pop(0)}, "prompt_eval_count": 10, "eval_count": 4}
+
+    class Client:
+        def __init__(self, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            pass
+
+        async def post(self, url, json):
+            requests.append(json)
+            return Response()
+
+    monkeypatch.setattr(httpx, "AsyncClient", Client)
+    config = CognitionConfig(provider="ollama", model="fixture")
+    cognition = Cognition(config, tmp_path / "transcript.jsonl")
+    assert asyncio.run(cognition.worker("Red_0", {}, {"action": "Sleep"}))["action"] == "Sleep"
+    assert asyncio.run(cognition.coordinator(
+        {"workers": {"Red_0": {}}, "delivered_reports": []},
+        {"Red_0": {"proposal": {"action": "Sleep"}}},
+    )) == {}
+    assert config.max_output_tokens == 512
+    assert cognition.calls == len(requests) == 2
+    assert all(request["think"] is False and "think" not in request["options"] for request in requests)
+    assert all(request["options"]["num_predict"] == config.max_output_tokens for request in requests)
+    assert all("format" in request for request in requests)
+    transcripts = [json.loads(line) for line in cognition.path.read_text().splitlines()]
+    assert [record["role"] for record in transcripts] == ["worker", "coordinator"]
+    assert all(record["think"] is False for record in transcripts)
+
+
+def test_empty_length_limited_worker_response_fails_after_one_repair(tmp_path, monkeypatch):
+    requests = []
+
+    class Response:
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return {"message": {"content": ""}, "done_reason": "length", "prompt_eval_count": 10, "eval_count": 256}
+
+    class Client:
+        def __init__(self, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            pass
+
+        async def post(self, url, json):
+            requests.append(json)
+            return Response()
+
+    monkeypatch.setattr(httpx, "AsyncClient", Client)
+    cognition = Cognition(CognitionConfig(provider="ollama", model="fixture"), tmp_path / "transcript.jsonl")
+    with pytest.raises(InvalidDecision, match="after one charged format repair"):
+        asyncio.run(cognition.worker("Red_0", {}, {"action": "Sleep"}))
+    assert cognition.calls == len(requests) == 2
+    assert cognition.actor_usage["Red_0"]["repair_calls"] == 1
+    assert all(request["think"] is False for request in requests)
+    transcripts = [json.loads(line) for line in cognition.path.read_text().splitlines()]
+    assert all(record["response"]["done_reason"] == "length" for record in transcripts)
+    assert all(record["error_type"] == "JSONDecodeError" for record in transcripts)
+    assert all(record["think"] is False for record in transcripts)
 
 
 def test_insufficient_budget_makes_no_call(tmp_path, monkeypatch):
