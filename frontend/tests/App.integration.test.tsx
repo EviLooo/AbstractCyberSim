@@ -30,7 +30,7 @@ vi.mock('cytoscape', () => ({
       destroy: vi.fn(),
       zoom: (value?: number) => { if (value !== undefined) zoom = value; return zoom; },
       pan: (value?: { x: number; y: number }) => { if (value !== undefined) pan = value; return pan; },
-      center: vi.fn(), nodes: () => nodes, on: vi.fn(),
+      center: vi.fn(), nodes: () => Object.assign(nodes, { unselect: vi.fn() }), getElementById: () => ({ select: vi.fn() }), on: vi.fn(),
     };
     renderer.instances.push(instance);
     return instance;
@@ -139,6 +139,13 @@ test('Network/Organization switching preserves the legend and private worker inf
 
   fireEvent.click(screen.getByRole('button', { name: /^Organization$/ }));
   const teamLegend = legendContaining('Worker');
+  expect(screen.getByRole('button', { name: /^Organization$/ }).getAttribute('aria-pressed')).toBe('true');
+  fireEvent.change(screen.getByRole('combobox', { name: 'Inspect node' }), { target: { value: '0' } });
+  const inspector = screen.getByRole('complementary', { name: 'Node inspector' });
+  expect(within(inspector).getByRole('heading', { name: 'Worker 0' })).toBeTruthy();
+  expect(within(inspector).getByText('Own native knowledge').closest('details')?.open).toBe(false);
+  expect(screen.getByText('Selected: Worker 0 · details in Inspector')).toBeTruthy();
+
   for (const text of ['Coordinator', 'Active communication', 'Interrupted communication']) expect(teamLegend.getByText(text, { exact: true })).toBeTruthy();
   expect(screen.queryByText('Uncontrolled', { exact: true })).toBeNull();
   const explanation = teamLegend.getByText('Number = visible delivered messages · — = unavailable in this view', { exact: true });
@@ -152,6 +159,9 @@ test('Network/Organization switching preserves the legend and private worker inf
   const knowledgeView = screen.getByRole('combobox', { name: 'Knowledge view' });
   fireEvent.change(knowledgeView, { target: { value: 'Red_0' } });
   expect(screen.getByText('OWN ACCOUNTED TOKENS', { exact: true })).toBeTruthy();
+  expect(screen.getByText('CONFIGURED ORGANIZATION · VISIBLE DELIVERIES ONLY')).toBeTruthy();
+  expect(within(inspector).queryByRole('heading', { name: 'Worker 0' })).toBeNull();
+  expect(screen.getByRole('button', { name: 'Clear selection' }).hasAttribute('disabled')).toBe(true);
   expect(screen.queryByText('TEAM ACCOUNTED TOKENS', { exact: true })).toBeNull();
   expect(screen.queryByText('LLM calls: 0', { exact: true })).toBeNull();
   expect(teamLegend.getByText('Worker', { exact: true })).toBeTruthy();
